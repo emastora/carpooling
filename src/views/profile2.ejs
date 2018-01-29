@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Profile Page</title>
+    <% include partials/head %>
+</head>
+
+<body>
+    <ons-sliding-menu var="app.slidingMenu" menu-page="menu.ejs" main-page="main_map.ejs" side="left" type="overlay" max-slide-distance="250px">
+    </ons-sliding-menu>
+
+    <script>
+        document.addEventListener("pageinit", function(e) {
+            if (e.target.id == "personal_inf") {
+                loadPersonalInf();
+            }
+
+            if (e.target.id == "others_personal_inf") {
+                loadOthersPersonalInf();
+            }
+
+            if (e.target.id == "others_personal_inf_message") {
+                loadOthersPersonalInf();
+            }
+
+            if (e.target.id == "pending_personal_inf") {
+                loadPendingPersonalInf();
+            }
+
+            if (e.target.id == "edit_personal") {
+                loadPersonalInfVal();
+            }
+
+            if (e.target.id == "vehicle_inf") {
+                loadVehicleInf();
+            }
+
+            if (e.target.id == "others_vehicle_inf") {
+                loadOtherVehicleInf();
+            }
+
+            if (e.target.id == "edit_vehicle") {
+                loadVehicleInfVal();
+            }
+
+            if (e.target.id == "new_vehicle") {
+                loadNewVehicleInf();
+            }
+
+            if (e.target.id == "main_map") {
+                loadMap();
+                onCloseApp();
+                modal.show();
+            }
+
+            if (e.target.id == "my_journeys_driver") {
+                loadJourneysDriver();
+            }
+
+            if (e.target.id == "my_journeys_passenger") {
+                loadJourneysPassenger();
+            }
+
+            if (e.target.id == "my_journeys_matching") {
+                //$(".tab-bar").show();
+                loadJourneysMatching();
+            }
+
+            if (e.target.id == "journey") {
+                loadJourneyVal();
+            }
+
+            if (e.target.id == "journey_matching") {
+                loadMatchingJourneyVal();
+            }
+
+            if (e.target.id == "my_vehicles") {
+                loadVehiclesList();
+            }
+
+            if (e.target.id == "journey_accepted") {
+                loadAcceptedJourneyVal();
+            }
+
+            if (e.target.id == "my_messages") {
+                loadMessagesList();
+            }
+
+            if (e.target.id == "message") {
+                loadMessageVal();
+                setTimeout(function() {
+                    document.getElementById('scrollDown').click();
+                }, 1000);
+            }
+        }, false);
+    </script>
+</body>
+
+</html>
