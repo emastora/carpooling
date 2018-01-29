@@ -12,17 +12,12 @@ module.exports = (app, passport) => {
         });
     });
 
-    //    app.post('/login', passport.authenticate('local-login', {
-    //      successRedirect: '/profile',
-    //        failureRedirect: '/login',
-    //        failureFlash: true
-    //	}));
-
     app.post('/login', passport.authenticate('local-login', {
-        successRedirect: '/profile2',
+        successRedirect: '/profile',
         failureRedirect: '/login',
         failureFlash: true
     }));
+
 
     // signup view
     app.get('/signup', (req, res) => {
@@ -38,17 +33,12 @@ module.exports = (app, passport) => {
     }));
 
     //profile view
-    //    app.get('/profile', isLoggedIn, (req, res) => {
-    //        res.render('profile', {
-    //            user: req.user
-    //        });
-    //	});
-
-    app.get('/profile2', isLoggedIn, (req, res) => {
-        res.render('profile2', {
-            //            user: req.user
+    app.get('/profile', isLoggedIn, (req, res) => {
+        res.render('profile', {
+            user: req.user
         });
     });
+
 
     // logout
     app.get('/logout', (req, res) => {
