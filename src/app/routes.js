@@ -19,7 +19,8 @@ module.exports = (app, passport) => {
     //	}));
 
     app.post('/login', passport.authenticate('local-login', {
-        successRedirect: '/profile2',
+        // successRedirect: '/profile2',
+        successRedirect: '/profile3',
         failureRedirect: '/login',
         failureFlash: true
     }));
@@ -44,9 +45,11 @@ module.exports = (app, passport) => {
     //        });
     //	});
 
-    app.get('/profile2', isLoggedIn, (req, res) => {
-        res.render('profile2', {
-            //            user: req.user
+    app.get('/profile3', isLoggedIn, (req, res) => {
+
+        // res.send('Hello World');
+        res.render('profile3', {
+            //user: req.user
         });
     });
 
@@ -55,6 +58,14 @@ module.exports = (app, passport) => {
         req.logout();
         res.redirect('/');
     });
+
+    // app.get('/map', (req, res) => {
+    //     res.render('map.ejs', {
+    //         message: req.flash('loginMessage')
+    //     });
+    // });
+
+
 };
 
 function isLoggedIn(req, res, next) {
