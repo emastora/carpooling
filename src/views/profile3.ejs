@@ -10,6 +10,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <% include partials/head %>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.min.js"></script>
 
         <title>Simple Sidebar - Start Bootstrap Template</title>
 
@@ -48,6 +49,7 @@
 </head>
 
 <body>
+    <p>Show something</p>
     <!--<div id="unauthenticated" class="hide">
             <ons-page>
                 <ons-toolbar>
@@ -71,7 +73,7 @@
        -->
 
 
-    <div id="authenticated" class="hide">
+    <div id="authenticated" class="show">
         <ons-sliding-menu var="app.slidingMenu" menu-page="menu.ejs" main-page="main_map.ejs" side="left" type="overlay" max-slide-distance="250px">
         </ons-sliding-menu>
 
@@ -162,9 +164,9 @@
         </script>
     </div>
 
-    <script src="functions/functionsDM.js"></script>
-    <script src="functions/functions.js"></script>
-    <script src="functions/config.js"></script>
+    <script src="src/functions/functionsDM.js"></script>
+    <script src="src/functions/functions.js"></script>
+    <script src="src/functions/config.js"></script>
 
 
     <!-- <link rel="stylesheet" href="components/loader.css"> -->
