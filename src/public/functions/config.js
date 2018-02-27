@@ -225,7 +225,7 @@ var control = null;
 var journeyControl = null;
 var journey_control = null;
 var bingKey = "Ak_S8Tc2YoCDJrVGllgMA4XE9zEmJBlvaY1rsJEmxLafxlb3Yv_jHjVURPjEZLqK";
-var ajaxWorker = new Worker("js/ajax.js");
+var ajaxWorker = new Worker("functions/ajax.js");
 var homeAddress = null;
 var destAddress = null;
 var totalDist = null;
@@ -251,4 +251,4 @@ var rejected;
 var unreadMessages = 0;
 
 var debug = true;
-var journeyMatcher = new Worker("js/journeyMatchDM.js");
+var journeyMatcher = new Worker("functions/journeyMatchDM.js");
