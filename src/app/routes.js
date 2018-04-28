@@ -1,3 +1,5 @@
+const User = require('./models/user');
+
 module.exports = (app, passport) => {
 
     // index routes
@@ -64,6 +66,12 @@ module.exports = (app, passport) => {
     //     });
     // });
 
+    app.post('/profile3', (req, res) => {
+        User.create({
+            name: req.body.name,
+            music: req.body.music
+        });
+    });
 
 };
 
