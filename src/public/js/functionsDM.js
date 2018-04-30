@@ -1,4 +1,5 @@
 //==================DATA MANIPULATION FUNCTIONS==================//
+
 function savePersonalInf() {
 
     var token = window.localStorage.getItem("token");
@@ -49,6 +50,22 @@ function savePersonalInf() {
             "object": person1
         };
 
+        // var axios = require('axios');
+        // Performing a POST request
+        // axios.post('http://localhost:3000/profile3', { firstName: 'Marlon', lastName: 'Bernardes' })
+        //     .then(function(response) {
+        //         console.log(response.status),
+        //             console.log('saved successfully')
+        //     });
+
+        axios.post('http://localhost:3000/profile3', {
+                firstName: 'Marlon',
+                lastName: 'Bernardes'
+            })
+            .then(function(response) {
+                console.log(response.status),
+                    console.log('saved successfully')
+            });
 
 
         createCollection(data, function(d) {

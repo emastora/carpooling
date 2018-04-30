@@ -67,9 +67,19 @@ module.exports = (app, passport) => {
     // });
 
     app.post('/profile3', (req, res) => {
-        User.create({
-            name: req.body.name,
-            music: req.body.music
+        // User.create({
+        //     name: req.body.firstName,
+        //     lastname: req.body.lastName
+        // });
+        var newUser2 = new User();
+        newUser2.local.name = req.body.firstName;
+        newUser2.local.surname = req.body.lastName;
+
+        newUser2.save(function(err) {
+            if (err) {
+                throw err;
+            }
+            return done(null, newUser2);
         });
     });
 
