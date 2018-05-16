@@ -58,7 +58,7 @@ function savePersonalInf() {
         //             console.log('saved successfully')
         //     });
 
-        axios.post('http://localhost:3000/profile3', {
+        axios.post('/profile3', {
                 firstName: 'Marlon',
                 lastName: 'Bernardes'
             })
@@ -68,11 +68,11 @@ function savePersonalInf() {
             });
 
 
-        createCollection(data, function(d) {
-            if (debug) {
-                console.log(d);
-            }
-        });
+        // createCollection(data, function(d) {
+        //     if (debug) {
+        //         console.log(d);
+        //     }
+        // });
 
         ons.notification.alert({
             message: 'Personal Information Saved',

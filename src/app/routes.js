@@ -72,15 +72,18 @@ module.exports = (app, passport) => {
         //     lastname: req.body.lastName
         // });
         var newUser2 = new User();
-        newUser2.local.name = req.body.firstName;
-        newUser2.local.surname = req.body.lastName;
+        // newUser2.local.name = req.body.firstName;
+        // newUser2.local.surname = req.body.lastName;
 
-        newUser2.save(function(err) {
-            if (err) {
-                throw err;
-            }
-            return done(null, newUser2);
-        });
+        // newUser2.local.name = 'Eulabia';
+        // newUser2.local.surname = 'Eulabia';
+
+        // newUser2.save(function(err) {
+        //     if (err) {
+        //         throw err;
+        //     }
+        //     return done(null, newUser2);
+        // });
     });
 
 };
