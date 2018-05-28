@@ -68,45 +68,57 @@ module.exports = (app, passport) => {
 
     app.post('/UpdateUser', (req, res) => {
 
-        // User.findOne({ 'local.email': req.body.email }, function(err, user) {
-        //         if (err) {
-        //             console.log(req);
-        //             console.log(res.status);
-        //             // return done(err);
-        //         } else if (user) {
-        //             user.local.email = req.body.email;
-        //             user.local.name = req.body.name;
-        //             local.surname = req.body.surname;
-        //             local.occupation = req.body.occupation;
-        //             local.interests = req.body.interests;
-        //             local.music = req.body.music;
-        //         }
-        //     }
-        // User.findById(req.params.bear_id, function(err, bear) {
-        //     if (err)
-        //         res.send(err);
-        //     res.json(bear);
-        // });
-
-        // var newUser2 = new User();
-        // console.log(req.body);
-        // newUser2.local.name = req.body.firstName;
-        // newUser2.local.surname = req.body.lastName;
-
-        var newUser2 = new User();
-        console.log(req.body);
-        newUser2.local.name = req.body.name;
-
-        newUser2.save(function(err) {
-            if (err) {
-                throw err;
+        User.findOne({ 'local.email': req.body.email }, function(err, user) {
+                if (err) {
+                    console.log(req);
+                    console.log(res.status);
+                    // return done(err);
+                } else if (user) {
+                    console.log(req.body);
+                    user.update({ 'local.name': req.body.name, 'local.surname': req.body.surname },
+                        function(err) {
+                            if (err)
+                                console.log('error')
+                            else
+                                console.log('success')
+                            res.json({ message: 'User updated!' })
+                        });
+                    // user.local.email = req.body.email;
+                    // user.local.name = req.body.name;
+                    // user.local.surname = req.body.surname;
+                    // user.local.birthdate = req.body.birthdate;
+                    // user.local.occupation = req.body.occupation;
+                    // user.local.interests = req.body.interests;
+                    // user.local.music = req.body.music;
+                }
             }
-            res.json({ message: 'User updated!' });
-        });
-    });
 
-    // )
-    // });
+
+            // User.findById(req.params.bear_id, function(err, bear) {
+            //     if (err)
+            //         res.send(err);
+            //     res.json(bear);
+            // });
+
+            // var newUser2 = new User();
+            // console.log(req.body);
+            // newUser2.local.name = req.body.firstName;
+            // newUser2.local.surname = req.body.lastName;
+
+            //     var newUser2 = new User();
+            //     console.log(req.body);
+            //     newUser2.local.name = req.body.name;
+
+            // user.save(function(err) {
+            //     if (err) {
+            //         throw err;
+            //     }
+            //     res.json({ message: 'User updated!' });
+            // });
+            // });
+
+        )
+    });
 };
 
 function isLoggedIn(req, res, next) {

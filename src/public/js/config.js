@@ -64,7 +64,7 @@ function person(name, surname, email, birthDate, occupation, interests, music, s
     // this.oid = oid;
     this.name = name;
     this.surname = surname;
-    // this.email = email;
+    this.email = email;
     // this.username = email;
     // this.password = password;
     this.birthDate = birthDate;
