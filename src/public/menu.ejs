@@ -18,16 +18,20 @@
             </span>
         </ons-list-item>
 
+        <ons-list-item modifier="tappable" class="list__item__line-height" onclick="app.slidingMenu.setMainPage('ratings.html', {closeMenu: true})">
+            <i class="fa fa-users fa-lg" style="color: #666"></i> &nbsp; My Ratings
+        </ons-list-item>
+
+        <ons-list-item modifier="tappable" class="list__item__line-height" onclick="app.slidingMenu.setMainPage('my_vehicles.html', {closeMenu: true})">
+            <i class="fa fa-car fa-lg" style="color: #666"></i> &nbsp; My Vehicles
+        </ons-list-item>
+
         <ons-list-item>
             <b style="color: #5198db">&nbsp; User Profile</b>
         </ons-list-item>
 
         <ons-list-item modifier="tappable" class="list__item__line-height" onclick="app.slidingMenu.setMainPage('personal_inf.ejs', {closeMenu: true})">
             &nbsp;<i class="fa fa-user fa-lg" style="color: #666"></i> &nbsp; Personal Information
-        </ons-list-item>
-
-        <ons-list-item modifier="tappable" class="list__item__line-height" onclick="app.slidingMenu.setMainPage('my_vehicles.html', {closeMenu: true})">
-            <i class="fa fa-car fa-lg" style="color: #666"></i> &nbsp; My Vehicles
         </ons-list-item>
 
         <ons-list-item modifier="tappable" class="list__item__line-height" onclick="comingSoon()">

@@ -8,21 +8,21 @@ function savePersonalInf() {
         getToken();
     }
 
-    oid = window.localStorage.getItem("person.oid");
-    email = window.localStorage.getItem("email");
-    pass = window.localStorage.getItem("password");
+    // oid = window.localStorage.getItem("person.oid");
+    // pass = window.localStorage.getItem("password");
     name = document.getElementById('name2').value;
     surname = document.getElementById('surname2').value;
+    // email = document.getElementById('email2').value;
     birthDate = document.getElementById('birthDate2').value;
     occupation = document.getElementById('occupation2').value;
     interests = document.getElementById('interests2').value;
     music = document.getElementById('music2').value;
-    userImage = document.getElementById('user_picture2');
-    imagePath = userImage.src;
-    role = window.localStorage.getItem("person.role");
-    trustLevel = window.localStorage.getItem("person.trustLevel");
-    project = window.localStorage.getItem("person.project");
-    credits = window.localStorage.getItem("person.credits");
+    // userImage = document.getElementById('user_picture2');
+    // imagePath = userImage.src;
+    // role = window.localStorage.getItem("person.role");
+    // trustLevel = window.localStorage.getItem("person.trustLevel");
+    // project = window.localStorage.getItem("person.project");
+    // credits = window.localStorage.getItem("person.credits");
 
     if (document.getElementById('smoker2').checked) {
         smoker = "Yes";
@@ -30,39 +30,68 @@ function savePersonalInf() {
         smoker = "No";
     }
 
+    // if (name && surname && birthDate && occupation && interests && music) {
+    //     var person1 = new person(oid, name, surname, email, pass, birthDate, occupation, interests, music, smoker, imagePath, trustLevel, role, project, credits);
+
+    //     window.localStorage.setItem("person.name", name);
+    //     window.localStorage.setItem("person.surname", surname);
+    //     window.localStorage.setItem("person.email", email);
+    //     window.localStorage.setItem("person.birthDate", birthDate);
+    //     window.localStorage.setItem("person.occupation", occupation);
+    //     window.localStorage.setItem("person.interests", interests);
+    //     window.localStorage.setItem("person.music", music);
+    //     window.localStorage.setItem("person.imagePath", imagePath); //window.localStorage.setItem("person.imagePath", imagePath);
+    //     window.localStorage.setItem("person.smoker", smoker);
+
+    //     var data = {
+    //         "access_token": window.localStorage.getItem("token"),
+    //         "id": window.localStorage.getItem("person.oid"),
+    //         "collection": "users",
+    //         "object": person1
+    //     };
+
+    // var axios = require('axios');
+    // Performing a POST request
+    // axios.post('http://localhost:3000/profile3', { firstName: 'Marlon', lastName: 'Bernardes' })
+    //     .then(function(response) {
+    //         console.log(response.status),
+    //             console.log('saved successfully')
+    //     });
+
+    //VALID REQUEST
+
+    // axios.post('/UpdateUser', {
+    //         firstName: 'Marlon',
+    //         lastName: 'Bernardes'
+    //     })
+    //     .then(function(response) {
+    //         console.log(response.data.message)
+    //         console.log(response.status),
+    //             console.log('saved successfully')
+    //     });
+
     if (name && surname && birthDate && occupation && interests && music) {
-        var person1 = new person(oid, name, surname, email, pass, birthDate, occupation, interests, music, smoker, imagePath, trustLevel, role, project, credits);
+        var person2 = new person(name, surname, birthDate, occupation, interests, music, smoker);
 
         window.localStorage.setItem("person.name", name);
         window.localStorage.setItem("person.surname", surname);
-        window.localStorage.setItem("person.email", email);
+        // window.localStorage.setItem("person.email", email);
         window.localStorage.setItem("person.birthDate", birthDate);
         window.localStorage.setItem("person.occupation", occupation);
         window.localStorage.setItem("person.interests", interests);
         window.localStorage.setItem("person.music", music);
-        window.localStorage.setItem("person.imagePath", imagePath); //window.localStorage.setItem("person.imagePath", imagePath);
+        // window.localStorage.setItem("person.imagePath", imagePath); //window.localStorage.setItem("person.imagePath", imagePath);
         window.localStorage.setItem("person.smoker", smoker);
 
-        var data = {
-            "access_token": window.localStorage.getItem("token"),
-            "id": window.localStorage.getItem("person.oid"),
-            "collection": "users",
-            "object": person1
-        };
-
-        // var axios = require('axios');
-        // Performing a POST request
-        // axios.post('http://localhost:3000/profile3', { firstName: 'Marlon', lastName: 'Bernardes' })
-        //     .then(function(response) {
-        //         console.log(response.status),
-        //             console.log('saved successfully')
-        //     });
-
-        axios.post('/profile3', {
-                firstName: 'Marlon',
-                lastName: 'Bernardes'
-            })
+        axios.post('/UpdateUser', person2
+                // {
+                // headers: {
+                //     'email': 'person2.email'
+                // }   
+                // }
+            )
             .then(function(response) {
+                console.log(response.data.message)
                 console.log(response.status),
                     console.log('saved successfully')
             });

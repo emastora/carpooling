@@ -21,8 +21,9 @@ module.exports = function(passport) {
             // by default, local strategy uses username and password, we will override with email
             usernameField: 'email',
             passwordField: 'password',
-            passReqToCallback: true // allows us to pass back the entire request to the callback
+            passReqToCallback: true, // allows us to pass back the entire request to the callback
         },
+
         function(req, email, password, done) {
             User.findOne({ 'local.email': email }, function(err, user) {
                 if (err) {
@@ -34,8 +35,14 @@ module.exports = function(passport) {
                     var newUser = new User();
                     newUser.local.email = email;
                     newUser.local.password = newUser.generateHash(password);
-                    //newUser.local.name = name;
-                    //    newUser.local.name = name;
+                    newUser.local.name = req.body.name;
+                    newUser.local.surname = req.body.surname;
+                    newUser.local.occupation = req.body.occupation;
+                    newUser.local.interests = req.body.interests;
+                    newUser.local.music = req.body.music;
+                    // newUser.local.smoker = ??
+                    // newUser.local.birthdate = ??
+
                     newUser.save(function(err) {
                         if (err) { throw err; }
                         return done(null, newUser);
@@ -43,6 +50,7 @@ module.exports = function(passport) {
                 }
             });
         }));
+
 
     // login
     // we are using named strategies since we have one for login and one for signup
@@ -61,6 +69,7 @@ module.exports = function(passport) {
                 if (!user.validPassword(password)) {
                     return done(null, false, req.flash('loginMessage', 'Wrong. password'));
                 }
+
                 return done(null, user);
             });
         }));

@@ -42,23 +42,44 @@
 };*/
 
 // person constructor
-function person(oid, name, surname, email, password, birthDate, occupation, interests, music, smoker, imagePath, trustLevel, role, project, credits) {
-    this.oid = oid;
+// function person(oid, name, surname, email, password, birthDate, occupation, interests, music, smoker, imagePath, trustLevel, role, project, credits) {
+//     this.oid = oid;
+//     this.name = name;
+//     this.surname = surname;
+//     this.username = email;
+//     this.password = password;
+//     this.birthDate = birthDate;
+//     this.occupation = occupation;
+//     this.interests = interests;
+//     this.music = music;
+//     this.smoker = smoker;
+//     this.imagePath = imagePath;
+//     this.trustLevel = trustLevel;
+//     this.role = role; // This is necessary for harmonize with LTR
+//     this.project = project;
+//     this.credits = credits;
+// }
+
+function person(name, surname, email, birthDate, occupation, interests, music, smoker, imagePath, trustLevel, role, project, credits) {
+    // this.oid = oid;
     this.name = name;
     this.surname = surname;
-    this.username = email;
-    this.password = password;
+    // this.email = email;
+    // this.username = email;
+    // this.password = password;
     this.birthDate = birthDate;
     this.occupation = occupation;
     this.interests = interests;
     this.music = music;
     this.smoker = smoker;
-    this.imagePath = imagePath;
-    this.trustLevel = trustLevel;
-    this.role = role; // This is necessary for harmonize with LTR
-    this.project = project;
-    this.credits = credits;
+    // this.imagePath = imagePath;
+    // this.trustLevel = trustLevel;
+    // this.role = role; // This is necessary for harmonize with LTR
+    // this.project = project;
+    // this.credits = credits;
 }
+
+
 
 person.prototype.getOid = function() {
     return this.oid;

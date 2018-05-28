@@ -34,7 +34,7 @@ module.exports = (app, passport) => {
     });
 
     app.post('/signup', passport.authenticate('local-signup', {
-        successRedirect: '/profile',
+        successRedirect: '/profile3',
         failureRedirect: '/signup',
         failureFlash: true // allow flash messages
     }));
@@ -66,26 +66,47 @@ module.exports = (app, passport) => {
     //     });
     // });
 
-    app.post('/profile3', (req, res) => {
-        // User.create({
-        //     name: req.body.firstName,
-        //     lastname: req.body.lastName
+    app.post('/UpdateUser', (req, res) => {
+
+        // User.findOne({ 'local.email': req.body.email }, function(err, user) {
+        //         if (err) {
+        //             console.log(req);
+        //             console.log(res.status);
+        //             // return done(err);
+        //         } else if (user) {
+        //             user.local.email = req.body.email;
+        //             user.local.name = req.body.name;
+        //             local.surname = req.body.surname;
+        //             local.occupation = req.body.occupation;
+        //             local.interests = req.body.interests;
+        //             local.music = req.body.music;
+        //         }
+        //     }
+        // User.findById(req.params.bear_id, function(err, bear) {
+        //     if (err)
+        //         res.send(err);
+        //     res.json(bear);
         // });
-        var newUser2 = new User();
+
+        // var newUser2 = new User();
+        // console.log(req.body);
         // newUser2.local.name = req.body.firstName;
         // newUser2.local.surname = req.body.lastName;
 
-        // newUser2.local.name = 'Eulabia';
-        // newUser2.local.surname = 'Eulabia';
+        var newUser2 = new User();
+        console.log(req.body);
+        newUser2.local.name = req.body.name;
 
-        // newUser2.save(function(err) {
-        //     if (err) {
-        //         throw err;
-        //     }
-        //     return done(null, newUser2);
-        // });
+        newUser2.save(function(err) {
+            if (err) {
+                throw err;
+            }
+            res.json({ message: 'User updated!' });
+        });
     });
 
+    // )
+    // });
 };
 
 function isLoggedIn(req, res, next) {
