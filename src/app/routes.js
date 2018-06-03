@@ -1,4 +1,5 @@
 const User = require('./models/user');
+const Car = require('./models/vehicle');
 
 module.exports = (app, passport) => {
 
@@ -119,6 +120,23 @@ module.exports = (app, passport) => {
 
         )
     });
+
+
+    app.post('/CreateVehicle', (req, res) => {
+
+        var newVehicle2 = new Car();
+        console.log(req.body);
+        newVehicle2.local.brand = req.body.brand;
+
+        newVehicle2.save(function(err) {
+            if (err) {
+                throw err;
+            }
+            res.json({ message: 'Vehicle created!' });
+        });
+
+    });
+
 };
 
 function isLoggedIn(req, res, next) {

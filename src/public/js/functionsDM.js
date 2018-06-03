@@ -149,8 +149,8 @@ function saveVehicleInf() {
     year = document.getElementById('year').value;
     cc = document.getElementById('cc').value;
     var vehicleImage = document.getElementById('vehicle_picture');
-    imagePath = vehicleImage.src;
-    vehicleOid = selectedVehicle;
+    // imagePath = vehicleImage.src;
+    // vehicleOid = selectedVehicle;
 
 
     if (document.getElementById('aircondition').checked) {
@@ -165,35 +165,67 @@ function saveVehicleInf() {
         petsAllowed = "No";
     }
 
+    // if (brand && model && seats && color && licencePlate && year && cc) {
+    //     var vehicle1 = new vehicle(vehicleOid, localStorage.getItem("email"), brand, model, seats, color, licencePlate, year, cc, aircondition, petsAllowed, imagePath);
+
+    //     vehicle1.setImage(imagePath);
+    //     var data = {
+    //         "access_token": window.localStorage.getItem("token"),
+    //         "collection": "vehicles",
+    //         "id": vehicleOid,
+    //         "object": vehicle1
+    //     };
+
     if (brand && model && seats && color && licencePlate && year && cc) {
-        var vehicle1 = new vehicle(vehicleOid, localStorage.getItem("email"), brand, model, seats, color, licencePlate, year, cc, aircondition, petsAllowed, imagePath);
+        var vehicle2 = new vehicle(brand, model, seats, color, licencePlate, year, cc, aircondition, petsAllowed);
 
-        vehicle1.setImage(imagePath);
-        var data = {
-            "access_token": window.localStorage.getItem("token"),
-            "collection": "vehicles",
-            "id": vehicleOid,
-            "object": vehicle1
-        };
+        // vehicle1.setImage(imagePath);
+        // var data = {
+        //     "access_token": window.localStorage.getItem("token"),
+        //     "collection": "vehicles",
+        //     "id": vehicleOid,
+        //     "object": vehicle2
+        // };
 
-        //console.log(vehicleOid);    
-        updateCollection(data, function(r) {
-            //console.log(r);
-            var rr = JSON.parse(r);
-            //Get the oid as inserted in database
-            if (rr['info']['upserted']) {
-                var oid = rr['info']['upserted']['$id'];
-                //Set the oid to the object            
-                vehicle1.setOid(oid);
-                //and push it to locastorage as associative array
-                vehicles[oid] = vehicle1;
-            } else {
-                vehicles[vehicleOid] = vehicle1;
-                vehicle1.setOid(vehicleOid);
-            }
+        // //console.log(vehicleOid);    
+        // updateCollection(data, function(r) {
+        //     //console.log(r);
+        //     var rr = JSON.parse(r);
+        //     //Get the oid as inserted in database
+        //     if (rr['info']['upserted']) {
+        //         var oid = rr['info']['upserted']['$id'];
+        //         //Set the oid to the object            
+        //         vehicle1.setOid(oid);
+        //         //and push it to locastorage as associative array
+        //         vehicles[oid] = vehicle1;
+        //     } else {
+        //         vehicles[vehicleOid] = vehicle1;
+        //         vehicle1.setOid(vehicleOid);
+        //     }
 
-            window.localStorage.setItem("vehicles", JSON.stringify(vehicles));
-        });
+        //     window.localStorage.setItem("vehicles", JSON.stringify(vehicles));
+        // });
+
+        // window.localStorage.setItem("vehicles", JSON.stringify(vehicle2));
+        // console.log(vehicles);
+
+        window.localStorage.setItem("vehicle.brand", brand);
+        window.localStorage.setItem("vehicle.model", model);
+        window.localStorage.setItem("vehicle.seats", seats);
+        window.localStorage.setItem("vehicle.color", color);
+        window.localStorage.setItem("vehicle.licencePlate", licencePlate);
+        window.localStorage.setItem("vehicle.year", year);
+        window.localStorage.setItem("vehicle.cc", cc);
+        window.localStorage.setItem("vehicle.aircondition", aircondition);
+        window.localStorage.setItem("vehicle.petsAllowed", petsAllowed);
+
+
+        axios.post('/CreateVehicle', vehicle2)
+            .then(function(response) {
+                console.log(response.data.message)
+                console.log(response.status),
+                    console.log('saved successfully')
+            });
 
 
         ons.notification.alert({

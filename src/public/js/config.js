@@ -106,9 +106,9 @@ person.prototype.setTrustLevel = function(tl) {
 };
 
 // vehicle constructor
-function vehicle(oid, owner, brand, model, seats, color, licencePlate, year, cc, aircondition, petsAllowed, imagePath) {
-    this.oid = oid;
-    this.owner = owner;
+function vehicle(brand, model, seats, color, licencePlate, year, cc, aircondition, petsAllowed) {
+    // this.oid = oid;
+    // this.owner = owner;
     this.brand = brand;
     this.model = model;
     this.seats = seats;
@@ -118,7 +118,7 @@ function vehicle(oid, owner, brand, model, seats, color, licencePlate, year, cc,
     this.cc = cc;
     this.aircondition = aircondition;
     this.petsAllowed = petsAllowed;
-    this.imagePath = imagePath;
+    // this.imagePath = imagePath;
 }
 
 vehicle.prototype.getOid = function() {
