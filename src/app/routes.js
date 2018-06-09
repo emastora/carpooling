@@ -51,7 +51,8 @@ module.exports = (app, passport) => {
 
         // res.send('Hello World');
         res.render('profile3', {
-            //user: req.user
+            user: req.user
+                // user: 'Stelios'
         });
     });
 

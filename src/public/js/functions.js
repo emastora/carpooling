@@ -1039,46 +1039,98 @@ function loadPersonalInfVal() {
 };
 
 
+// function loadVehiclesList() {
+//     // var veh = JSON.parse(window.localStorage.getItem("vehicles"));
+//     var veh = JSON.parse(window.localStorage.getItem("vehicles"));
+
+//     console.log("Veh variable is" + veh);
+//     console.log("Veh Brand is" + veh.brand);
+
+//     if (veh) {
+//         // Clear vehicles_list
+//         var elm = $("#vehicles_list");
+//         elm.empty();
+//         ons.compile(elm[0]);
+
+//         for (var i in veh) {
+//             if (veh.hasOwnProperty(i)) {
+//                 if (veh[i]) {
+//                     //vehicle_picture
+//                     var pic = null;
+//                     if (veh[i].imagePath) {
+//                         pic = veh[i].imagePath;
+//                     } else {
+//                         pic = "images/vehicle.png";
+//                     }
+
+//                     var brand = veh[i].brand;
+//                     var model = veh[i].model;
+//                     var licencePlate = veh[i].licencePlate;
+
+//                     var list_element = '<ons-list-item modifier="chevron" class="vehicles_list" onClick="myNavigator.pushPage(&#39;vehicle_inf.html&#39;, { animation : &#39;slide&#39; } );vehicleSelected(' + "'" + i + "'" + ');">' +
+//                         '<ons-row>' +
+//                         '<ons-col width="95px"><img src="' + pic + '" class="thumbnail"></ons-col>' +
+//                         '<ons-col><div class="brand">' + brand + '&nbsp;' + model + '</div><div class="lisence_plate">' + licencePlate + '</div></ons-col>' +
+//                         '<ons-col width="40px"></ons-col>' +
+//                         '</ons-row>' +
+//                         '</ons-list-item>';
+//                     var elm = $(list_element);
+//                     elm.appendTo($("#vehicles_list")); // Insert to the DOM first
+//                     ons.compile(elm[0]); // The argument must be a HTMLElement object
+//                 }
+//             }
+//         }
+//     }
+// }
+
 function loadVehiclesList() {
     // var veh = JSON.parse(window.localStorage.getItem("vehicles"));
     var veh = JSON.parse(window.localStorage.getItem("vehicles"));
 
-    console.log(vehicle);
+    console.log("Veh variable is" + veh);
+    console.log("Veh Brand is" + veh.brand);
 
-    if (veh) {
-        // Clear vehicles_list
-        var elm = $("#vehicles_list");
-        elm.empty();
-        ons.compile(elm[0]);
+    // if (veh) {
+    //     // Clear vehicles_list
+    //     var elm = $("#vehicles_list");
+    //     elm.empty();
+    //     ons.compile(elm[0]);
 
-        for (var i in veh) {
-            if (veh.hasOwnProperty(i)) {
-                if (veh[i]) {
-                    //vehicle_picture
-                    var pic = null;
-                    if (veh[i].imagePath) {
-                        pic = veh[i].imagePath;
-                    } else {
-                        pic = "images/user.png";
-                    }
+    //     for (var i in veh) {
+    //         if (veh.hasOwnProperty(i)) {
+    //             if (veh[i]) {
+    //                 //vehicle_picture
+    //                 var pic = null;
+    //                 if (veh[i].imagePath) {
+    //                     pic = veh[i].imagePath;
+    //                 } else {
+    //                     pic = "images/vehicle.png";
+    //                 }
 
-                    var brand = veh[i].brand;
-                    var model = veh[i].model;
-                    var licencePlate = veh[i].licencePlate;
+    //                 var brand = veh[i].brand;
+    //                 var model = veh[i].model;
+    //                 var licencePlate = veh[i].licencePlate;
+    if (veh.brand != undefined) {
+        var pic = "images/vehicle.png";
+        var brand = veh.brand;
+        var model = veh.model;
+        var licencePlate = veh.licencePlate;
+        var i = 0;
 
-                    var list_element = '<ons-list-item modifier="chevron" class="vehicles_list" onClick="myNavigator.pushPage(&#39;vehicle_inf.html&#39;, { animation : &#39;slide&#39; } );vehicleSelected(' + "'" + i + "'" + ');">' +
-                        '<ons-row>' +
-                        '<ons-col width="95px"><img src="' + pic + '" class="thumbnail"></ons-col>' +
-                        '<ons-col><div class="brand">' + brand + '&nbsp;' + model + '</div><div class="lisence_plate">' + licencePlate + '</div></ons-col>' +
-                        '<ons-col width="40px"></ons-col>' +
-                        '</ons-row>' +
-                        '</ons-list-item>';
-                    var elm = $(list_element);
-                    elm.appendTo($("#vehicles_list")); // Insert to the DOM first
-                    ons.compile(elm[0]); // The argument must be a HTMLElement object
-                }
-            }
-        }
+        var list_element = '<ons-list-item modifier="chevron" class="vehicles_list" onClick="myNavigator.pushPage(&#39;vehicle_inf.html&#39;, { animation : &#39;slide&#39; } );vehicleSelected(' + "'" + i + "'" + ');">' +
+            '<ons-row>' +
+            '<ons-col width="95px"><img src="' + pic + '" class="thumbnail"></ons-col>' +
+            '<ons-col><div class="brand">' + brand + '&nbsp;' + model + '</div><div class="lisence_plate">' + licencePlate + '</div></ons-col>' +
+            '<ons-col width="40px"></ons-col>' +
+            '</ons-row>' +
+            '</ons-list-item>';
+        var elm = $(list_element);
+        elm.appendTo($("#vehicles_list")); // Insert to the DOM first
+        ons.compile(elm[0]); // The argument must be a HTMLElement object
+        //             }
+        //         }
+        //     }
+        // }
     }
 }
 

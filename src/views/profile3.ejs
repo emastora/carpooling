@@ -51,6 +51,30 @@
 <body>
     <ons-sliding-menu var="app.slidingMenu" menu-page="menu.ejs" main-page="map.ejs" side="left" type="overlay" max-slide-distance="250px">
     </ons-sliding-menu>
+    <p id="LocalEmail" style="display:none">
+        <%= user.local.email %>
+    </p>
+
+    <!-- <script>
+        var EmailLocal = user.local.email;
+        console.log(EmailLocal);
+        console.log("Manos");
+    </script> -->
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var x = $("#LocalEmail").html();
+            // alert(x);  // now JS variable 'x' has the uid that's passed from the node backend.
+            console.log(x);
+            window.localStorage.setItem("Email Session", x);
+        });
+    </script>
+
+    <!-- <script>
+            var getTest = <%- user  %>; //var test is now assigned to getTest which will only work on browsers
+            console.log(<%= user %>);
+    <%= user %> <br> -->
+    <!-- </script> -->
 
     <script>
         document.addEventListener("pageinit", function(e) {

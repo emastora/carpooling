@@ -179,13 +179,6 @@ function saveVehicleInf() {
     if (brand && model && seats && color && licencePlate && year && cc) {
         var vehicle2 = new vehicle(brand, model, seats, color, licencePlate, year, cc, aircondition, petsAllowed);
 
-        // vehicle1.setImage(imagePath);
-        // var data = {
-        //     "access_token": window.localStorage.getItem("token"),
-        //     "collection": "vehicles",
-        //     "id": vehicleOid,
-        //     "object": vehicle2
-        // };
 
         // //console.log(vehicleOid);    
         // updateCollection(data, function(r) {
@@ -206,18 +199,18 @@ function saveVehicleInf() {
         //     window.localStorage.setItem("vehicles", JSON.stringify(vehicles));
         // });
 
-        // window.localStorage.setItem("vehicles", JSON.stringify(vehicle2));
-        // console.log(vehicles);
+        window.localStorage.setItem("vehicles", JSON.stringify(vehicle2));
+        console.log(vehicle2);
 
-        window.localStorage.setItem("vehicle.brand", brand);
-        window.localStorage.setItem("vehicle.model", model);
-        window.localStorage.setItem("vehicle.seats", seats);
-        window.localStorage.setItem("vehicle.color", color);
-        window.localStorage.setItem("vehicle.licencePlate", licencePlate);
-        window.localStorage.setItem("vehicle.year", year);
-        window.localStorage.setItem("vehicle.cc", cc);
-        window.localStorage.setItem("vehicle.aircondition", aircondition);
-        window.localStorage.setItem("vehicle.petsAllowed", petsAllowed);
+        // window.localStorage.setItem("vehicle.brand", brand);
+        // window.localStorage.setItem("vehicle.model", model);
+        // window.localStorage.setItem("vehicle.seats", seats);
+        // window.localStorage.setItem("vehicle.color", color);
+        // window.localStorage.setItem("vehicle.licencePlate", licencePlate);
+        // window.localStorage.setItem("vehicle.year", year);
+        // window.localStorage.setItem("vehicle.cc", cc);
+        // window.localStorage.setItem("vehicle.aircondition", aircondition);
+        // window.localStorage.setItem("vehicle.petsAllowed", petsAllowed);
 
 
         axios.post('/CreateVehicle', vehicle2)
