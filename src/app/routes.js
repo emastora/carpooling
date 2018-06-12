@@ -68,21 +68,43 @@ module.exports = (app, passport) => {
     //     });
     // });
 
+    // app.get('/GetUser', (req, res) => {
+    //     // req.logout();
+    //     // res.redirect('/');
+
+    //     User.findOne({ 'local.email': req.params.Iden }, function(err, user) {
+    //         if (err) {
+    //             res.send(err);
+    //             // console.log(req);
+    //             // console.log(res.status);
+    //         } else if (user) {
+    //             res.json(User);
+    //             console.log("brika user blaks");
+    //             // console.log(res);
+    //             // console.log(res.body);
+    //             // console.log(res.json.User.local);
+    //         } else
+    //             console.log("Paparia")
+    //     });
+    // });
+
     app.get('/GetUser', (req, res) => {
         // req.logout();
         // res.redirect('/');
 
-        User.findOne({ 'local.email': req.params.Iden }, function(err, user) {
-            if (err)
-            // res.send(err);
-            // console.log(req);
-                console.log(res.status);
-            // } else if (user) {
-            res.json(User.local);
-            console.log(res);
-            // console.log(res.json.User.local);
-            // } else
-            //     console.log("Paparia")
+        User.findById(req.params.Iden, function(err, user) {
+            if (err) {
+                res.send(err);
+                // console.log(req);
+                // console.log(res.status);
+            } else if (User) {
+                res.json(user);
+                console.log("brika user");
+                // console.log(res);
+                // console.log(res.body);
+                // console.log(res.json.User.local);
+            } else
+                console.log("Paparia")
         });
     });
 

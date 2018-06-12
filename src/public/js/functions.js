@@ -857,10 +857,35 @@ function loadPersonalInf() {
     var EmailSession = window.localStorage.getItem("Email Session");
     console.log(EmailSession);
 
+    // axios.get('/GetUser', {
+    //         params: {
+    //             Iden: EmailSession
+    //         },
+
+    //     })
+    //     .then(function(response) {
+    //         var Adios = response.data;
+    //         console.log(Adios);
+    //         console.log(response);
+    //     })
+    //     .catch(function(error) {
+    //         console.log(error);
+    //     });
+
+    // axios.get('/GetUser' + EmailSession)
+    //     .then(function(response) {
+    //         var Adios = response.data;
+    //         console.log(Adios);
+    //         console.log(response);
+    //     })
+    //     .catch(function(error) {
+    //         console.log(error);
+    //     });
+
     axios.get('/GetUser', {
             params: {
-                Iden: EmailSession
-            }
+                Iden: '5b1eb9d34a9d81319882e36c'
+            },
         })
         .then(function(response) {
             var Adios = response.data;
@@ -870,7 +895,6 @@ function loadPersonalInf() {
         .catch(function(error) {
             console.log(error);
         });
-
 
 
     if (window.localStorage.getItem("person.imagePath")) {
