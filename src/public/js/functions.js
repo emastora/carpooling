@@ -854,6 +854,25 @@ function loadPersonalInf() {
 
     document.getElementById("smoker").innerHTML = window.localStorage.getItem("person.smoker");
 
+    var EmailSession = window.localStorage.getItem("Email Session");
+    console.log(EmailSession);
+
+    axios.get('/GetUser', {
+            params: {
+                Iden: EmailSession
+            }
+        })
+        .then(function(response) {
+            var Adios = response.data;
+            console.log(Adios);
+            console.log(response);
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+
+
+
     if (window.localStorage.getItem("person.imagePath")) {
         document.getElementById('user_picture').src = window.localStorage.getItem("person.imagePath");
     } else {
