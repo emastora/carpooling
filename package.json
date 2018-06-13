@@ -4,8 +4,23 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "nodemon src/server.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "prod": "cross-env NODE_ENV=production node src/server.js",
+        "start": "cross-env NODE_ENV=development nodemon src/server.js",
+        "test": "cross-env NODE_ENV=test echo \"Error: no test specified\" && exit 1",
+        "lint": "eslint src --color",
+        "pretty": "prettier --write --fix \"src/**/*.js\"",
+        "precommit": "lint-staged"
+    },
+    "lint-staged": {
+        "*js": [
+            "npm run pretty",
+            "npm run lint",
+            "git add"
+        ],
+        "*json": [
+            "npm run pretty",
+            "git add"
+        ]
     },
     "keywords": [],
     "author": "",
@@ -26,7 +41,17 @@
         "passport-local": "^1.0.0"
     },
     "devDependencies": {
-        "nodemon": "^1.17.5"
+        "cross-env": "^5.2.0",
+        "eslint": "^4.19.1",
+        "eslint-config-prettier": "^2.9.0",
+        "eslint-config-standard": "^11.0.0",
+        "eslint-plugin-import": "^2.12.0",
+        "eslint-plugin-node": "^6.0.1",
+        "eslint-plugin-prettier": "^2.6.0",
+        "eslint-plugin-promise": "^3.8.0",
+        "eslint-plugin-standard": "^3.1.0",
+        "lint-staged": "^7.2.0",
+        "nodemon": "^1.17.5",
+        "prettier": "^1.13.5"
     }
 }
-
