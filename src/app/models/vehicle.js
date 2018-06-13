@@ -1,20 +1,21 @@
 const mongoose = require('mongoose');
 
-
-const vehicleSchema = new mongoose.Schema({
+const vehicleSchema = new mongoose.Schema(
+  {
     local: {
-        brand: String,
-        model: String,
-        seats: String,
-        color: String,
-        licencePlate: String,
-        year: String,
-        cc: String,
-        aircondition: String,
-        petsAllowed: String
+      brand: String,
+      model: String,
+      seats: String,
+      color: String,
+      licencePlate: String,
+      year: String,
+      cc: String,
+      aircondition: String,
+      petsAllowed: String
     }
-}, { versionKey: false });
-
+  },
+  { versionKey: false }
+);
 
 // create the model for vehicle and expose it to our app
 module.exports = mongoose.model('Car', vehicleSchema);

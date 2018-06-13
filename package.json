@@ -8,13 +8,12 @@
     "start": "cross-env NODE_ENV=development nodemon src/server.js",
     "test": "cross-env NODE_ENV=test echo \"Error: no test specified\" && exit 1",
     "lint": "eslint src --color",
-    "pretty": "prettier --write --fix \"src/**/*.js\"",
+    "pretty": "prettier --fix --write \"src/**/*.js\"",
     "precommit": "lint-staged"
   },
   "lint-staged": {
     "*js": [
       "npm run pretty",
-      "npm run lint",
       "git add"
     ],
     "*json": [
