@@ -10,12 +10,12 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const axios = require('axios');
+require('./app/models/user')
+require('./app/models/vehicle')
 
 const { url } = require('./config/database.js');
 
-mongoose.connect(url, {
-    useMongoClient: true
-});
+mongoose.connect(url);
 
 require('./config/passport')(passport);
 

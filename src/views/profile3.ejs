@@ -63,7 +63,7 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
-            var x = $("#LocalEmail").html();
+            var x = $("#LocalEmail").html().trim();
             // alert(x);  // now JS variable 'x' has the uid that's passed from the node backend.
             console.log(x);
             window.localStorage.setItem("Email Session", x);

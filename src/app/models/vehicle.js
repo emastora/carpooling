@@ -13,7 +13,7 @@ const vehicleSchema = new mongoose.Schema({
         aircondition: String,
         petsAllowed: String
     }
-});
+}, { versionKey: false });
 
 
 // create the model for vehicle and expose it to our app

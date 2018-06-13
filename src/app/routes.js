@@ -1,5 +1,6 @@
-const User = require('./models/user');
-const Car = require('./models/vehicle');
+const Mongoose = require('mongoose');
+const User = Mongoose.model('User');
+const Car = Mongoose.model('Car');
 
 module.exports = (app, passport) => {
 
@@ -87,44 +88,44 @@ module.exports = (app, passport) => {
     //     });
     // });
 
-    app.get('/GetUser', (req, res) => {
-        // req.logout();
-        // res.redirect('/');
-        console.log(req.params);
-
-        User.findById(req.params.Iden, function(err, user) {
-            if (err) {
-                res.send(err);
-                // console.log(req);
-                // console.log(res.status);
-            } else if (User) {
-                res.json(user);
-                console.log("brika user");
-                // console.log(res);
-                // console.log(res.body);
-                // console.log(res.json.User.local);
-            } else
-                console.log("Paparia")
-        });
+    app.get('/GetUser', async (req, res) => {
+        try {
+          const user = await User.findOne({ 'local.email': req.query.email }).lean()
+          console.log('/GetUser', user)
+          res.json(user);
+        } catch(e) {
+            console.log(e)
+            res.send(e)
+        }
     });
 
-    app.post('/UpdateUser', (req, res) => {
+    app.post('/UpdateUser', async (req, res) => {
+        try {const user = await User.findOne({ 'local.email': req.body.email }).lean();
+            console.log('/UpdateUser found', user)
+          const updatedUser = await User.updateOne(user._id, { 'local.name': req.body.name, 'local.surname': req.body.surname }).lean()
+          console.log('/UpdateUser updated', updatedUser)
+              res.json({ data: updatedUser, message: 'User updated!' })
+        } catch(e) {
+            console.log(e)
+            res.send(e)
+        }
+    });
 
-        User.findOne({ 'local.email': req.body.email }, function(err, user) {
-                if (err) {
-                    console.log(req);
-                    console.log(res.status);
-                    // return done(err);
-                } else if (user) {
-                    console.log(req.body);
-                    user.update({ 'local.name': req.body.name, 'local.surname': req.body.surname },
-                        function(err) {
-                            if (err)
-                                console.log('error')
-                            else
-                                console.log('success')
-                            res.json({ message: 'User updated!' })
-                        });
+          // , function(err, user) {
+          //       if (err) {
+          //           console.log(req);
+          //           console.log(res.status);
+          //           // return done(err);
+          //       } else if (user) {
+          //           console.log(req.body);
+          //           user.update({ local: {name': req.body.name', surname: req.body.surname }},
+          //               function(err) {
+          //                   if (err)
+          //                       console.log('error')
+          //                   else
+          //                       console.log('success')
+          //                   res.json({ message: 'User updated!' })
+          //               });
                     // user.local.email = req.body.email;
                     // user.local.name = req.body.name;
                     // user.local.surname = req.body.surname;
@@ -132,8 +133,8 @@ module.exports = (app, passport) => {
                     // user.local.occupation = req.body.occupation;
                     // user.local.interests = req.body.interests;
                     // user.local.music = req.body.music;
-                }
-            }
+                // }
+            // }
 
 
             // User.findById(req.params.bear_id, function(err, bear) {
@@ -159,8 +160,8 @@ module.exports = (app, passport) => {
             // });
             // });
 
-        )
-    });
+        // )
+
 
 
     app.post('/CreateVehicle', (req, res) => {

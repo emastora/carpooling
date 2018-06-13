@@ -73,7 +73,7 @@ function onSendMesage() {
 }
 
 
-/** 
+/**
  * @return - simple JSON result, eg {"result":"success","oid":"dsadada...das.dsa"} or error http code
  */
 function sendMessage(data, callback) {
@@ -352,7 +352,7 @@ function loadMessagesList() {
                 '<ons-col>' +
                 '</ons-row>' +
                 '</ons-list-item>';
-            //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);                                                
+            //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
             var elm = $(list_element);
             elm.appendTo($("#messages_list")); // Insert to the DOM first
             ons.compile(elm[0]); // The argument must be a HTMLElement object
@@ -441,7 +441,7 @@ function loadMessageVal() {
                     '</ons-col>' +
                     '</ons-row>' +
                     '</ons-list-item>';
-                //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);                                                
+                //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
                 var elm = $(list_element);
                 elm.appendTo($("#messages")); // Insert to the DOM first
                 ons.compile(elm[0]); // The argument must be a HTMLElement object
@@ -465,7 +465,7 @@ function loadMessageVal() {
                     '</ons-col>' +
                     '</ons-row>' +
                     '</ons-list-item>';
-                //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);                                                
+                //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
                 var elm = $(list_element);
                 elm.appendTo($("#messages")); // Insert to the DOM first
                 ons.compile(elm[0]); // The argument must be a HTMLElement object
@@ -776,9 +776,9 @@ function updateJourneyInf(oid, acceptedPassengers, pendingPassengers, rejectedPa
         /*var data={"access_token":window.localStorage.getItem("token"),
                     "collection":"journeys",
                     "id":oid,
-                    "object":journey1        
+                    "object":journey1
                 };
-            
+
         //updateCollection(data);
         updateCollection(data,function(r){
             if(debug){
@@ -819,9 +819,9 @@ function updateAcceptedJourneyInf(oid, acceptedPassengers, pendingPassengers, re
         /*var data={"access_token":window.localStorage.getItem("token"),
                     "collection":"journeys",
                     "id":oid,
-                    "object":journey1        
+                    "object":journey1
                 };
-            
+
         //updateCollection(data);
         updateCollection(data,function(r){
             if(debug){
@@ -836,7 +836,7 @@ function updateAcceptedJourneyInf(oid, acceptedPassengers, pendingPassengers, re
 }
 
 
-function loadPersonalInf() {
+async function loadPersonalInf() {
     //document.getElementById("userVehicle").innerHTML = window.localStorage.getItem("vehicle.brand")+" "+window.localStorage.getItem("vehicle.model");
     document.getElementById("user_email").innerHTML = window.localStorage.getItem("email");
 
@@ -881,20 +881,21 @@ function loadPersonalInf() {
     //     .catch(function(error) {
     //         console.log(error);
     //     });
-
-    axios.get('/GetUser', {
-            params: {
-                Iden: '5b1eb9d34a9d81319882e36c'
-            }
-        })
-        .then(function(response) {
-            var Adios = response.data;
-            console.log(Adios);
-            console.log(response);
-        })
-        .catch(function(error) {
-            console.log(error);
-        });
+    let user = {}
+    try {
+        console.log({params: {email: EmailSession}})
+      res = await axios.get('/GetUser', {
+        params: {
+          // Iden: '5b1eb9d34a9d81319882e36c',
+          email: EmailSession
+        }
+      })
+      console.log(res);
+      user = res.data
+      console.log(user);
+    } catch(e) {
+        console.log(e)
+    }
 
 
     if (window.localStorage.getItem("person.imagePath")) {
@@ -1614,7 +1615,7 @@ function loadAcceptedJourneyVal() {
                 '<ons-col>' +
                 '</ons-row>' +
                 '</ons-list-item>';
-            //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);                                                
+            //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
             var elm = $(list_element);
             elm.appendTo($("#journeys_list_driver")); // Insert to the DOM first
             ons.compile(elm[0]); // The argument must be a HTMLElement object
@@ -1642,7 +1643,7 @@ function loadAcceptedJourneyVal() {
                     '<ons-col>' +
                     '</ons-row>' +
                     '</ons-list-item>';
-                //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);                                                
+                //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
                 var elm = $(list_element);
                 elm.appendTo($("#journeys_list_vehicle")); // Insert to the DOM first
                 ons.compile(elm[0]); // The argument must be a HTMLElement object
@@ -1673,7 +1674,7 @@ function loadAcceptedJourneyVal() {
                             '<ons-col>' +
                             '</ons-row>' +
                             '</ons-list-item>';
-                        //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);                                                
+                        //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
                         var elm = $(list_element);
                         elm.appendTo($("#journeys_list_accepted")); // Insert to the DOM first
                         ons.compile(elm[0]); // The argument must be a HTMLElement object
@@ -1829,7 +1830,7 @@ function loadMatchingJourneyVal() {
                 '<ons-col>' +
                 '</ons-row>' +
                 '</ons-list-item>';
-            //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);                                                
+            //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
             var elm = $(list_element);
             elm.appendTo($("#journeys_list_driver_m")); // Insert to the DOM first
             ons.compile(elm[0]); // The argument must be a HTMLElement object
@@ -1858,7 +1859,7 @@ function loadMatchingJourneyVal() {
                     '<ons-col>' +
                     '</ons-row>' +
                     '</ons-list-item>';
-                //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);                                                
+                //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
                 var elm = $(list_element);
                 elm.appendTo($("#journeys_list_vehicle_m")); // Insert to the DOM first
                 ons.compile(elm[0]); // The argument must be a HTMLElement object
@@ -1890,7 +1891,7 @@ function loadMatchingJourneyVal() {
                                 '<ons-col>' +
                                 '</ons-row>' +
                                 '</ons-list-item>';
-                            //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);                                                
+                            //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
                             var elm = $(list_element);
                             elm.appendTo($("#journeys_list_accepted_m")); // Insert to the DOM first
                             ons.compile(elm[0]); // The argument must be a HTMLElement object
@@ -1941,9 +1942,9 @@ function checkIfAccepted(obj, key, i) {
             /*var data={"access_token":window.localStorage.getItem("token"),
                         "collection":"journeys",
                         "id":i,
-                        "object":journey1        
+                        "object":journey1
                     };
-                
+
             //updateCollection(data);
             updateCollection(data,function(r){
                 if(debug){
@@ -2406,7 +2407,7 @@ function loadJourneyVal() {
                 '<ons-col>' +
                 '</ons-row>' +
                 '</ons-list-item>';
-            //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);                                                
+            //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
             var elm = $(list_element);
             elm.appendTo($("#driver_list")); // Insert to the DOM first
             ons.compile(elm[0]); // The argument must be a HTMLElement object
@@ -2423,7 +2424,7 @@ function loadJourneyVal() {
             '<ons-col>' +
             '</ons-row>' +
             '</ons-list-item>';
-        //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);                                                
+        //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
         var elm = $(list_element);
         elm.appendTo($("#driver_list")); // Insert to the DOM first
         ons.compile(elm[0]); // The argument must be a HTMLElement object
@@ -2454,7 +2455,7 @@ function loadJourneyVal() {
                     '<ons-col>' +
                     '</ons-row>' +
                     '</ons-list-item>';
-                //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);                                                
+                //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
                 var elm = $(list_element);
                 elm.appendTo($("#journeys_list_vehicle")); // Insert to the DOM first
                 ons.compile(elm[0]); // The argument must be a HTMLElement object
@@ -2472,7 +2473,7 @@ function loadJourneyVal() {
                 '<ons-col>' +
                 '</ons-row>' +
                 '</ons-list-item>';
-            //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);                                                
+            //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
             var elm = $(list_element);
             elm.appendTo($("#journeys_list_vehicle")); // Insert to the DOM first
             ons.compile(elm[0]); // The argument must be a HTMLElement object
@@ -2506,7 +2507,7 @@ function loadJourneyVal() {
                                 '<ons-col>' +
                                 '</ons-row>' +
                                 '</ons-list-item>';
-                            //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);                                                
+                            //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
                             var elm = $(list_element);
                             elm.appendTo($("#journeys_list_accepted")); // Insert to the DOM first
                             ons.compile(elm[0]); // The argument must be a HTMLElement object
@@ -2550,7 +2551,7 @@ function loadJourneyVal() {
                             '<ons-col>' +
                             '</ons-row>' +
                             '</ons-list-item>';
-                        //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);                                                
+                        //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
                         var elm = $(list_element);
                         elm.appendTo($("#journeys_list_pending")); // Insert to the DOM first
                         ons.compile(elm[0]); // The argument must be a HTMLElement object
@@ -3326,7 +3327,7 @@ function createJourney() {
                                         }
                                         break;
                                     case 1:
-                                        // IF no date or past dateinserted                                        
+                                        // IF no date or past dateinserted
                                         var d1 = new Date(document.getElementById("scheduleD").value + "T" + document.getElementById("scheduleT").value + "Z");
                                         d1.setHours(d1.getHours() + d1.getTimezoneOffset() / 60);
                                         var d2 = new Date();
