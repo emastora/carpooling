@@ -82,7 +82,6 @@ module.exports = (app, passport) => {
     //             console.log("brika user blaks");
     //             // console.log(res);
     //             // console.log(res.body);
-    //             // console.log(res.json.User.local);
     //         } else
     //             console.log("Paparia")
     //     });
@@ -91,6 +90,7 @@ module.exports = (app, passport) => {
     app.get('/GetUser', (req, res) => {
         // req.logout();
         // res.redirect('/');
+        console.log(req.params);
 
         User.findById(req.params.Iden, function(err, user) {
             if (err) {

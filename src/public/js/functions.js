@@ -885,7 +885,7 @@ function loadPersonalInf() {
     axios.get('/GetUser', {
             params: {
                 Iden: '5b1eb9d34a9d81319882e36c'
-            },
+            }
         })
         .then(function(response) {
             var Adios = response.data;
