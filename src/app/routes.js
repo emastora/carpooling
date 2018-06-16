@@ -88,79 +88,80 @@ module.exports = (app, passport) => {
     //     });
     // });
 
-    app.get('/GetUser', async (req, res) => {
+    app.get('/GetUser', async(req, res) => {
         try {
-          const user = await User.findOne({ 'local.email': req.query.email }).lean()
-          console.log('/GetUser', user)
-          res.json(user);
-        } catch(e) {
+            const user = await User.findOne({ 'local.email': req.query.email }).lean()
+            console.log('/GetUser', user)
+            res.json(user);
+        } catch (e) {
             console.log(e)
             res.send(e)
         }
     });
 
-    app.post('/UpdateUser', async (req, res) => {
-        try {const user = await User.findOne({ 'local.email': req.body.email }).lean();
+    app.post('/UpdateUser', async(req, res) => {
+        try {
+            const user = await User.findOne({ 'local.email': req.body.email }).lean();
             console.log('/UpdateUser found', user)
-          const updatedUser = await User.updateOne(user._id, { 'local.name': req.body.name, 'local.surname': req.body.surname }).lean()
-          console.log('/UpdateUser updated', updatedUser)
-              res.json({ data: updatedUser, message: 'User updated!' })
-        } catch(e) {
+            const updatedUser = await User.updateOne({ 'local.name': req.body.name, 'local.surname': req.body.surname }).lean()
+            console.log('/UpdateUser updated', updatedUser)
+            res.json({ data: updatedUser, message: 'User updated!' })
+        } catch (e) {
             console.log(e)
             res.send(e)
         }
     });
 
-          // , function(err, user) {
-          //       if (err) {
-          //           console.log(req);
-          //           console.log(res.status);
-          //           // return done(err);
-          //       } else if (user) {
-          //           console.log(req.body);
-          //           user.update({ local: {name': req.body.name', surname: req.body.surname }},
-          //               function(err) {
-          //                   if (err)
-          //                       console.log('error')
-          //                   else
-          //                       console.log('success')
-          //                   res.json({ message: 'User updated!' })
-          //               });
-                    // user.local.email = req.body.email;
-                    // user.local.name = req.body.name;
-                    // user.local.surname = req.body.surname;
-                    // user.local.birthdate = req.body.birthdate;
-                    // user.local.occupation = req.body.occupation;
-                    // user.local.interests = req.body.interests;
-                    // user.local.music = req.body.music;
-                // }
-            // }
+    // , function(err, user) {
+    //       if (err) {
+    //           console.log(req);
+    //           console.log(res.status);
+    //           // return done(err);
+    //       } else if (user) {
+    //           console.log(req.body);
+    //           user.update({ local: {name': req.body.name', surname: req.body.surname }},
+    //               function(err) {
+    //                   if (err)
+    //                       console.log('error')
+    //                   else
+    //                       console.log('success')
+    //                   res.json({ message: 'User updated!' })
+    //               });
+    // user.local.email = req.body.email;
+    // user.local.name = req.body.name;
+    // user.local.surname = req.body.surname;
+    // user.local.birthdate = req.body.birthdate;
+    // user.local.occupation = req.body.occupation;
+    // user.local.interests = req.body.interests;
+    // user.local.music = req.body.music;
+    // }
+    // }
 
 
-            // User.findById(req.params.bear_id, function(err, bear) {
-            //     if (err)
-            //         res.send(err);
-            //     res.json(bear);
-            // });
+    // User.findById(req.params.bear_id, function(err, bear) {
+    //     if (err)
+    //         res.send(err);
+    //     res.json(bear);
+    // });
 
-            // var newUser2 = new User();
-            // console.log(req.body);
-            // newUser2.local.name = req.body.firstName;
-            // newUser2.local.surname = req.body.lastName;
+    // var newUser2 = new User();
+    // console.log(req.body);
+    // newUser2.local.name = req.body.firstName;
+    // newUser2.local.surname = req.body.lastName;
 
-            //     var newUser2 = new User();
-            //     console.log(req.body);
-            //     newUser2.local.name = req.body.name;
+    //     var newUser2 = new User();
+    //     console.log(req.body);
+    //     newUser2.local.name = req.body.name;
 
-            // user.save(function(err) {
-            //     if (err) {
-            //         throw err;
-            //     }
-            //     res.json({ message: 'User updated!' });
-            // });
-            // });
+    // user.save(function(err) {
+    //     if (err) {
+    //         throw err;
+    //     }
+    //     res.json({ message: 'User updated!' });
+    // });
+    // });
 
-        // )
+    // )
 
 
 

@@ -838,22 +838,6 @@ function updateAcceptedJourneyInf(oid, acceptedPassengers, pendingPassengers, re
 
 async function loadPersonalInf() {
     //document.getElementById("userVehicle").innerHTML = window.localStorage.getItem("vehicle.brand")+" "+window.localStorage.getItem("vehicle.model");
-    document.getElementById("user_email").innerHTML = window.localStorage.getItem("email");
-
-    document.getElementById("name").innerHTML = window.localStorage.getItem("person.name");
-
-    document.getElementById("surname").innerHTML = window.localStorage.getItem("person.surname");
-
-    document.getElementById("birthDate").innerHTML = window.localStorage.getItem("person.birthDate");
-
-    document.getElementById("occupation").innerHTML = window.localStorage.getItem("person.occupation");
-
-    document.getElementById("interests").value = window.localStorage.getItem("person.interests");
-
-    document.getElementById("music").innerHTML = window.localStorage.getItem("person.music");
-
-    document.getElementById("smoker").innerHTML = window.localStorage.getItem("person.smoker");
-
     var EmailSession = window.localStorage.getItem("Email Session");
     console.log(EmailSession);
 
@@ -883,19 +867,50 @@ async function loadPersonalInf() {
     //     });
     let user = {}
     try {
-        console.log({params: {email: EmailSession}})
-      res = await axios.get('/GetUser', {
-        params: {
-          // Iden: '5b1eb9d34a9d81319882e36c',
-          email: EmailSession
-        }
-      })
-      console.log(res);
-      user = res.data
-      console.log(user);
-    } catch(e) {
+        console.log({ params: { email: EmailSession } })
+        res = await axios.get('/GetUser', {
+            params: {
+                email: EmailSession
+            }
+        })
+        console.log(res);
+        user = res.data
+        console.log(user);
+    } catch (e) {
         console.log(e)
     }
+    // document.getElementById("name").innerHTML = window.localStorage.getItem("person.name");
+
+    document.getElementById("name").innerHTML = user.local.name;
+
+    // document.getElementById("surname").innerHTML = window.localStorage.getItem("person.surname");
+
+    document.getElementById("surname").innerHTML = user.local.surname;
+
+    // document.getElementById("user_email").innerHTML = window.localStorage.getItem("email");
+
+    document.getElementById("email4").innerHTML = user.local.email;
+
+    // document.getElementById("birthDate").innerHTML = window.localStorage.getItem("person.birthDate");
+
+    document.getElementById("birthDate").innerHTML = user.local.birthDate;
+
+    // document.getElementById("occupation").innerHTML = window.localStorage.getItem("person.occupation");
+
+    document.getElementById("occupation").innerHTML = user.local.occupation;
+
+    // document.getElementById("interests").value = window.localStorage.getItem("person.interests");
+
+    document.getElementById("interests").innerHTML = user.local.interests;
+
+    // document.getElementById("music").innerHTML = window.localStorage.getItem("person.music");
+
+    document.getElementById("music").innerHTML = user.local.music;
+
+    // document.getElementById("smoker").innerHTML = window.localStorage.getItem("person.smoker");
+
+    document.getElementById("smoker").innerHTML = user.local.smoker;
+
 
 
     if (window.localStorage.getItem("person.imagePath")) {
