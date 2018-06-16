@@ -1142,38 +1142,31 @@ function loadPersonalInfVal() {
 //     }
 // }
 
-function loadVehiclesList() {
-    // var veh = JSON.parse(window.localStorage.getItem("vehicles"));
-    var veh = JSON.parse(window.localStorage.getItem("vehicles"));
+async function loadVehiclesList() {
 
-    console.log("Veh variable is" + veh);
-    console.log("Veh Brand is" + veh.brand);
+    var EmailSession = window.localStorage.getItem("Email Session");
+    console.log(EmailSession);
 
-    // if (veh) {
-    //     // Clear vehicles_list
-    //     var elm = $("#vehicles_list");
-    //     elm.empty();
-    //     ons.compile(elm[0]);
+    let car = {}
+    try {
+        console.log({ params: { email: EmailSession } })
+        res = await axios.get('/GetVehicle', {
+            params: {
+                email: EmailSession
+            }
+        })
+        console.log(res);
+        car = res.data
+        console.log(car);
+    } catch (e) {
+        console.log(e)
+    }
 
-    //     for (var i in veh) {
-    //         if (veh.hasOwnProperty(i)) {
-    //             if (veh[i]) {
-    //                 //vehicle_picture
-    //                 var pic = null;
-    //                 if (veh[i].imagePath) {
-    //                     pic = veh[i].imagePath;
-    //                 } else {
-    //                     pic = "images/vehicle.png";
-    //                 }
-
-    //                 var brand = veh[i].brand;
-    //                 var model = veh[i].model;
-    //                 var licencePlate = veh[i].licencePlate;
-    if (veh.brand != undefined) {
+    if (car.local.brand != undefined) {
         var pic = "images/vehicle.png";
-        var brand = veh.brand;
-        var model = veh.model;
-        var licencePlate = veh.licencePlate;
+        var brand = car.local.brand;
+        var model = car.local.model;
+        var licencePlate = car.local.licencePlate;
         var i = 0;
 
         var list_element = '<ons-list-item modifier="chevron" class="vehicles_list" onClick="myNavigator.pushPage(&#39;vehicle_inf.html&#39;, { animation : &#39;slide&#39; } );vehicleSelected(' + "'" + i + "'" + ');">' +

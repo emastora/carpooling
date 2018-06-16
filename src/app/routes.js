@@ -99,77 +99,74 @@ module.exports = (app, passport) => {
         }
     });
 
-    app.post('/UpdateUser', async(req, res) => {
+    // app.post('/UpdateUser', async(req, res) => {
+    //     try {
+    //         const user = await User.findOne({ 'local.email': req.body.email }).lean();
+    //         console.log('/UpdateUser found', user)
+    //         user = await User.update({ 'local.name': req.body.name, 'local.surname': req.body.surname }).lean()
+    //         console.log('/UpdateUser updated', user)
+    //         res.json({ data: user, message: 'User updated!' })
+    //     } catch (e) {
+    //         console.log(e)
+    //         res.send(e)
+    //     }
+    // });
+
+    app.post('/UpdateUser', (req, res) => {
+
+        User.findOne({ 'local.email': req.body.email }, function(err, user) {
+            if (err) {
+                console.log(req);
+                console.log(res.status);
+                // return done(err);
+            } else if (user) {
+                console.log(req.body);
+                user.update({
+                        'local.name': req.body.name,
+                        'local.surname': req.body.surname,
+                        'user.local.birthdate': req.body.birthdate,
+                        'user.local.occupation': req.body.occupation,
+                        'user.local.interests': req.body.interests,
+                        'user.local.music': req.body.music,
+                        'user.local.smoker': req.body.smoker
+                    },
+
+                    function(err) {
+                        if (err)
+                            console.log('error')
+                        else
+                            console.log('success')
+                        res.json({ message: 'User updated!' })
+                    });
+            }
+        })
+    });
+
+    app.get('/GetVehicle', async(req, res) => {
         try {
-            const user = await User.findOne({ 'local.email': req.body.email }).lean();
-            console.log('/UpdateUser found', user)
-            user = await User.update({ 'local.name': req.body.name, 'local.surname': req.body.surname }).lean()
-            console.log('/UpdateUser updated', user)
-            res.json({ data: user, message: 'User updated!' })
+            const car = await Car.findOne({ 'local.owner': req.query.email }).lean()
+            console.log('/GetCar', car)
+            res.json(car);
         } catch (e) {
             console.log(e)
             res.send(e)
         }
     });
 
-    // , function(err, user) {
-    //       if (err) {
-    //           console.log(req);
-    //           console.log(res.status);
-    //           // return done(err);
-    //       } else if (user) {
-    //           console.log(req.body);
-    //           user.update({ local: {name': req.body.name', surname: req.body.surname }},
-    //               function(err) {
-    //                   if (err)
-    //                       console.log('error')
-    //                   else
-    //                       console.log('success')
-    //                   res.json({ message: 'User updated!' })
-    //               });
-    // user.local.email = req.body.email;
-    // user.local.name = req.body.name;
-    // user.local.surname = req.body.surname;
-    // user.local.birthdate = req.body.birthdate;
-    // user.local.occupation = req.body.occupation;
-    // user.local.interests = req.body.interests;
-    // user.local.music = req.body.music;
-    // }
-    // }
-
-
-    // User.findById(req.params.bear_id, function(err, bear) {
-    //     if (err)
-    //         res.send(err);
-    //     res.json(bear);
-    // });
-
-    // var newUser2 = new User();
-    // console.log(req.body);
-    // newUser2.local.name = req.body.firstName;
-    // newUser2.local.surname = req.body.lastName;
-
-    //     var newUser2 = new User();
-    //     console.log(req.body);
-    //     newUser2.local.name = req.body.name;
-
-    // user.save(function(err) {
-    //     if (err) {
-    //         throw err;
-    //     }
-    //     res.json({ message: 'User updated!' });
-    // });
-    // });
-
-    // )
-
-
-
     app.post('/CreateVehicle', (req, res) => {
 
         var newVehicle2 = new Car();
         console.log(req.body);
+        newVehicle2.local.owner = req.body.owner;
         newVehicle2.local.brand = req.body.brand;
+        newVehicle2.local.model = req.body.model;
+        newVehicle2.local.seats = req.body.seats;
+        newVehicle2.local.color = req.body.color;
+        newVehicle2.local.licencePlate = req.body.licencePlate;
+        newVehicle2.local.year = req.body.year;
+        newVehicle2.local.cc = req.body.cc;
+        newVehicle2.local.aircondition = req.body.aircondition;
+        newVehicle2.local.petsAllowed = req.body.petsAllowed;
 
         newVehicle2.save(function(err) {
             if (err) {
@@ -178,6 +175,36 @@ module.exports = (app, passport) => {
             res.json({ message: 'Vehicle created!' });
         });
 
+    });
+
+    app.post('/UpdateVehicle', (req, res) => {
+
+        Car.findOne({ 'local.ownver': req.body.owner }, function(err, car) {
+            if (err) {
+                console.log(req);
+                console.log(res.status);
+                // return done(err);
+            } else if (car) {
+                console.log(req.body);
+                car.update({
+                        'local.name': req.body.name,
+                        'local.surname': req.body.surname,
+                        'local.birthdate': req.body.birthdate,
+                        'local.occupation': req.body.occupation,
+                        'local.interests': req.body.interests,
+                        'local.music': req.body.music,
+                        'local.smoker': req.body.smoker
+                    },
+
+                    function(err) {
+                        if (err)
+                            console.log('error')
+                        else
+                            console.log('success')
+                        res.json({ message: 'Car updated!' })
+                    });
+            }
+        })
     });
 
 };

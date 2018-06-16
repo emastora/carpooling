@@ -106,9 +106,9 @@ person.prototype.setTrustLevel = function(tl) {
 };
 
 // vehicle constructor
-function vehicle(brand, model, seats, color, licencePlate, year, cc, aircondition, petsAllowed) {
+function vehicle(owner, brand, model, seats, color, licencePlate, year, cc, aircondition, petsAllowed) {
     // this.oid = oid;
-    // this.owner = owner;
+    this.owner = owner;
     this.brand = brand;
     this.model = model;
     this.seats = seats;

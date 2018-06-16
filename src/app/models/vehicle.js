@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const vehicleSchema = new mongoose.Schema({
     local: {
+        owner: String,
         brand: String,
         model: String,
         seats: String,

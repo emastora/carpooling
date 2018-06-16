@@ -14,7 +14,6 @@ function savePersonalInf() {
     surname = document.getElementById('surname2').value;
     var EmailSession = window.localStorage.getItem("Email Session");
     email = EmailSession;
-    // email = document.getElementById('email2').value;
     birthDate = document.getElementById('birthDate2').value;
     occupation = document.getElementById('occupation2').value;
     interests = document.getElementById('interests2').value;
@@ -53,48 +52,13 @@ function savePersonalInf() {
     //         "object": person1
     //     };
 
-    // var axios = require('axios');
-    // Performing a POST request
-    // axios.post('http://localhost:3000/profile3', { firstName: 'Marlon', lastName: 'Bernardes' })
-    //     .then(function(response) {
-    //         console.log(response.status),
-    //             console.log('saved successfully')
-    //     });
-
-    //VALID REQUEST
-
-    // axios.post('/UpdateUser', {
-    //         firstName: 'Marlon',
-    //         lastName: 'Bernardes'
-    //     })
-    //     .then(function(response) {
-    //         console.log(response.data.message)
-    //         console.log(response.status),
-    //             console.log('saved successfully')
-    //     });
 
     if (name && surname && birthDate && occupation && interests && music) {
         var person2 = new person(name, surname, email, birthDate, occupation, interests, music, smoker);
 
-        // window.localStorage.setItem("person.name", name);
-        // window.localStorage.setItem("person.surname", surname);
-        // window.localStorage.setItem("person.email", email);
-        // window.localStorage.setItem("person.birthDate", birthDate);
-        // window.localStorage.setItem("person.occupation", occupation);
-        // window.localStorage.setItem("person.interests", interests);
-        // window.localStorage.setItem("person.music", music);
-        // window.localStorage.setItem("person.imagePath", imagePath); //window.localStorage.setItem("person.imagePath", imagePath);
-        // window.localStorage.setItem("person.smoker", smoker);
-
         console.log(person2);
 
-        axios.post('/UpdateUser', person2
-                // {
-                // headers: {
-                //     'email': 'person2.email'
-                // }   
-                // }
-            )
+        axios.post('/UpdateUser', person2)
             .then(function(response) {
                 console.log(response.data.message)
                 console.log(response.status),
@@ -144,6 +108,9 @@ function saveVehicleInf() {
         vehicles = v;
     }
 
+    var EmailSession = window.localStorage.getItem("Email Session");
+    console.log(EmailSession);
+    owner = EmailSession;
     brand = document.getElementById('brand').value;
     model = document.getElementById('model').value;
     seats = document.getElementById('seats').value;
@@ -179,8 +146,8 @@ function saveVehicleInf() {
     //         "object": vehicle1
     //     };
 
-    if (brand && model && seats && color && licencePlate && year && cc) {
-        var vehicle2 = new vehicle(brand, model, seats, color, licencePlate, year, cc, aircondition, petsAllowed);
+    if (owner && brand && model && seats && color && licencePlate && year && cc) {
+        var vehicle2 = new vehicle(owner, brand, model, seats, color, licencePlate, year, cc, aircondition, petsAllowed);
 
 
         // //console.log(vehicleOid);    
@@ -204,17 +171,6 @@ function saveVehicleInf() {
 
         window.localStorage.setItem("vehicles", JSON.stringify(vehicle2));
         console.log(vehicle2);
-
-        // window.localStorage.setItem("vehicle.brand", brand);
-        // window.localStorage.setItem("vehicle.model", model);
-        // window.localStorage.setItem("vehicle.seats", seats);
-        // window.localStorage.setItem("vehicle.color", color);
-        // window.localStorage.setItem("vehicle.licencePlate", licencePlate);
-        // window.localStorage.setItem("vehicle.year", year);
-        // window.localStorage.setItem("vehicle.cc", cc);
-        // window.localStorage.setItem("vehicle.aircondition", aircondition);
-        // window.localStorage.setItem("vehicle.petsAllowed", petsAllowed);
-
 
         axios.post('/CreateVehicle', vehicle2)
             .then(function(response) {
