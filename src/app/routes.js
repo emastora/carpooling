@@ -103,9 +103,9 @@ module.exports = (app, passport) => {
         try {
             const user = await User.findOne({ 'local.email': req.body.email }).lean();
             console.log('/UpdateUser found', user)
-            const updatedUser = await User.updateOne({ 'local.name': req.body.name, 'local.surname': req.body.surname }).lean()
-            console.log('/UpdateUser updated', updatedUser)
-            res.json({ data: updatedUser, message: 'User updated!' })
+            user = await User.update({ 'local.name': req.body.name, 'local.surname': req.body.surname }).lean()
+            console.log('/UpdateUser updated', user)
+            res.json({ data: user, message: 'User updated!' })
         } catch (e) {
             console.log(e)
             res.send(e)
