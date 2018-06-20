@@ -42,6 +42,11 @@
             <b style="color: #5198db">&nbsp; Social</b>
         </ons-list-item>
 
+        <ons-list-item>
+            <fb:login-button scope="public_profile,email,user_friends" onlogin="checkLoginState();">
+            </fb:login-button>
+        </ons-list-item>
+
         <ons-list-item modifier="tappable" class="list__item__line-height" onclick="app.slidingMenu.setMainPage('my_messages.html', {closeMenu: true})">
             <i class="fa fa-envelope fa-lg" style="color: #666"></i> &nbsp; Messages
 

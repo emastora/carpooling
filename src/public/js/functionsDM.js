@@ -211,41 +211,156 @@ function saveVehicleInf() {
     }
 }
 
+function saveVehicleInf2() {
+    // var v = JSON.parse(window.localStorage.getItem("vehicles"));
+    // if (v) {
+    //     vehicles = v;
+    // }
 
-//called at vechicle_inf.html
-function loadVehicleInf() {
+    var EmailSession = window.localStorage.getItem("Email Session");
+    console.log(EmailSession);
+    owner = EmailSession;
+    brand = document.getElementById('brand').value;
+    model = document.getElementById('model').value;
+    seats = document.getElementById('seats').value;
+    color = document.getElementById('color').value;
+    licencePlate = document.getElementById('licencePlate').value;
+    year = document.getElementById('year').value;
+    cc = document.getElementById('cc').value;
+    var vehicleImage = document.getElementById('vehicle_picture');
+    // imagePath = vehicleImage.src;
+    // vehicleOid = selectedVehicle;
 
-    var v = window.localStorage.getItem("vehicles");
-    var ve = JSON.parse(v);
 
-    if (ve) {
-        vehicles = ve;
+    if (document.getElementById('aircondition').checked) {
+        aircondition = "Yes";
     } else {
-        loadUsersVehicles(function(data) {
-            var ve = JSON.parse(data);
-            vehicles = ve;
-            window.localStorage.setItem("vehicles", JSON.stringify(vehicles));
+        aircondition = "No";
+    }
+
+    if (document.getElementById('petsAllowed').checked) {
+        petsAllowed = "Yes";
+    } else {
+        petsAllowed = "No";
+    }
+
+
+    if (owner && brand && model && seats && color && licencePlate && year && cc) {
+        var vehicle2 = new vehicle(owner, brand, model, seats, color, licencePlate, year, cc, aircondition, petsAllowed);
+
+        // window.localStorage.setItem("vehicles", JSON.stringify(vehicle2));
+        // console.log(vehicle2);
+
+        axios.post('/UpdateVehicle', vehicle2)
+            .then(function(response) {
+                console.log(response.data.message)
+                console.log(response.status),
+                    console.log('saved successfully')
+            });
+
+
+        ons.notification.alert({
+            message: 'Vehicle Information Updated',
+            // or messageHTML: '<div>Message in HTML</div>',
+            title: 'Success',
+            buttonLabel: 'OK',
+            animation: 'default', // or 'none'
+            // modifier: 'optional-modifier'
+            callback: function() {
+                // Alert button is closed!
+                if (myNavigator.getCurrentPage().name == "new_vehicle.html") {
+                    myNavigator.popPage("new_vehicle.html", { onTransitionEnd: loadVehiclesList() });
+                } else if (myNavigator.getCurrentPage().name == "edit_vehicle.html") {
+                    myNavigator.popPage("edit_vehicle.html", { onTransitionEnd: loadVehicleInf() });
+                }
+            }
+        });
+    } else {
+        ons.notification.alert({
+            message: 'Please fill in all fields',
+            // or messageHTML: '<div>Message in HTML</div>',
+            title: 'Fields Missing',
+            buttonLabel: 'OK',
+            animation: 'default', // or 'none'
+            // modifier: 'optional-modifier'
+            callback: function() {
+                // Alert button is closed!
+            }
         });
     }
+}
 
-    var veh = vehicles[selectedVehicle];
+//called at vechicle_inf.html
+async function loadVehicleInf() {
 
-    document.getElementById("vehicle_email2").innerHTML = window.localStorage.getItem("email");
-    document.getElementById("brand2").innerHTML = veh.brand;
-    document.getElementById("model2").innerHTML = veh.model;
-    document.getElementById("seats2").innerHTML = veh.seats;
-    document.getElementById("color2").innerHTML = veh.color;
-    document.getElementById("licencePlate2").innerHTML = veh.licencePlate;
-    document.getElementById("year2").innerHTML = veh.year;
-    document.getElementById("cc2").innerHTML = veh.cc;
-    document.getElementById("aircondition2").innerHTML = veh.aircondition;
-    document.getElementById("petsAllowed2").innerHTML = veh.petsAllowed;
+    var EmailSession = window.localStorage.getItem("Email Session");
+    console.log(EmailSession);
 
-    if (veh.imagePath) {
-        document.getElementById('vehicle_picture2').src = veh.imagePath;
-    } else {
-        document.getElementById('vehicle_picture2').src = "images/vehicle.png";
+    let car = {}
+    try {
+        console.log({ params: { email: EmailSession } })
+        res = await axios.get('/GetVehicle', {
+            params: {
+                email: EmailSession
+            }
+        })
+        console.log(res);
+        car = res.data
+        console.log(car);
+    } catch (e) {
+        console.log(e)
     }
+
+    // document.getElementById("vehicle_email2").innerHTML = window.localStorage.getItem("email");
+    document.getElementById("brand2").innerHTML = car.local.brand;
+    document.getElementById("model2").innerHTML = car.local.model;
+    document.getElementById("seats2").innerHTML = car.local.seats;
+    document.getElementById("color2").innerHTML = car.local.color;
+    document.getElementById("licencePlate2").innerHTML = car.local.licencePlate;
+    document.getElementById("year2").innerHTML = car.local.year;
+    document.getElementById("cc2").innerHTML = car.local.cc;
+    document.getElementById("aircondition2").innerHTML = car.local.aircondition;
+    document.getElementById("petsAllowed2").innerHTML = car.local.petsAllowed;
+
+    // if (veh.imagePath) {
+    //     document.getElementById('vehicle_picture2').src = veh.imagePath;
+    // } else {
+    //     document.getElementById('vehicle_picture2').src = "images/vehicle.png";
+    // }
+
+    // Old function
+
+    // var v = window.localStorage.getItem("vehicles");
+    // var ve = JSON.parse(v);
+
+    // if (ve) {
+    //     vehicles = ve;
+    // } else {
+    //     loadUsersVehicles(function(data) {
+    //         var ve = JSON.parse(data);
+    //         vehicles = ve;
+    //         window.localStorage.setItem("vehicles", JSON.stringify(vehicles));
+    //     });
+    // }
+
+    // var veh = vehicles[selectedVehicle];
+
+    // document.getElementById("vehicle_email2").innerHTML = window.localStorage.getItem("email");
+    // document.getElementById("brand2").innerHTML = veh.brand;
+    // document.getElementById("model2").innerHTML = veh.model;
+    // document.getElementById("seats2").innerHTML = veh.seats;
+    // document.getElementById("color2").innerHTML = veh.color;
+    // document.getElementById("licencePlate2").innerHTML = veh.licencePlate;
+    // document.getElementById("year2").innerHTML = veh.year;
+    // document.getElementById("cc2").innerHTML = veh.cc;
+    // document.getElementById("aircondition2").innerHTML = veh.aircondition;
+    // document.getElementById("petsAllowed2").innerHTML = veh.petsAllowed;
+
+    // if (veh.imagePath) {
+    //     document.getElementById('vehicle_picture2').src = veh.imagePath;
+    // } else {
+    //     document.getElementById('vehicle_picture2').src = "images/vehicle.png";
+    // }
 };
 
 
@@ -410,8 +525,12 @@ function logout() {
                 case 0:
                     break;
                 case 1:
-                    window.localStorage.clear();
-                    location.reload();
+                    // window.localStorage.clear();
+                    // location.reload();
+                    axios.get('/')
+                        .then(function(response) {
+                            console.log("User logged out successfully")
+                        });
                     break;
             }
         }

@@ -59,8 +59,8 @@ module.exports = (app, passport) => {
 
     // logout
     app.get('/logout', (req, res) => {
-        req.logout();
-        res.redirect('/');
+        // req.logout();
+        res.render('index.ejs');
     });
 
     // app.get('/map', (req, res) => {
@@ -179,7 +179,7 @@ module.exports = (app, passport) => {
 
     app.post('/UpdateVehicle', (req, res) => {
 
-        Car.findOne({ 'local.ownver': req.body.owner }, function(err, car) {
+        Car.findOne({ 'local.owner': req.body.owner }, function(err, car) {
             if (err) {
                 console.log(req);
                 console.log(res.status);
@@ -187,13 +187,13 @@ module.exports = (app, passport) => {
             } else if (car) {
                 console.log(req.body);
                 car.update({
-                        'local.name': req.body.name,
-                        'local.surname': req.body.surname,
-                        'local.birthdate': req.body.birthdate,
-                        'local.occupation': req.body.occupation,
-                        'local.interests': req.body.interests,
-                        'local.music': req.body.music,
-                        'local.smoker': req.body.smoker
+                        'local.brand': req.body.brand,
+                        'local.model': req.body.model,
+                        'local.seats': req.body.seats,
+                        'local.color': req.body.color,
+                        'local.licencePlate': req.body.licencePlate,
+                        'local.year': req.body.year,
+                        'local.cc': req.body.cc
                     },
 
                     function(err) {
