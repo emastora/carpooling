@@ -10,8 +10,8 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const axios = require('axios');
-require('./app/models/user')
-require('./app/models/vehicle')
+require('./app/models/user');
+require('./app/models/vehicle');
 
 const { url } = require('./config/database.js');
 
@@ -30,11 +30,13 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 // required for passport
-app.use(session({
+app.use(
+  session({
     secret: 'faztwebtutorialexample',
     resave: false,
     saveUninitialized: false
-}));
+  })
+);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -47,5 +49,5 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // start the server
 app.listen(app.get('port'), () => {
-    console.log('server on port ', app.get('port'));
+  console.log('server on port ', app.get('port'));
 });

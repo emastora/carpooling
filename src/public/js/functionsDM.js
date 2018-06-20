@@ -189,10 +189,10 @@ function saveVehicleInf() {
             // modifier: 'optional-modifier'
             callback: function() {
                 // Alert button is closed!
-                if (myNavigator.getCurrentPage().name == "new_vehicle.html") {
-                    myNavigator.popPage("new_vehicle.html", { onTransitionEnd: loadVehiclesList() });
-                } else if (myNavigator.getCurrentPage().name == "edit_vehicle.html") {
-                    myNavigator.popPage("edit_vehicle.html", { onTransitionEnd: loadVehicleInf() });
+                if (myNavigator.getCurrentPage().name == 'new_vehicle.html') {
+                    myNavigator.popPage('new_vehicle.html', { onTransitionEnd: loadVehiclesList() });
+                } else if (myNavigator.getCurrentPage().name == 'edit_vehicle.html') {
+                    myNavigator.popPage('edit_vehicle.html', { onTransitionEnd: loadVehicleInf() });
                 }
             }
         });
@@ -367,8 +367,7 @@ async function loadVehicleInf() {
 
 //called at edit_vehicke.html
 function loadVehicleInfVal() {
-
-    var v = window.localStorage.getItem("vehicles");
+    var v = window.localStorage.getItem('vehicles');
     var ve = JSON.parse(v);
     if (ve) {
         vehicles = ve;
@@ -376,14 +375,14 @@ function loadVehicleInfVal() {
 
     var veh = vehicles[selectedVehicle];
 
-    document.getElementById("vehicle_email").innerHTML = window.localStorage.getItem("email");
-    document.getElementById("brand").value = veh.brand;
-    document.getElementById("model").value = veh.model;
-    document.getElementById("seats").value = veh.seats;
-    document.getElementById("color").value = veh.color;
-    document.getElementById("licencePlate").value = veh.licencePlate;
-    document.getElementById("year").value = veh.year;
-    document.getElementById("cc").value = veh.cc;
+    document.getElementById('vehicle_email').innerHTML = window.localStorage.getItem('email');
+    document.getElementById('brand').value = veh.brand;
+    document.getElementById('model').value = veh.model;
+    document.getElementById('seats').value = veh.seats;
+    document.getElementById('color').value = veh.color;
+    document.getElementById('licencePlate').value = veh.licencePlate;
+    document.getElementById('year').value = veh.year;
+    document.getElementById('cc').value = veh.cc;
 
     if (veh.aircondition == 'Yes') {
         document.getElementById('aircondition').checked = true;
@@ -400,77 +399,87 @@ function loadVehicleInfVal() {
     if (veh.imagePath) {
         document.getElementById('vehicle_picture').src = veh.imagePath;
     } else {
-        document.getElementById('vehicle_picture').src = "images/vehicle.png";
+        document.getElementById('vehicle_picture').src = 'images/vehicle.png';
     }
 
-    if (selectedVehicle != "aaaaaaaaaaaaaaaaaaaaaaaa") {
+    if (selectedVehicle != 'aaaaaaaaaaaaaaaaaaaaaaaa') {
         if (veh['_id']['$id']) {
             var oid = veh['_id']['$id'];
-            document.getElementById("vechicle_oid").value = oid;
+            document.getElementById('vechicle_oid').value = oid;
         }
     }
-};
-
+}
 
 //==================API CALL FUNCTIONS==================//
-
 
 function login(email, password) {
     //if(validateEmail(email)){
     var emailHashed = Sha1.hash(email);
     var url_authentication = 'http://' + server + '/authentication';
     var JSONdata = '{"username":"' + email + '","password":"' + password + '"}';
-    var ajaxWorker_authentication = new Worker("js/ajax.js");
+    var ajaxWorker_authentication = new Worker('js/ajax.js');
     ajaxWorker_authentication.postMessage([url_authentication, JSONdata]);
 
     ajaxWorker_authentication.onmessage = function(e) {
         if (e.data == 401 || e.data == 500) {
-            alert("Login failure");
+            alert('Login failure');
         } else {
             obj = JSON.parse(e.data);
             key = obj.keys.key;
             secret = obj.keys.secret;
 
-            window.localStorage.setItem("email", email);
-            window.localStorage.setItem("keyS", key);
-            window.localStorage.setItem("secret", secret);
+            window.localStorage.setItem('email', email);
+            window.localStorage.setItem('keyS', key);
+            window.localStorage.setItem('secret', secret);
 
             //fix *undefineed* issues
-            var vals = ['name', 'birthDate', 'surname', 'occupation', 'interests', 'music', 'smoker', 'imagePath', 'trustLevel', 'role', 'project', 'credits'];
+            var vals = [
+                'name',
+                'birthDate',
+                'surname',
+                'occupation',
+                'interests',
+                'music',
+                'smoker',
+                'imagePath',
+                'trustLevel',
+                'role',
+                'project',
+                'credits'
+            ];
             for (var i in vals) {
                 if (!obj.user[vals[i]]) {
-                    obj.user[vals[i]] = "";
+                    obj.user[vals[i]] = '';
                 }
             }
 
             var vals2 = ['credits', 'project'];
             for (var i in vals2) {
-                if (typeof obj.user[vals2[i]] == "object") {
+                if (typeof obj.user[vals2[i]] == 'object') {
                     obj.user[vals2[i]] = JSON.stringify(obj.user[vals2[i]]);
                 }
             }
 
-            window.localStorage.setItem("password", Sha1.hash(password));
-            window.localStorage.setItem("person.oid", obj.user['_id']["$id"]);
-            window.localStorage.setItem("person.name", obj.user.name);
-            window.localStorage.setItem("person.birthDate", obj.user.birthDate);
-            window.localStorage.setItem("person.surname", obj.user.surname);
-            window.localStorage.setItem("person.occupation", obj.user.occupation);
-            window.localStorage.setItem("person.interests", obj.user.interests);
-            window.localStorage.setItem("person.music", obj.user.music);
-            window.localStorage.setItem("person.smoker", obj.user.smoker);
-            window.localStorage.setItem("person.imagePath", obj.user.imagePath);
-            window.localStorage.setItem("person.trustLevel", obj.user.trustLevel);
-            window.localStorage.setItem("person.role", obj.user.role);
-            window.localStorage.setItem("person.project", obj.user.project);
-            window.localStorage.setItem("person.credits", obj.user.credits);
+            window.localStorage.setItem('password', Sha1.hash(password));
+            window.localStorage.setItem('person.oid', obj.user['_id']['$id']);
+            window.localStorage.setItem('person.name', obj.user.name);
+            window.localStorage.setItem('person.birthDate', obj.user.birthDate);
+            window.localStorage.setItem('person.surname', obj.user.surname);
+            window.localStorage.setItem('person.occupation', obj.user.occupation);
+            window.localStorage.setItem('person.interests', obj.user.interests);
+            window.localStorage.setItem('person.music', obj.user.music);
+            window.localStorage.setItem('person.smoker', obj.user.smoker);
+            window.localStorage.setItem('person.imagePath', obj.user.imagePath);
+            window.localStorage.setItem('person.trustLevel', obj.user.trustLevel);
+            window.localStorage.setItem('person.role', obj.user.role);
+            window.localStorage.setItem('person.project', obj.user.project);
+            window.localStorage.setItem('person.credits', obj.user.credits);
 
             getToken();
             loadVehicles();
             location.reload();
-            document.getElementById('inputEmail').value = "";
-            document.getElementById('inputPassword').value = "";
-
+            document.getElementById('inputEmail').value = '';
+            document.getElementById('inputPassword').value = '';
         }
 
         ajaxWorker_authentication.terminate();
@@ -481,26 +490,25 @@ function login(email, password) {
 }
 
 function getToken() {
-    var key = window.localStorage.getItem("keyS");
-    var secret = window.localStorage.getItem("secret");
-    var token = "";
+    var key = window.localStorage.getItem('keyS');
+    var secret = window.localStorage.getItem('secret');
+    var token = '';
     var url_generateToken = 'http://' + server + '/generateToken';
     var JSONdata = '{"key":"' + key + '","secret":"' + secret + '"}';
-    var ajaxWorker_generateToken = new Worker("js/ajax.js");
+    var ajaxWorker_generateToken = new Worker('js/ajax.js');
     ajaxWorker_generateToken.postMessage([url_generateToken, JSONdata]);
 
     ajaxWorker_generateToken.onmessage = function(e) {
         var t = JSON.parse(e.data);
-        token = t["access_token"];
-        window.localStorage.setItem("token", token);
+        token = t['access_token'];
+        window.localStorage.setItem('token', token);
         if (debug) {
-            console.log("token->" + token);
+            console.log('token->' + token);
         }
 
         ajaxWorker_generateToken.terminate();
     };
 }
-
 
 function loginFB() {
     openFB.init({ appId: '791967860852638' });
@@ -515,7 +523,6 @@ function loginFB() {
         }, { scope: 'email' }
     );
 }
-
 
 function logout() {
     ons.notification.confirm({
@@ -537,24 +544,23 @@ function logout() {
     });
 }
 
-
 function createJourneyToDB() {
-    var token = window.localStorage.getItem("token");
-    var email = window.localStorage.getItem("person.email");
+    var token = window.localStorage.getItem('token');
+    var email = window.localStorage.getItem('person.email');
     var data = JSON.stringify({
-        "departureLat": journey.departureLat,
-        "departureLng": journey.departureLng,
-        "destinationLat": journey.destinationLat,
-        "destinationLng": journey.destinationLng,
-        "timeStamp": Math.floor(Date.now() / 1000),
-        "schedule": journey.schedule,
-        "distance": journey.distance,
-        "driver": window.localStorage.getItem("person.email")
+        departureLat: journey.departureLat,
+        departureLng: journey.departureLng,
+        destinationLat: journey.destinationLat,
+        destinationLng: journey.destinationLng,
+        timeStamp: Math.floor(Date.now() / 1000),
+        schedule: journey.schedule,
+        distance: journey.distance,
+        driver: window.localStorage.getItem('person.email')
     });
 
     var url_createJourney = 'http://160.40.50.60/slim/API/carpooling/createJourney';
     var JSONdata = '{"access_token":"' + token + '","userId":"' + email + '","object":' + data + '}';
-    var ajaxWorker_createJourney = new Worker("js/ajax.js");
+    var ajaxWorker_createJourney = new Worker('js/ajax.js');
     ajaxWorker_createJourney.postMessage([url_createJourney, JSONdata]);
 
     ajaxWorker_createJourney.onmessage = function(e) {
@@ -563,7 +569,7 @@ function createJourneyToDB() {
                 message: 'A network error occurred when trying to submit your journey. Please try again.',
                 title: 'Network Error!',
                 buttonLabel: 'OK',
-                animation: 'default',
+                animation: 'default'
             });
         } else {
             data = JSON.parse(e.data);
@@ -574,23 +580,23 @@ function createJourneyToDB() {
     };
 }
 
-
 function getJourneysFromDB() {
-    var token = window.localStorage.getItem("token");
-    var email = window.localStorage.getItem("person.email");
+    var token = window.localStorage.getItem('token');
+    var email = window.localStorage.getItem('person.email');
     var data = JSON.stringify({
-        "departureLat": "",
-        "departureLng": "",
-        "destinationLat": "",
-        "destinationLng": "",
-        "timeStamp": "",
-        "distance": ""
+        departureLat: '',
+        departureLng: '',
+        destinationLat: '',
+        destinationLng: '',
+        timeStamp: '',
+        distance: ''
     });
 
     var clientTime = Math.floor(Date.now() / 1000);
     var url_getJourneys = 'http://160.40.50.60/slim/API/carpooling/getJourneys';
-    var JSONdata = '{"access_token":"' + token + '","userId":"' + email + '","clientTime":"' + clientTime + '","object":' + data + '}';
-    var ajaxWorker_getJourneys = new Worker("js/ajax.js");
+    var JSONdata =
+        '{"access_token":"' + token + '","userId":"' + email + '","clientTime":"' + clientTime + '","object":' + data + '}';
+    var ajaxWorker_getJourneys = new Worker('js/ajax.js');
     ajaxWorker_getJourneys.postMessage([url_getJourneys, JSONdata]);
 
     ajaxWorker_getJourneys.onmessage = function(e) {
@@ -598,7 +604,7 @@ function getJourneysFromDB() {
             console.log(e.data);
         }
         if (e.data == 0 || e.data == 500) {
-            showAlertBootbox("A network error occurred when trying to send the report. Please try again.", "Error");
+            showAlertBootbox('A network error occurred when trying to send the report. Please try again.', 'Error');
         } else {
             data = JSON.parse(e.data);
             console.log(JSON.stringify(data));
@@ -608,14 +614,13 @@ function getJourneysFromDB() {
     };
 }
 
-
 function updateJourneyToDB(id, data) {
-    var token = window.localStorage.getItem("token");
-    var email = window.localStorage.getItem("email");
+    var token = window.localStorage.getItem('token');
+    var email = window.localStorage.getItem('email');
     var clientTime = Math.floor(Date.now() / 1000);
     var url_getJourneys = 'http://160.40.50.60/slim/API/carpooling/getJourneys';
     var JSONdata = '{"access_token":"' + token + '","userId":"' + email + '","id":"' + id + '","object":' + data + '}';
-    var ajaxWorker_getJourneys2 = new Worker("js/ajax.js");
+    var ajaxWorker_getJourneys2 = new Worker('js/ajax.js');
     ajaxWorker_getJourneys2.postMessage([url_getJourneys, JSONdata]);
 
     ajaxWorker_getJourneys2.onmessage = function(e) {
@@ -623,7 +628,7 @@ function updateJourneyToDB(id, data) {
             console.log(e.data);
         }
         if (e.data == 0 || e.data == 500) {
-            showAlertBootbox("A network error occurred when trying to send the report. Please try again.", "Error");
+            showAlertBootbox('A network error occurred when trying to send the report. Please try again.', 'Error');
         } else {
             data = JSON.parse(e.data);
             console.log(JSON.stringify(data));
@@ -633,20 +638,19 @@ function updateJourneyToDB(id, data) {
     };
 }
 
-
-/** 
+/**
  * @return - simple JSON result, eg {"result":"success"} or error http code
  */
 function createCollection(data, callback) {
-    var token = window.localStorage.getItem("token");
+    var token = window.localStorage.getItem('token');
     // var url_createCollection= 'http://160.40.50.60/slim/API/carpooling/createCollection';
     var url_createCollection = 'http://localhost:3000/profile3';
     var JSONdata = JSON.stringify(data);
-    var ajaxWorker_createCollection = new Worker("js/ajax.js");
+    var ajaxWorker_createCollection = new Worker('js/ajax.js');
     ajaxWorker_createCollection.postMessage([url_createCollection, JSONdata]);
     ajaxWorker_createCollection.onmessage = function(e) {
         if (e.data == 0 || e.data == 500) {
-            alert("A network error occurred when trying communicate with the server. Please try again.", "Error");
+            alert('A network error occurred when trying communicate with the server. Please try again.', 'Error');
         } else {
             data = JSON.parse(e.data);
             callback(JSON.stringify(data));
@@ -655,7 +659,6 @@ function createCollection(data, callback) {
         ajaxWorker_createCollection.terminate();
     };
 }
-
 
 /**
  * Gets a specific object based on objectId in the defined collection
@@ -671,15 +674,15 @@ function createCollection(data, callback) {
  * @return - simple JSON result, eg {"data:[]..."} or error http code
  */
 function getCollection(data, callback) {
-    var ajaxWorker_getCol = new Worker("js/ajax.js");
-    var token = window.localStorage.getItem("token");
+    var ajaxWorker_getCol = new Worker('js/ajax.js');
+    var token = window.localStorage.getItem('token');
     var url_getCollection = 'http://160.40.50.60/slim/API/carpooling/getCollection';
     var JSONdata = JSON.stringify(data);
 
     ajaxWorker_getCol.postMessage([url_getCollection, JSONdata]);
     ajaxWorker_getCol.onmessage = function(e) {
         if (e.data == 0 || e.data == 500) {
-            alert("A network error occurred when trying communicate with the server. Please try again.", "Error");
+            alert('A network error occurred when trying communicate with the server. Please try again.', 'Error');
         } else {
             data = JSON.parse(e.data);
             callback(JSON.stringify(data));
@@ -689,7 +692,6 @@ function getCollection(data, callback) {
         ajaxWorker_getCol.terminate();
     };
 }
-
 
 /**
  * Updates a specific object in the defined collection
@@ -711,15 +713,15 @@ function getCollection(data, callback) {
  * @return - simple JSON result, eg {"result":"success"} or error http code
  */
 function updateCollection(data, callback) {
-    var ajaxWorker_updateCol = new Worker("js/ajax.js");
-    var token = window.localStorage.getItem("token");
+    var ajaxWorker_updateCol = new Worker('js/ajax.js');
+    var token = window.localStorage.getItem('token');
     var url_updateCollection = 'http://' + server + '/updateCollection';
     var JSONdata = JSON.stringify(data);
 
     ajaxWorker_updateCol.postMessage([url_updateCollection, JSONdata]);
     ajaxWorker_updateCol.onmessage = function(e) {
         if (e.data == 0 || e.data == 500) {
-            alert("A network error occurred when trying communicate with the server. Please try again.", "Error");
+            alert('A network error occurred when trying communicate with the server. Please try again.', 'Error');
         } else {
             data = JSON.parse(e.data);
             callback(JSON.stringify(data));
@@ -742,15 +744,15 @@ function updateCollection(data, callback) {
  * @return - simple JSON result, eg {"result":"success"} or error http code
  */
 function deleteCollection(data, callback) {
-    var ajaxWorker_deleteCol = new Worker("js/ajax.js");
-    var token = window.localStorage.getItem("token");
+    var ajaxWorker_deleteCol = new Worker('js/ajax.js');
+    var token = window.localStorage.getItem('token');
     var url_deleteCollection = 'http://' + server + '/deleteCollection';
     var JSONdata = JSON.stringify(data);
     ajaxWorker_deleteCol.postMessage([url_deleteCollection, JSONdata]);
 
     ajaxWorker_deleteCol.onmessage = function(e) {
         if (e.data == 0 || e.data == 500) {
-            alert("A network error occurred when trying communicate with the server. Please try again.", "Error");
+            alert('A network error occurred when trying communicate with the server. Please try again.', 'Error');
         } else {
             data = JSON.parse(e.data);
             callback(JSON.stringify(data));
@@ -773,15 +775,15 @@ function deleteCollection(data, callback) {
  * @return - simple JSON result, eg {"result":"success"} or error http code
  */
 function getUser(data, callback) {
-    var ajaxWorker_getUser = new Worker("js/ajax.js");
-    var token = window.localStorage.getItem("token");
+    var ajaxWorker_getUser = new Worker('js/ajax.js');
+    var token = window.localStorage.getItem('token');
     var url_getUser = 'http://' + server + '/getUser';
     var JSONdata = JSON.stringify(data);
     ajaxWorker_getUser.postMessage([url_getUser, JSONdata]);
 
     ajaxWorker_getUser.onmessage = function(e) {
         if (e.data == 0 || e.data == 500) {
-            alert("A network error occurred when trying communicate with the server. Please try again.", "Error");
+            alert('A network error occurred when trying communicate with the server. Please try again.', 'Error');
         } else {
             data = JSON.parse(e.data);
             callback(JSON.stringify(data));
@@ -790,8 +792,6 @@ function getUser(data, callback) {
         ajaxWorker_getUser.terminate();
     };
 }
-
-
 
 function arraysEqual(arr1, arr2) {
     if (arr1.length !== arr2.length) return false;
@@ -803,21 +803,20 @@ function arraysEqual(arr1, arr2) {
     return true;
 }
 
-
 function checkJourneyUpdates(oid, callback) {
-    var token = window.localStorage.getItem("token");
+    var token = window.localStorage.getItem('token');
     if (token) {
         //get the journeys from localStorage
-        var j = JSON.parse(window.localStorage.getItem("journeys"));
+        var j = JSON.parse(window.localStorage.getItem('journeys'));
         if (j) {
             journeys = j;
         }
 
         if (journeys) {
             if (journeys[oid]) {
-                var data = { "access_token": token, "collection": "journeys", "id": oid };
+                var data = { access_token: token, collection: 'journeys', id: oid };
                 getCollection(data, function(result) {
-                    var resultObject = { "pending": "", "accepted": "", "rejected": "", "notes": "" };
+                    var resultObject = { pending: '', accepted: '', rejected: '', notes: '' };
                     var d1 = JSON.parse(result);
 
                     if (d1['data']) {
@@ -828,7 +827,7 @@ function checkJourneyUpdates(oid, callback) {
                         var ch3;
                         var ch4;
 
-                        //if(d.acceptedPassengers && d.acceptedPassengers){              
+                        //if(d.acceptedPassengers && d.acceptedPassengers){
                         ch1 = arraysEqual(d.acceptedPassengers, journeys[oid].acceptedPassengers);
                         //}
                         //if(d.pendingPassengers && l.pendingPassengers){
@@ -836,14 +835,14 @@ function checkJourneyUpdates(oid, callback) {
                         //}
                         ch3 = arraysEqual(d.rejectedPassengers, journeys[oid].rejectedPassengers);
 
-                        ch4 = (d.notes === journeys[oid].notes);
+                        ch4 = d.notes === journeys[oid].notes;
 
                         if (ch1 == false) {
-                            resultObject["accepted"] = d.acceptedPassengers;
+                            resultObject['accepted'] = d.acceptedPassengers;
                         }
 
                         if (ch2 == false) {
-                            getUser({ "email": d.pendingPassengers, "access_token": localStorage.getItem('token') }, function(p) {
+                            getUser({ email: d.pendingPassengers, access_token: localStorage.getItem('token') }, function(p) {
                                 var dd = JSON.parse(p);
                                 var dr = dd['data'][0];
 
@@ -851,13 +850,18 @@ function checkJourneyUpdates(oid, callback) {
                                     messageHTML: '<ons-list-item class="person" modifier="inset">' +
                                         '<ons-row>' +
                                         '<ons-col width="40px">' +
-                                        '<img src="' + dr['imagePath'] + '" class="person-image">' +
+                                        '<img src="' +
+                                        dr['imagePath'] +
+                                        '" class="person-image">' +
                                         '</ons-col>' +
-                                        '<ons-col class="person-name">' + dr["name"] + ' ' + dr["surname"] +
+                                        '<ons-col class="person-name">' +
+                                        dr['name'] +
+                                        ' ' +
+                                        dr['surname'] +
                                         '<ons-col>' +
                                         '</ons-row>' +
                                         '</ons-list-item>',
-                                    // or messageHTML: '<div>Message in HTML</div>', 
+                                    // or messageHTML: '<div>Message in HTML</div>',
                                     title: 'Passenger Join Request!',
                                     buttonLabels: ['Not now', 'Answer'],
                                     animation: 'default', // or 'none'
@@ -868,8 +872,8 @@ function checkJourneyUpdates(oid, callback) {
                                             case 0:
                                                 break;
                                             case 1:
-                                                myNavigator.pushPage("pending_personal_inf.html", { animation: "slide" });
-                                                setUser(dr["username"]);
+                                                myNavigator.pushPage('pending_personal_inf.html', { animation: 'slide' });
+                                                setUser(dr['username']);
                                                 acceptedJourneySelected(oid);
                                                 break;
                                         }
@@ -877,17 +881,17 @@ function checkJourneyUpdates(oid, callback) {
                                 });
                             });
 
-                            resultObject["pending"] = d.pendingPassengers;
+                            resultObject['pending'] = d.pendingPassengers;
                         }
 
                         if (ch3 == false) {
-                            resultObject["rejected"] = d.rejectedPassengers;
+                            resultObject['rejected'] = d.rejectedPassengers;
                         }
 
                         if (ch4 == false) {
-                            resultObject["notes"] = d.notes;
+                            resultObject['notes'] = d.notes;
                         }
-                    } //if(d1['data']            
+                    } //if(d1['data']
                     callback(resultObject);
                 });
             }
@@ -895,21 +899,20 @@ function checkJourneyUpdates(oid, callback) {
     } //if(token)
 } // This is a JavaScript file
 
-
 function checkAcceptedJourneyUpdates(oid, callback) {
-    var token = window.localStorage.getItem("token");
+    var token = window.localStorage.getItem('token');
     if (token) {
         //get the journeys from localStorage
-        var j = JSON.parse(window.localStorage.getItem("journeysAccepted"));
+        var j = JSON.parse(window.localStorage.getItem('journeysAccepted'));
         if (j) {
             journeysAccepted = j;
         }
 
         if (journeysAccepted) {
             if (journeysAccepted[oid]) {
-                var data = { "access_token": token, "collection": "journeys", "id": oid };
+                var data = { access_token: token, collection: 'journeys', id: oid };
                 getCollection(data, function(result) {
-                    var resultObject = { "pending": "", "accepted": "", "rejected": "", "notes": "" };
+                    var resultObject = { pending: '', accepted: '', rejected: '', notes: '' };
                     var d1 = JSON.parse(result);
 
                     if (d1['data']) {
@@ -920,7 +923,7 @@ function checkAcceptedJourneyUpdates(oid, callback) {
                         var ch3;
                         var ch4;
 
-                        //if(d.acceptedPassengers && d.acceptedPassengers){              
+                        //if(d.acceptedPassengers && d.acceptedPassengers){
                         ch1 = arraysEqual(d.acceptedPassengers, journeysAccepted[oid].acceptedPassengers);
                         //}
                         //if(d.pendingPassengers && l.pendingPassengers){
@@ -928,31 +931,30 @@ function checkAcceptedJourneyUpdates(oid, callback) {
                         //}
                         ch3 = arraysEqual(d.rejectedPassengers, journeysAccepted[oid].rejectedPassengers);
 
-                        ch4 = (d.notes === journeysAccepted[oid].notes);
+                        ch4 = d.notes === journeysAccepted[oid].notes;
 
                         if (ch1 == false) {
-                            resultObject["accepted"] = d.acceptedPassengers;
+                            resultObject['accepted'] = d.acceptedPassengers;
                         }
 
                         if (ch2 == false) {
-                            resultObject["pending"] = d.pendingPassengers;
+                            resultObject['pending'] = d.pendingPassengers;
                         }
 
                         if (ch3 == false) {
-                            resultObject["rejected"] = d.rejectedPassengers;
+                            resultObject['rejected'] = d.rejectedPassengers;
                         }
 
                         if (ch4 == false) {
-                            resultObject["notes"] = d.notes;
+                            resultObject['notes'] = d.notes;
                         }
-                    } //if(d1['data']            
+                    } //if(d1['data']
                     callback(resultObject);
                 });
             }
         } //if(localJourney)
     } //if(token)
 } // This is a JavaScript file
-
 
 /*function checkJourneyUpdatesReturn(oid){
     var token=localStorage.getItem("token");
@@ -1027,13 +1029,11 @@ function CheckUpdateForAllJourneys(callback){
     }
 }*/
 
-
-
 function loadUsersVehicles(callback) {
-    var ajaxWorker_loadVeh = new Worker("js/ajax.js");
-    var token = window.localStorage.getItem("token");
-    var email = localStorage.getItem("email");
-    var data = { "access_token": token, "email": email };
+    var ajaxWorker_loadVeh = new Worker('js/ajax.js');
+    var token = window.localStorage.getItem('token');
+    var email = localStorage.getItem('email');
+    var data = { access_token: token, email: email };
     var JSONdata = JSON.stringify(data);
     var url_getUsersVehicles = 'http://' + server + '/getUsersVehicles';
     if (token) {
@@ -1041,7 +1041,7 @@ function loadUsersVehicles(callback) {
 
         ajaxWorker_loadVeh.onmessage = function(e) {
             if (e.data == 0 || e.data == 500) {
-                alert("A network error occurred when trying communicate with the server. Please try again.", "Error");
+                alert('A network error occurred when trying communicate with the server. Please try again.', 'Error');
             } else {
                 data = JSON.parse(e.data);
                 callback(JSON.stringify(data));
@@ -1053,18 +1053,18 @@ function loadUsersVehicles(callback) {
 }
 
 function loadVehicles() {
-    var ajaxWorker_generateToken = new Worker("js/ajax.js");
-    var key = window.localStorage.getItem("keyS");
-    var secret = window.localStorage.getItem("secret");
-    var token = "";
+    var ajaxWorker_generateToken = new Worker('js/ajax.js');
+    var key = window.localStorage.getItem('keyS');
+    var secret = window.localStorage.getItem('secret');
+    var token = '';
     var url_generateToken = 'http://' + server + '/generateToken';
     var JSONdata = '{"key":"' + key + '","secret":"' + secret + '"}';
     ajaxWorker_generateToken.postMessage([url_generateToken, JSONdata]);
 
     ajaxWorker_generateToken.onmessage = function(e) {
         var t = JSON.parse(e.data);
-        token = t["access_token"];
-        window.localStorage.setItem("token", token);
+        token = t['access_token'];
+        window.localStorage.setItem('token', token);
 
         loadUsersVehicles(function(data) {
             var vehs = {};
@@ -1076,13 +1076,13 @@ function loadVehicles() {
                 }
             }
             vehicles = vehs;
-            window.localStorage.setItem("vehicles", JSON.stringify(vehicles));
+            window.localStorage.setItem('vehicles', JSON.stringify(vehicles));
             if (debug) {
-                console.log("vehicles loaded");
+                console.log('vehicles loaded');
             }
             //if(ve.data){
-            //vehicles=ve.data;        
-            //window.localStorage.setItem("vehicles", JSON.stringify(vehicles)); 
+            //vehicles=ve.data;
+            //window.localStorage.setItem("vehicles", JSON.stringify(vehicles));
             //if(debug){
             //    console.log("vehicles loaded");
             //}
@@ -1130,7 +1130,7 @@ function killJourneyMatcher() {
 }*/
 
 function findMatchingJourneyForAll() {
-    var jours = JSON.parse(window.localStorage.getItem("journeys"));
+    var jours = JSON.parse(window.localStorage.getItem('journeys'));
 
     var joursArray = [];
     if (jours) {
@@ -1141,16 +1141,22 @@ function findMatchingJourneyForAll() {
             }
         }
         //console.log(joursArray);
-        var data = { "access_token": window.localStorage.getItem('token'), "clientTime": Math.floor(Date.now() / 1000), "object": joursArray, "radius": radius, "user": window.localStorage.getItem('email') };
+        var data = {
+            access_token: window.localStorage.getItem('token'),
+            clientTime: Math.floor(Date.now() / 1000),
+            object: joursArray,
+            radius: radius,
+            user: window.localStorage.getItem('email')
+        };
         var JSONdata = JSON.stringify(data);
         //console.log(JSONdata);
         var url_getJourneysForAll = 'http://' + server + '/getJourneysForAll';
-        var ajaxWorker_getJourneysForAll = new Worker("js/ajax.js");
+        var ajaxWorker_getJourneysForAll = new Worker('js/ajax.js');
         ajaxWorker_getJourneysForAll.postMessage([url_getJourneysForAll, JSONdata]);
 
         ajaxWorker_getJourneysForAll.onmessage = function(e) {
             if (e.data == 0 || e.data == 500) {
-                alert("A network error occurred when trying communicate with the server. Please try again.", "Error");
+                alert('A network error occurred when trying communicate with the server. Please try again.', 'Error');
             } else {
                 data = JSON.parse(e.data);
                 if (data.data) {
@@ -1159,7 +1165,6 @@ function findMatchingJourneyForAll() {
                     var onRej = onRejected(j);
                     var onAcc = onAccepted(j);
                     var onAcc2 = onAccepted2(j);
-
 
                     if (onAcc != -1) {
                         for (var r in onAcc) {
@@ -1195,7 +1200,7 @@ function findMatchingJourneyForAll() {
                     }
 
                     if (Object.size(journeysMatching) > 0) {
-                        document.getElementById("journeyNotification").innerHTML = Object.size(journeysMatching);
+                        document.getElementById('journeyNotification').innerHTML = Object.size(journeysMatching);
                     }
 
                     journeysMatching = j;
@@ -1208,11 +1213,10 @@ function findMatchingJourneyForAll() {
     }
 }
 
-
 function removeOldJourneys() {
-    var jour = JSON.parse(window.localStorage.getItem("journeys"));
-    var acceptedjour = JSON.parse(window.localStorage.getItem("journeysAccepted"));
-    var pendingjour = JSON.parse(window.localStorage.getItem("journeysPending"));
+    var jour = JSON.parse(window.localStorage.getItem('journeys'));
+    var acceptedjour = JSON.parse(window.localStorage.getItem('journeysAccepted'));
+    var pendingjour = JSON.parse(window.localStorage.getItem('journeysPending'));
 
     if (jour) {
         for (var i in jour) {
@@ -1220,10 +1224,10 @@ function removeOldJourneys() {
             if (now > jour[i].schedule) {
                 delete jour[i];
                 if (debug) {
-                    console.log("journey:" + i + " has been deleted");
+                    console.log('journey:' + i + ' has been deleted');
                 }
             }
-            window.localStorage.setItem("journeys", JSON.stringify(jour));
+            window.localStorage.setItem('journeys', JSON.stringify(jour));
         }
     }
 
@@ -1233,10 +1237,10 @@ function removeOldJourneys() {
             if (now > acceptedjour[i].schedule) {
                 delete acceptedjour[i];
                 if (debug) {
-                    console.log("accepted journey:" + i + " has been deleted");
+                    console.log('accepted journey:' + i + ' has been deleted');
                 }
             }
-            window.localStorage.setItem("journeysAccepted", JSON.stringify(acceptedjour));
+            window.localStorage.setItem('journeysAccepted', JSON.stringify(acceptedjour));
         }
     }
 
@@ -1246,14 +1250,13 @@ function removeOldJourneys() {
             if (now > pendingjour[i].schedule) {
                 delete pendingjour[i];
                 if (debug) {
-                    console.log("pending journey:" + i + " has been deleted");
+                    console.log('pending journey:' + i + ' has been deleted');
                 }
             }
-            window.localStorage.setItem("journeysPending", JSON.stringify(pendingjour));
+            window.localStorage.setItem('journeysPending', JSON.stringify(pendingjour));
         }
     }
 }
-
 
 /*function findMatchesForEachJourney(){
     var jour=JSON.parse(window.localStorage.getItem("journeys"));    
@@ -1268,7 +1271,7 @@ function removeOldJourneys() {
 
 function startIntervalJourneyUpdates(oid) {
     var int = setInterval(function() {
-        var j = JSON.parse(window.localStorage.getItem("journeys"));
+        var j = JSON.parse(window.localStorage.getItem('journeys'));
         if (j) {
             if (j[oid]) {
                 var l = j[oid];
@@ -1301,10 +1304,9 @@ function startIntervalJourneyUpdates(oid) {
     }, checkJourneyChanges);
 }
 
-
 function startIntervalAcceptedJourneyUpdates(oid) {
     var int = setInterval(function() {
-        var j = JSON.parse(window.localStorage.getItem("journeysAccepted"));
+        var j = JSON.parse(window.localStorage.getItem('journeysAccepted'));
         if (j) {
             if (j[oid]) {
                 var l = j[oid];
@@ -1338,9 +1340,8 @@ function startIntervalAcceptedJourneyUpdates(oid) {
     }, checkJourneyChanges);
 }
 
-
 function startIntervalsForEachLocalJourney() {
-    var jour = JSON.parse(window.localStorage.getItem("journeys"));
+    var jour = JSON.parse(window.localStorage.getItem('journeys'));
 
     if (jour) {
         for (var i in jour) {
@@ -1350,9 +1351,8 @@ function startIntervalsForEachLocalJourney() {
     }
 }
 
-
 function startIntervalsForEachAcceptedJourney() {
-    var jour = JSON.parse(window.localStorage.getItem("journeysAccepted"));
+    var jour = JSON.parse(window.localStorage.getItem('journeysAccepted'));
 
     if (jour) {
         for (var i in jour) {
@@ -1362,47 +1362,49 @@ function startIntervalsForEachAcceptedJourney() {
     }
 }
 
-
 function startIntervalForMessages() {
-    setInterval(function() { onGetMessages() }, checkForMessages);
+    setInterval(function() {
+        onGetMessages();
+    }, checkForMessages);
 }
 
 function startIntervalForGetSentMessages() {
-    setInterval(function() { onGetSentMessages() }, checkForMessages);
+    setInterval(function() {
+        onGetSentMessages();
+    }, checkForMessages);
 }
 
 function startIntervalForFindMatchingJourneys() {
-    setInterval(function() { findMatchingJourneyForAll() }, checkJourneyJoinsInterval);
+    setInterval(function() {
+        findMatchingJourneyForAll();
+    }, checkJourneyJoinsInterval);
 }
-
 
 function scrollTo(element, to, duration) {
     if (duration < 0) return;
     var difference = to - element.scrollTop;
-    var perTick = difference / duration * 10;
+    var perTick = (difference / duration) * 10;
 
     setTimeout(function() {
         element.scrollTop = element.scrollTop + perTick;
         if (element.scrollTop === to) return;
         scrollTo(element, to, duration - 10);
     }, 10);
-};
-
+}
 
 function scrollToBottom(page) {
     scrollTo(page, document.body.scrollHeight, 300);
-};
-
+}
 
 function rotateBase64Image(base64ImageSrc) {
-    var canvas = document.createElement("canvas");
+    var canvas = document.createElement('canvas');
     var img = new Image();
     img.src = document.getElementById(base64ImageSrc).src;
     canvas.width = img.width;
     canvas.height = img.height;
-    var context = canvas.getContext("2d");
+    var context = canvas.getContext('2d');
     context.translate(img.width, img.height);
-    context.rotate(180 * Math.PI / 180);
+    context.rotate((180 * Math.PI) / 180);
     context.drawImage(img, 0, 0);
     document.getElementById(base64ImageSrc).src = canvas.toDataURL();
 }

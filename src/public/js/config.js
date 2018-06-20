@@ -60,7 +60,21 @@
 //     this.credits = credits;
 // }
 
-function person(name, surname, email, birthDate, occupation, interests, music, smoker, imagePath, trustLevel, role, project, credits) {
+function person(
+    name,
+    surname,
+    email,
+    birthDate,
+    occupation,
+    interests,
+    music,
+    smoker,
+    imagePath,
+    trustLevel,
+    role,
+    project,
+    credits
+) {
     // this.oid = oid;
     this.name = name;
     this.surname = surname;
@@ -78,8 +92,6 @@ function person(name, surname, email, birthDate, occupation, interests, music, s
     // this.project = project;
     // this.credits = credits;
 }
-
-
 
 person.prototype.getOid = function() {
     return this.oid;
@@ -138,7 +150,27 @@ vehicle.prototype.getImage = function() {
 };
 
 // journey constructor
-function journey(oid, vehicle, driver, mode, departureAddress, departureLat, departureLng, destinationAddress, destinationLat, destinationLng, schedule, distance, journeyDuration, acceptedPassengers, pendingPassengers, rejectedPassengers, waypoints, seatsAvailable, notes) {
+function journey(
+    oid,
+    vehicle,
+    driver,
+    mode,
+    departureAddress,
+    departureLat,
+    departureLng,
+    destinationAddress,
+    destinationLat,
+    destinationLng,
+    schedule,
+    distance,
+    journeyDuration,
+    acceptedPassengers,
+    pendingPassengers,
+    rejectedPassengers,
+    waypoints,
+    seatsAvailable,
+    notes
+) {
     this.oid = oid;
     this.vehicle = vehicle;
     this.driver = driver;
@@ -208,30 +240,29 @@ function message(oid, from, to, text, time, read) {
 
 message.prototype.setOid = function(oid) {
     this.oid = oid;
-}
-
-message.prototype.setTime = function(time) {
-    this.time = time
-}
-
-message.prototype.setRead = function(read) {
-    this.read = read
-}
-
-var locationObject = {
-    userLatitude: "",
-    userLongitude: "",
-    accuracy: "",
-    heading: "",
-    speed: "",
-    time: ""
 };
 
+message.prototype.setTime = function(time) {
+    this.time = time;
+};
+
+message.prototype.setRead = function(read) {
+    this.read = read;
+};
+
+var locationObject = {
+    userLatitude: '',
+    userLongitude: '',
+    accuracy: '',
+    heading: '',
+    speed: '',
+    time: ''
+};
 
 //var server="83.212.168.47/slim/API/carpooling";
 // var server="160.40.50.60/slim/API/carpooling";
 // var server = "http://localhost:3000/slim/API/";
-var server = "localhost:3000";
+var server = 'localhost:3000';
 var scheduleLimitInDays = 31;
 var journeys = {};
 var vehicles = {};
@@ -247,8 +278,8 @@ var destMarker = null;
 var control = null;
 var journeyControl = null;
 var journey_control = null;
-var bingKey = "Ak_S8Tc2YoCDJrVGllgMA4XE9zEmJBlvaY1rsJEmxLafxlb3Yv_jHjVURPjEZLqK";
-var ajaxWorker = new Worker("js/ajax.js");
+var bingKey = 'Ak_S8Tc2YoCDJrVGllgMA4XE9zEmJBlvaY1rsJEmxLafxlb3Yv_jHjVURPjEZLqK';
+var ajaxWorker = new Worker('js/ajax.js');
 var homeAddress = null;
 var destAddress = null;
 var totalDist = null;
@@ -257,13 +288,13 @@ var schedule = null;
 var journeyWaypoints = null;
 var mode = null;
 var journeyVehicle = null;
-var selectedJourney = "";
-var selectedMatchingJourneyI = "";
-var selectedMatchingJourneyJ = "";
+var selectedJourney = '';
+var selectedMatchingJourneyI = '';
+var selectedMatchingJourneyJ = '';
 var seatsAvailable = null;
 var user = null;
 var uVehicle = null;
-var imageBase64 = "";
+var imageBase64 = '';
 var radius = 50;
 var checkJourneyJoinsInterval = 20000;
 var checkJourneyChanges = 20000;
@@ -274,4 +305,4 @@ var rejected;
 var unreadMessages = 0;
 
 var debug = true;
-var journeyMatcher = new Worker("js/journeyMatchDM.js");
+var journeyMatcher = new Worker('js/journeyMatchDM.js');
