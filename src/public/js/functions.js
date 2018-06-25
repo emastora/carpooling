@@ -985,7 +985,7 @@ async function loadPersonalInf() {
     document.getElementById("smoker").innerHTML = user.local.smoker;
 
 
-    document.getElementById('rating').innerHTML = html;
+    // document.getElementById('rating').innerHTML = html;
 }
 
 function loadPendingPersonalInf() {
