@@ -47,6 +47,7 @@
             googleLogin();
         });
     </script>
+
 </head>
 
 <body>
@@ -56,11 +57,7 @@
         <%= user.local.email %>
     </p>
 
-    <!-- <script>
-        var EmailLocal = user.local.email;
-        console.log(EmailLocal);
-        console.log("Manos");
-    </script> -->
+    <!-- EMAIL SESSION (EJS) -->
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -77,50 +74,11 @@
     <%= user %> <br> -->
     <!-- </script> -->
 
-    <script>
-        window.fbAsyncInit = function() {
-            FB.init({
-                appId: '617759631919753',
-                cookie: true,
-                xfbml: true,
-                version: 'v3.0'
-            });
-
-            FB.AppEvents.logPageView();
-
-
-            FB.getLoginStatus(function(response) {
-                statusChangeCallback(response);
-            });
-        };
-
-        (function(d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) {
-                return;
-            }
-            js = d.createElement(s);
-            js.id = id;
-            js.src = "https://connect.facebook.net/en_US/sdk.js";
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
-
-        function statusChangeCallback(response) {
-
-            if (response.status === 'connected') {
-                console.log("logged in and authenticated");
-            } else {
-                console.log("Not authenticated")
-            }
-        }
-
-
-        function checkLoginState() {
-            FB.getLoginStatus(function(response) {
-                statusChangeCallback(response);
-            });
-        }
-    </script>
+    <!-- <script>
+        var EmailLocal = user.local.email;
+        console.log(EmailLocal);
+        console.log("Manos");
+    </script> -->
 
 
     <script>
@@ -128,6 +86,11 @@
             if (e.target.id == "personal_inf") {
                 loadPersonalInf();
             }
+
+            // if (e.target.id == "FBprofile") {
+            //     buildProfile(user);
+            //     buildFeed(feed);
+            // }
 
             if (e.target.id == "others_personal_inf") {
                 loadOthersPersonalInf();
@@ -234,6 +197,7 @@
             });
     </script> -->
 
+    <script src="js/FBlogin.js"></script>
     <script src="js/functionsDM.js"></script>
     <script src="js/functions.js"></script>
     <script src="js/config.js"></script>

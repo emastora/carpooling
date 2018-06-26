@@ -55,6 +55,14 @@
             }
         </style>
 
+        <ons-list-item modifier="tappable" id="logout" class="list__item__line-height" onclick="logout()">
+            <i class="fa fa-comments-o fa-lg" style="color: #666"></i> &nbsp; Logout
+        </ons-list-item>
+
+        <ons-list-item modifier="tappable" class="list__item__line-height" onclick="app.slidingMenu.setMainPage('FBprofile.ejs', {closeMenu: true})">
+            &nbsp;<i class="fa fa-user fa-lg" style="color: #666"></i> &nbsp; Profile
+        </ons-list-item>
+
         <ons-list-item modifier="tappable" class="list__item__line-height" onclick="app.slidingMenu.setMainPage('my_messages.html', {closeMenu: true})">
             <i class="fa fa-envelope fa-lg" style="color: #666"></i> &nbsp; Messages
 
