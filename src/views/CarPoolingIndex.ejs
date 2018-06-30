@@ -24,9 +24,9 @@
                 // document.getElementById('unauthenticated').className = "hide";
                 // document.getElementById('authenticated').className = "show";
 
-                googleLogin();
-                getToken();
-                loadVehicles();
+                // googleLogin();
+                // getToken();
+                // loadVehicles();
                 removeOldJourneys();
 
                 //******************Start Intervals******************//
@@ -44,7 +44,7 @@
             }
 
             //Google Login
-            googleLogin();
+            // googleLogin();
         });
     </script>
 
@@ -104,9 +104,9 @@
                 loadJourneysDriver();
             }
 
-            // if (e.target.id == "my_journeys_passenger") {
-            //     loadJourneysPassenger();
-            // }
+            if (e.target.id == "my_journeys_passenger") {
+                loadJourneysPassenger();
+            }
 
             // if (e.target.id == "my_journeys_matching") {
             //     //$(".tab-bar").show();
@@ -185,17 +185,6 @@
             }
         }, false);
     </script>
-
-    <!-- <script>
-        axios.post('http://localhost:3000/profile3', {
-                firstName: 'Marlon',
-                lastName: 'Bernardes'
-            })
-            .then(function(response) {
-                console.log(response.status),
-                    console.log('saved successfully')
-            });
-    </script> -->
 
     <script src="js/FBlogin.js"></script>
     <script src="js/functionsDM.js"></script>

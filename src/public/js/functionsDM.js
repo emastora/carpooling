@@ -4,9 +4,9 @@ function savePersonalInf() {
 
     var token = window.localStorage.getItem("token");
 
-    if (token == "undefined") {
-        getToken();
-    }
+    // if (token == "undefined") {
+    //     getToken();
+    // }
 
     // oid = window.localStorage.getItem("person.oid");
     // pass = window.localStorage.getItem("password");
@@ -55,6 +55,8 @@ function savePersonalInf() {
 
     if (name && surname && birthDate && occupation && interests && music) {
         var person2 = new person(name, surname, email, birthDate, occupation, interests, music, smoker);
+
+        window.localStorage.setItem("person", JSON.stringify(person2));
 
         console.log(person2);
 
@@ -248,7 +250,7 @@ function saveVehicleInf2() {
     if (owner && brand && model && seats && color && licencePlate && year && cc) {
         var vehicle2 = new vehicle(owner, brand, model, seats, color, licencePlate, year, cc, aircondition, petsAllowed);
 
-        // window.localStorage.setItem("vehicles", JSON.stringify(vehicle2));
+        window.localStorage.setItem("vehicles", JSON.stringify(vehicle2));
         // console.log(vehicle2);
 
         axios.post('/UpdateVehicle', vehicle2)
@@ -365,7 +367,7 @@ async function loadVehicleInf() {
 
 
 
-//called at edit_vehicke.html
+//called at edit_vehicle.html
 function loadVehicleInfVal() {
     var v = window.localStorage.getItem('vehicles');
     var ve = JSON.parse(v);
@@ -544,6 +546,8 @@ function logout() {
     });
 }
 
+//NOT USED
+
 function createJourneyToDB() {
     var token = window.localStorage.getItem('token');
     var email = window.localStorage.getItem('person.email');
@@ -580,6 +584,7 @@ function createJourneyToDB() {
     };
 }
 
+//NOT USED
 function getJourneysFromDB() {
     var token = window.localStorage.getItem('token');
     var email = window.localStorage.getItem('person.email');
@@ -614,6 +619,7 @@ function getJourneysFromDB() {
     };
 }
 
+//NOT USED
 function updateJourneyToDB(id, data) {
     var token = window.localStorage.getItem('token');
     var email = window.localStorage.getItem('email');
@@ -644,7 +650,7 @@ function updateJourneyToDB(id, data) {
 function createCollection(data, callback) {
     var token = window.localStorage.getItem('token');
     // var url_createCollection= 'http://160.40.50.60/slim/API/carpooling/createCollection';
-    var url_createCollection = 'http://localhost:3000/profile3';
+    var url_createCollection = 'http://localhost:3000/CarPoolingIndex';
     var JSONdata = JSON.stringify(data);
     var ajaxWorker_createCollection = new Worker('js/ajax.js');
     ajaxWorker_createCollection.postMessage([url_createCollection, JSONdata]);

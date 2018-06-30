@@ -23,7 +23,7 @@ module.exports = (app, passport) => {
     //	}));
 
     app.post('/login', passport.authenticate('local-login', {
-        successRedirect: '/profile3',
+        successRedirect: '/CarPoolingIndex',
         failureRedirect: '/login',
         failureFlash: true
     }));
@@ -36,7 +36,7 @@ module.exports = (app, passport) => {
     });
 
     app.post('/signup', passport.authenticate('local-signup', {
-        successRedirect: '/profile3',
+        successRedirect: '/CarPoolingIndex',
         failureRedirect: '/signup',
         failureFlash: true // allow flash messages
     }));
@@ -48,10 +48,10 @@ module.exports = (app, passport) => {
     //        });
     //	});
 
-    app.get('/profile3', isLoggedIn, (req, res) => {
+    app.get('/CarPoolingIndex', isLoggedIn, (req, res) => {
 
         // res.send('Hello World');
-        res.render('profile3', {
+        res.render('CarPoolingIndex', {
             user: req.user
                 // user: 'Stelios'
         });
