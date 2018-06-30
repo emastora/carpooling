@@ -1,6 +1,7 @@
 const Mongoose = require('mongoose');
 const User = Mongoose.model('User');
 const Car = Mongoose.model('Car');
+const Journey = Mongoose.model('Journey');
 
 module.exports = (app, passport) => {
 
@@ -206,6 +207,35 @@ module.exports = (app, passport) => {
                     });
             }
         })
+    });
+
+    app.post('/CreateJourney', (req, res) => {
+
+        var journey2 = new Journey();
+        console.log(req.body);
+        journey2.local._id = req.body.oid;
+        journey2.local.vehicle = req.body.vehicle;
+        journey2.local.driver = req.body.driver;
+        journey2.local.mode = req.body.mode;
+        journey2.local.departureAddress = req.body.departureAddress;
+        journey2.local.departureLat = req.body.departureLat;
+        journey2.local.departureLng = req.body.departureLng;
+        journey2.local.schedule = req.body.schedule;
+        journey2.local.distance = req.body.distance;
+        journey2.local.acceptedPassengers = req.body.acceptedPassengers;
+        journey2.local.pendingPassengers = req.body.pendingPassengers;
+        journey2.local.rejectedPassengers = req.body.rejectedPassengers;
+        journey2.local.waypoints = req.body.waypoints;
+        journey2.local.seatsAvailable = req.body.seatsAvailable;
+        journey2.local.notes = req.body.notes;
+
+        journey2.save(function(err) {
+            if (err) {
+                throw err;
+            }
+            res.json({ message: 'Journey created!' });
+        });
+
     });
 
 };

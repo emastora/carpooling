@@ -631,12 +631,13 @@ function onAccepted2(obj) {
 
 function userProfileOk() {
     if (
-        window.localStorage.getItem('person.name') &&
-        window.localStorage.getItem('person.surname') &&
-        window.localStorage.getItem('person.birthDate') &&
-        window.localStorage.getItem('person.occupation') &&
-        window.localStorage.getItem('person.interests') &&
-        window.localStorage.getItem('person.music')
+        // window.localStorage.getItem('person.name') &&
+        // window.localStorage.getItem('person.surname') &&
+        // window.localStorage.getItem('person.birthDate') &&
+        // window.localStorage.getItem('person.occupation') &&
+        // window.localStorage.getItem('person.interests') &&
+        // window.localStorage.getItem('person.music')
+        window.localStorage.getItem('person')
     ) {
         return true;
     } else {
@@ -674,11 +675,13 @@ function saveJourneyInf() {
     distance = totalDist;
     waypoints = journeyWaypoints;
     journeyDuration = totalTime;
+
     /*********** RECONSIDER!!!! ****************************/
     acceptedPassengers = [];
     pendingPassengers = [];
     rejectedPassengers = [];
     notes = '';
+    /*********** RECONSIDER!!!! ****************************/
 
     ons.notification.alert({
         message: 'Journey Submited! Please wait for a match.',
@@ -691,7 +694,6 @@ function saveJourneyInf() {
             // Alert button is closed!
         }
     });
-
     //Avoid some potential errors *
     /*************Think how to handle this!!!!!!!********************************/
     if (typeof departureAddress == 'undefined') {
@@ -726,68 +728,140 @@ function saveJourneyInf() {
     );
 
     if (mode == 'driver') {
-        var data = {
-            access_token: window.localStorage.getItem('token'),
-            collection: 'journeys',
-            object: {
-                vehicle: journeyVehicle,
-                driver: window.localStorage.getItem('email'),
-                mode: journey1.mode,
-                departureAddress: journey1.departureAddress,
-                departureLat: journey1.departureLat,
-                departureLng: journey1.departureLng,
-                destinationAddress: journey1.destinationAddress,
-                destinationLat: journey1.destinationLat,
-                destinationLng: journey1.destinationLng,
-                schedule: journey1.schedule,
-                distance: journey1.distance,
-                journeyDuration: journey1.journeyDuration,
-                acceptedPassengers: journey1.acceptedPassengers,
-                pendingPassengers: journey1.pendingPassengers,
-                rejectedPassengers: journey1.rejectedPassengers,
-                waypoints: journey1.waypoints,
-                seatsAvailable: seatsAvailable,
-                notes: notes
-            }
-        };
-        //updateCollection(data);
-        createCollection(data, function(r) {
-            console.log(r);
-            var rr = JSON.parse(r);
-            //Get the oid as inserted in database
-            var oid = rr['oid']['$id'];
-            //Set the oid,vehicle,driver,seats to the object
-            journey1.setOid(oid);
-            journey1.setVehicle(journeyVehicle);
-            journey1.setDriver(window.localStorage.getItem('email'));
-            journey1.setSeatsAvailable(seatsAvailable);
-            //and push it to locastorage as associative array
-            journeys[oid] = journey1;
-            window.localStorage.setItem('journeys', JSON.stringify(journeys));
-
-            //Start interval for journey matching
-            //findMatchingJourney(oid);
-
-            //Start interval for journey updates
-            startIntervalJourneyUpdates(oid);
-        });
-    } else {
-        //mode="passenger"
-        //get a unique id
         var oid = guid();
         //set it to the object
         journey1.setOid(oid);
+        journey1.vehicle = journeyVehicle,
+            journey1.driver = window.localStorage.getItem('Email Session'),
+            journey1.seatsAvailable = seatsAvailable,
+            journey1.notes = notes
+
+        window.localStorage.setItem('journeys', JSON.stringify(journeys));
+
+        console.log(journey1);
+
+        axios.post('/CreateJourney', journey1)
+            .then(function(response) {
+                console.log(response.data.message)
+                console.log(response.status),
+                    console.log('created successfully')
+            });
+        //findMatchingJourney(oid);
+        // startIntervalJourneyUpdates(oid);
+
+        //updateCollection(data);
+        // createCollection(data, function(r) {
+        // console.log(r);
+        // var rr = JSON.parse(r);
+        //Get the oid as inserted in database
+        // var oid = rr['oid']['$id'];
+        //Set the oid,vehicle,driver,seats to the object
+        // journey1.setOid(oid);
+        // journey1.setVehicle(journeyVehicle);
+        // journey1.setDriver(window.localStorage.getItem('email'));
+        // journey1.setSeatsAvailable(seatsAvailable);
         //and push it to locastorage as associative array
-        journeys[oid] = journey1;
+        // journeys[oid] = journey1;
+        // window.localStorage.setItem('journeys', JSON.stringify(journeys));
+        //Start interval for journey matching
+        //findMatchingJourney(oid);
+
+        //Start interval for journey updates
+        // startIntervalJourneyUpdates(oid);
+        // });
+    } else {
+        mode = "passenger"
+            //get a unique id
+        var oid = guid();
+        //set it to the object
+        journey1.setOid(oid);
+        // journey1.vehicle = journeyVehicle,
+        // journey1.driver = window.localStorage.getItem('Email Session'),
+        // journey1.seatsAvailable = seatsAvailable,
+        // journey1.notes = notes
+
+        axios.post('/CreateJourney', journey1)
+            .then(function(response) {
+                console.log(response.data.message)
+                console.log(response.status),
+                    console.log('created successfully')
+            });
+
+        //and push it to locastorage as associative array
+        // journeys[oid] = journey1;
         window.localStorage.setItem('journeys', JSON.stringify(journeys));
 
         //Start interval for journey matching
         //findMatchingJourney(oid);
 
         //Start interval for journey updates
-        startIntervalJourneyUpdates(oid);
+        // startIntervalJourneyUpdates(oid);
     }
+
+    // if (mode == 'driver') {
+    //     var data = {
+    //         access_token: window.localStorage.getItem('token'),
+    //         collection: 'journeys',
+    //         object: {
+    //             vehicle: journeyVehicle,
+    //             driver: window.localStorage.getItem('email'),
+    //             mode: journey1.mode,
+    //             departureAddress: journey1.departureAddress,
+    //             departureLat: journey1.departureLat,
+    //             departureLng: journey1.departureLng,
+    //             destinationAddress: journey1.destinationAddress,
+    //             destinationLat: journey1.destinationLat,
+    //             destinationLng: journey1.destinationLng,
+    //             schedule: journey1.schedule,
+    //             distance: journey1.distance,
+    //             journeyDuration: journey1.journeyDuration,
+    //             acceptedPassengers: journey1.acceptedPassengers,
+    //             pendingPassengers: journey1.pendingPassengers,
+    //             rejectedPassengers: journey1.rejectedPassengers,
+    //             waypoints: journey1.waypoints,
+    //             seatsAvailable: seatsAvailable,
+    //             notes: notes
+    //         }
+    //     };
+    //     //updateCollection(data);
+    //     createCollection(data, function(r) {
+    //         console.log(r);
+    //         var rr = JSON.parse(r);
+    //         //Get the oid as inserted in database
+    //         var oid = rr['oid']['$id'];
+    //         //Set the oid,vehicle,driver,seats to the object
+    //         journey1.setOid(oid);
+    //         journey1.setVehicle(journeyVehicle);
+    //         journey1.setDriver(window.localStorage.getItem('email'));
+    //         journey1.setSeatsAvailable(seatsAvailable);
+    //         //and push it to locastorage as associative array
+    //         journeys[oid] = journey1;
+    //         window.localStorage.setItem('journeys', JSON.stringify(journeys));
+
+    //         //Start interval for journey matching
+    //         //findMatchingJourney(oid);
+
+    //         //Start interval for journey updates
+    //         startIntervalJourneyUpdates(oid);
+    //     });
+    // } else {
+    //     //mode="passenger"
+    //     //get a unique id
+    //     var oid = guid();
+    //     //set it to the object
+    //     journey1.setOid(oid);
+    //     //and push it to locastorage as associative array
+    //     journeys[oid] = journey1;
+    //     window.localStorage.setItem('journeys', JSON.stringify(journeys));
+
+    //     //Start interval for journey matching
+    //     //findMatchingJourney(oid);
+
+    //     //Start interval for journey updates
+    //     startIntervalJourneyUpdates(oid);
+    // }
 }
+
 
 function updateJourneyInf(oid, acceptedPassengers, pendingPassengers, rejectedPassengers, notes) {
     //get the journeys from localStorage
@@ -3499,7 +3573,7 @@ function vehicleSelected(i) {
 //==================MAP MANIPULATION FUNCTIONS==================//
 function loadMap() {
     if (control) {
-        control.removeFrom(map);
+        // control.removeFrom(map);
         control = null;
     }
 
@@ -3713,336 +3787,407 @@ function findAddress(callback, x, y) {
 }
 
 function createJourney() {
-    // if (userProfileOk()) {
-    if (destMarker) {
-        if (control) {
-            control.removeFrom(map);
-            control = null;
-        }
-        if (!control) {
-            /*control = L.Routing.control({
-                        waypoints: [
-                            marker.getLatLng(),
-                            destMarker.getLatLng()
-                        ],
-                        routeWhileDragging: false,
-                        fitSelectedRoutes: true
-                    //geocoder: L.Control.Geocoder.nominatim()
-                    }).addTo(map);*/
+    if (userProfileOk()) {
+        if (destMarker) {
+            if (control) {
+                // control.removeFrom(map);
+                control = null;
+            }
+            if (!control) {
+                /*control = L.Routing.control({
+                            waypoints: [
+                                marker.getLatLng(),
+                                destMarker.getLatLng()
+                            ],
+                            routeWhileDragging: false,
+                            fitSelectedRoutes: true
+                        //geocoder: L.Control.Geocoder.nominatim()
+                        }).addTo(map);*/
 
-            L.AwesomeMarkers.Icon.prototype.options.prefix = 'fa';
+                L.AwesomeMarkers.Icon.prototype.options.prefix = 'fa';
 
-            var markerAtr = L.AwesomeMarkers.icon({
-                icon: 'home',
-                markerColor: 'blue'
-            });
+                var markerAtr = L.AwesomeMarkers.icon({
+                    icon: 'home',
+                    markerColor: 'blue'
+                });
 
-            var destMarkerAtr = L.AwesomeMarkers.icon({
-                icon: 'crosshairs',
-                markerColor: 'red'
-            });
+                var destMarkerAtr = L.AwesomeMarkers.icon({
+                    icon: 'crosshairs',
+                    markerColor: 'red'
+                });
 
-            control = L.Routing.control({
-                plan: L.Routing.plan([marker.getLatLng(), destMarker.getLatLng()], {
-                    createMarker: function(i, wp) {
-                        if (i == 0) {
-                            return L.marker(wp.latLng, { icon: markerAtr });
-                        } else {
-                            return L.marker(wp.latLng, { icon: destMarkerAtr });
+                control = L.Routing.control({
+                    plan: L.Routing.plan([marker.getLatLng(), destMarker.getLatLng()], {
+                        createMarker: function(i, wp) {
+                            if (i == 0) {
+                                return L.marker(wp.latLng, { icon: markerAtr });
+                            } else {
+                                return L.marker(wp.latLng, { icon: destMarkerAtr });
+                            }
                         }
-                    }
-                }),
-                routeWhileDragging: false,
-                fitSelectedRoutes: true
-            }).addTo(map);
+                    }),
+                    routeWhileDragging: false,
+                    fitSelectedRoutes: true
+                }).addTo(map);
 
-            r = control.getRouter();
+                r = control.getRouter();
 
-            r.route(control.getWaypoints(), function(err, routes) {
-                if (err) {
-                    ons.notification.alert({
-                        message: 'Total distance and time of your journey could not be retrieved. Please try repositioning your destination marker.',
-                        title: 'Journey Controller Warning',
-                        buttonLabel: 'OK',
-                        animation: 'default'
-                    });
-                } else if (routes[0].summary.totalDistance < 1000) {
-                    ons.notification.alert({
-                        message: "Total distance of your journey can't be less than 1000m. Please try repositioning your destination marker.",
-                        title: 'Journey Controller Warning',
-                        buttonLabel: 'OK',
-                        animation: 'default'
-                    });
-                } else {
-                    totalDist = routes[0].summary.totalDistance;
-                    totalTime = routes[0].summary.totalTime;
-                    journeyWaypoints = [].concat.apply([], routes[0].coordinates);
+                r.route(control.getWaypoints(), function(err, routes) {
+                    if (err) {
+                        ons.notification.alert({
+                            message: 'Total distance and time of your journey could not be retrieved. Please try repositioning your destination marker.',
+                            title: 'Journey Controller Warning',
+                            buttonLabel: 'OK',
+                            animation: 'default'
+                        });
+                        map.remove();
+                        loadMap();
+                    } else if (routes[0].summary.totalDistance < 1000) {
+                        ons.notification.alert({
+                            message: "Total distance of your journey can't be less than 1000m. Please try repositioning your destination marker.",
+                            title: 'Journey Controller Warning',
+                            buttonLabel: 'OK',
+                            animation: 'default'
+                        });
+                        map.remove();
+                        loadMap();
+                    } else {
+                        totalDist = routes[0].summary.totalDistance;
+                        totalTime = routes[0].summary.totalTime;
+                        journeyWaypoints = [].concat.apply([], routes[0].coordinates);
 
-                    ons.notification.confirm({
-                        //messageHTML: 'Please insert date and time<br><input type="datetime-local" id="schedule" required>',
-                        messageHTML: "Please insert date <br /> <input type='date' id='scheduleD' required><br />And time<br><input type='time' id='scheduleT' required>", //$(function(){ $('#schedule').appendDtpicker();});
-                        title: 'Journey Schedule',
-                        buttonLabels: ['Cancel', 'Next'],
-                        animation: 'default',
-                        primaryButtonIndex: 1,
-                        cancelable: true,
+                        ons.notification.confirm({
+                            //messageHTML: 'Please insert date and time<br><input type="datetime-local" id="schedule" required>',
+                            messageHTML: "Please insert date <br /> <input type='date' id='scheduleD' required><br />And time<br><input type='time' id='scheduleT' required>", //$(function(){ $('#schedule').appendDtpicker();});
+                            title: 'Journey Schedule',
+                            buttonLabels: ['Cancel', 'Next'],
+                            animation: 'default',
+                            primaryButtonIndex: 1,
+                            cancelable: true,
 
-                        callback: function(index) {
-                            switch (index) {
-                                case 0:
-                                    if (control) {
-                                        control.removeFrom(map); //need change here
-                                        control = null;
-                                    }
-                                    break;
-                                case 1:
-                                    // IF no date or past dateinserted
-                                    var d1 = new Date(
-                                        document.getElementById('scheduleD').value +
-                                        'T' +
-                                        document.getElementById('scheduleT').value +
-                                        'Z'
-                                    );
-                                    d1.setHours(d1.getHours() + d1.getTimezoneOffset() / 60);
-                                    var d2 = new Date();
-
-                                    if (!document.getElementById('scheduleD').value) {
-                                        ons.notification.alert({
-                                            title: 'Warning',
-                                            animation: 'default',
-                                            message: "Date can't be empty!",
-
-                                            callback: function() {
-                                                control.removeFrom(map);
-                                                control = null;
-                                                createJourney();
-                                            }
-                                        });
-                                    } else if (!document.getElementById('scheduleT').value) {
-                                        ons.notification.alert({
-                                            title: 'Warning',
-                                            animation: 'default',
-                                            message: "Time can't be empty!",
-
-                                            callback: function() {
-                                                control.removeFrom(map);
-                                                control = null;
-                                                createJourney();
-                                            }
-                                        });
-                                    } else if (d1 < d2) {
-                                        ons.notification.alert({
-                                            title: 'Warning',
-                                            animation: 'default',
-                                            message: "Date can't be past!",
-
-                                            callback: function() {
-                                                control.removeFrom(map);
-                                                control = null;
-                                                createJourney();
-                                            }
-                                        });
-                                    } else if (
-                                        Math.floor(d1.getTime() / (1000 * 60 * 60 * 24) - d2.getTime() / (1000 * 60 * 60 * 24)) >=
-                                        scheduleLimitInDays
-                                    ) {
-                                        ons.notification.alert({
-                                            title: 'Warning',
-                                            animation: 'default',
-                                            message: 'Schedule must be less than ' + scheduleLimitInDays + ' days ahead!',
-
-                                            callback: function() {
-                                                control.removeFrom(map);
-                                                control = null;
-                                                createJourney();
-                                            }
-                                        });
-                                    } else {
-                                        schedule = new Date(
+                            callback: function(index) {
+                                switch (index) {
+                                    case 0:
+                                        if (control) {
+                                            // control.removeFrom(map); //need change here
+                                            control = null;
+                                        }
+                                        break;
+                                    case 1:
+                                        // IF no date or past dateinserted
+                                        var d1 = new Date(
                                             document.getElementById('scheduleD').value +
                                             'T' +
                                             document.getElementById('scheduleT').value +
                                             'Z'
                                         );
-                                        schedule.setHours(schedule.getHours() + schedule.getTimezoneOffset() / 60);
+                                        d1.setHours(d1.getHours() + d1.getTimezoneOffset() / 60);
+                                        var d2 = new Date();
 
-                                        var dur = totalTime;
-
-                                        if (dur < 3600) {
-                                            dur = parseInt(dur / 60, 10) + 'min';
-                                        } else {
-                                            dur = parseInt(dur / 3600, 10) + 'h ' + parseInt(dur % 3600, 10) + 'm';
-                                        }
-
-                                        var journeyHtml =
-                                            '<ons-row><ons-col width="80px" class="journey-left"><div class="journey-date">' +
-                                            (schedule.getMonth() + 1) +
-                                            '/' +
-                                            schedule.getDate() +
-                                            '/' +
-                                            schedule.getFullYear() +
-                                            '</div><ons-icon icon="fa-clock-o"></ons-icon>' +
-                                            schedule.getHours() +
-                                            ':' +
-                                            schedule.getMinutes() +
-                                            '</div></ons-col><ons-col width="6px" class="journey-center" ng-style="{backgroundColor: &#39;#3399ff&#39;}"></ons-col><ons-col class="journey-right"><div class="journey-info"></div><div class="journey-info"><ons-icon icon="fa-home"></ons-icon>&nbsp;' +
-                                            homeAddress +
-                                            '</div><div class="journey-info"><ons-icon icon="fa-crosshairs"></ons-icon>&nbsp;' +
-                                            destAddress +
-                                            '</div><div class="journey-info"><ons-icon icon="fa-arrows-h"></ons-icon>&nbsp;' +
-                                            (totalDist / 1000).toFixed(1) +
-                                            'km</div><div class="journey-info"><ons-icon icon="fa-clock-o"></ons-icon>&nbsp;' +
-                                            dur +
-                                            '</div></ons-col></ons-row>';
-
-                                        if (userVehicleOk()) {
-                                            ons.notification.confirm({
-                                                messageHTML: journeyHtml,
-                                                //messageHTML: 'From:&nbsp;"'+homeAddress+'"<br>To:&nbsp;"'+destAddress+'"<br>On:&nbsp;'+(schedule.getMonth()+1)+'/'+schedule.getDate()+'/'+schedule.getFullYear()+'&nbsp;'+schedule.getHours()+':'+schedule.getMinutes()+'<br>Total distance:&nbsp;'+(totalDist/1000).toFixed(1)+'km<br>Total time:&nbsp;'+dur,
-                                                title: 'Journey Details',
-                                                buttonLabels: ['Driver', 'Passenger'],
+                                        if (!document.getElementById('scheduleD').value) {
+                                            ons.notification.alert({
+                                                title: 'Warning',
                                                 animation: 'default',
-                                                primaryButtonIndex: 1,
-                                                cancelable: true,
+                                                message: "Date can't be empty!",
 
-                                                callback: function(index) {
-                                                    // -1: Cancel
-                                                    // 0-: Button index from the left
-                                                    switch (index) {
-                                                        case 0:
-                                                            var veh = JSON.parse(window.localStorage.getItem('vehicles'));
-                                                            var html = '';
-                                                            var i;
-
-                                                            if (veh) {
-                                                                for (var i in veh) {
-                                                                    if (veh.hasOwnProperty(i)) {
-                                                                        if (veh[i]) {
-                                                                            //vehicle_picturewp
-                                                                            //var pic = veh[i].imagePath;
-                                                                            var brand = veh[i].brand;
-                                                                            var model = veh[i].model;
-                                                                            html =
-                                                                                html +
-                                                                                '<ons-list-item modifier="tappable">' +
-                                                                                '<label class="radio-button radio-button--list-item">' +
-                                                                                '<input type="radio" name="car" id = ' +
-                                                                                "'" +
-                                                                                i +
-                                                                                "'" +
-                                                                                ' checked="checked">' +
-                                                                                '<div class="radio-button__checkmark radio-button--list-item__checkmark"></div>' +
-                                                                                brand +
-                                                                                ' ' +
-                                                                                model +
-                                                                                '</label>' +
-                                                                                '</ons-list-item>';
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-
-                                                            ons.notification.alert({
-                                                                title: 'Car Selection',
-                                                                messageHTML: '<ons-list>' + html + '</ons-list>',
-                                                                animation: 'default',
-                                                                callback: function() {
-                                                                    if (veh) {
-                                                                        for (var i in veh) {
-                                                                            if (veh.hasOwnProperty(i)) {
-                                                                                if (veh[i]) {
-                                                                                    if (document.getElementById(i).checked) {
-                                                                                        journeyVehicle = i;
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-
-                                                                    ons.notification.alert({
-                                                                        title: 'Available Seats Selection',
-                                                                        messageHTML: '<input type="number" id="seatsAvailable" value="' +
-                                                                            (veh[i].seats - 1) +
-                                                                            '" min="1" max="' +
-                                                                            (veh[i].seats - 1) +
-                                                                            '"> (Range for this car: 1-' +
-                                                                            (veh[i].seats - 1) +
-                                                                            ')',
-                                                                        animation: 'default',
-                                                                        callback: function() {
-                                                                            mode = 'driver';
-                                                                            seatsAvailable = parseInt(document.getElementById('seatsAvailable').value, 10);
-                                                                            saveJourneyInf();
-                                                                            destMarker.closePopup();
-                                                                            map.removeLayer(destMarker);
-                                                                            control.removeFrom(map);
-                                                                            control = null;
-                                                                            getCurrentPosition();
-                                                                        }
-                                                                    });
-                                                                }
-                                                            });
-
-                                                            break;
-                                                        case 1:
-                                                            mode = 'passenger';
-                                                            saveJourneyInf();
-                                                            destMarker.closePopup();
-                                                            map.removeLayer(destMarker);
-                                                            control.removeFrom(map);
-                                                            control = null;
-                                                            getCurrentPosition();
-                                                            break;
-                                                    }
-                                                }
-                                            });
-                                        } else {
-                                            ons.notification.confirm({
-                                                messageHTML: journeyHtml,
-                                                //messageHTML: 'From:&nbsp;"'+homeAddress+'"<br>To:&nbsp;"'+destAddress+'"<br>On:&nbsp;'+(schedule.getMonth()+1)+'/'+schedule.getDate()+'/'+schedule.getFullYear()+'&nbsp;'+schedule.getHours()+':'+schedule.getMinutes()+'<br>Total distance:&nbsp;'+(totalDist/1000).toFixed(1)+'km<br>Total time:&nbsp;'+dur,
-                                                title: 'Journey Details',
-                                                buttonLabels: ['Passenger'],
-                                                animation: 'default',
-                                                primaryButtonIndex: 1,
-                                                cancelable: true,
-
-                                                callback: function(index) {
-                                                    // -1: Cancel
-                                                    // 0-: Button index from the left
-                                                    mode = 'passenger';
-                                                    saveJourneyInf();
-                                                    destMarker.closePopup();
-                                                    map.removeLayer(destMarker);
-                                                    control.removeFrom(map);
+                                                callback: function() {
+                                                    // control.removeFrom(map);
                                                     control = null;
-                                                    getCurrentPosition();
+                                                    createJourney();
                                                 }
                                             });
+                                        } else if (!document.getElementById('scheduleT').value) {
+                                            ons.notification.alert({
+                                                title: 'Warning',
+                                                animation: 'default',
+                                                message: "Time can't be empty!",
+
+                                                callback: function() {
+                                                    // control.removeFrom(map);
+                                                    control = null;
+                                                    createJourney();
+                                                }
+                                            });
+                                        } else if (d1 < d2) {
+                                            ons.notification.alert({
+                                                title: 'Warning',
+                                                animation: 'default',
+                                                message: "Date can't be past!",
+
+                                                callback: function() {
+                                                    // control.removeFrom(map);
+                                                    control = null;
+                                                    createJourney();
+                                                }
+                                            });
+                                        } else if (
+                                            Math.floor(d1.getTime() / (1000 * 60 * 60 * 24) - d2.getTime() / (1000 * 60 * 60 * 24)) >=
+                                            scheduleLimitInDays
+                                        ) {
+                                            ons.notification.alert({
+                                                title: 'Warning',
+                                                animation: 'default',
+                                                message: 'Schedule must be less than ' + scheduleLimitInDays + ' days ahead!',
+
+                                                callback: function() {
+                                                    // control.removeFrom(map);
+                                                    control = null;
+                                                    createJourney();
+                                                }
+                                            });
+                                        } else {
+                                            schedule = new Date(
+                                                document.getElementById('scheduleD').value +
+                                                'T' +
+                                                document.getElementById('scheduleT').value +
+                                                'Z'
+                                            );
+                                            schedule.setHours(schedule.getHours() + schedule.getTimezoneOffset() / 60);
+
+                                            var dur = totalTime;
+
+                                            if (dur < 3600) {
+                                                dur = parseInt(dur / 60, 10) + 'min';
+                                            } else {
+                                                dur = parseInt(dur / 3600, 10) + 'h ' + parseInt(dur % 3600, 10) + 'm';
+                                            }
+
+                                            var journeyHtml =
+                                                '<ons-row><ons-col width="80px" class="journey-left"><div class="journey-date">' +
+                                                (schedule.getMonth() + 1) +
+                                                '/' +
+                                                schedule.getDate() +
+                                                '/' +
+                                                schedule.getFullYear() +
+                                                '</div><ons-icon icon="fa-clock-o"></ons-icon>' +
+                                                schedule.getHours() +
+                                                ':' +
+                                                schedule.getMinutes() +
+                                                '</div></ons-col><ons-col width="6px" class="journey-center" ng-style="{backgroundColor: &#39;#3399ff&#39;}"></ons-col><ons-col class="journey-right"><div class="journey-info"></div><div class="journey-info"><ons-icon icon="fa-home"></ons-icon>&nbsp;' +
+                                                homeAddress +
+                                                '</div><div class="journey-info"><ons-icon icon="fa-crosshairs"></ons-icon>&nbsp;' +
+                                                destAddress +
+                                                '</div><div class="journey-info"><ons-icon icon="fa-arrows-h"></ons-icon>&nbsp;' +
+                                                (totalDist / 1000).toFixed(1) +
+                                                'km</div><div class="journey-info"><ons-icon icon="fa-clock-o"></ons-icon>&nbsp;' +
+                                                dur +
+                                                '</div></ons-col></ons-row>';
+
+                                            if (userVehicleOk()) {
+                                                ons.notification.confirm({
+                                                    messageHTML: journeyHtml,
+                                                    //messageHTML: 'From:&nbsp;"'+homeAddress+'"<br>To:&nbsp;"'+destAddress+'"<br>On:&nbsp;'+(schedule.getMonth()+1)+'/'+schedule.getDate()+'/'+schedule.getFullYear()+'&nbsp;'+schedule.getHours()+':'+schedule.getMinutes()+'<br>Total distance:&nbsp;'+(totalDist/1000).toFixed(1)+'km<br>Total time:&nbsp;'+dur,
+                                                    title: 'Journey Details',
+                                                    buttonLabels: ['Driver', 'Passenger'],
+                                                    animation: 'default',
+                                                    primaryButtonIndex: 1,
+                                                    cancelable: true,
+
+                                                    callback: function(index) {
+                                                        // -1: Cancel
+                                                        // 0-: Button index from the left
+                                                        switch (index) {
+                                                            case 0:
+                                                                var veh = JSON.parse(window.localStorage.getItem('vehicles'));
+                                                                var html = '';
+                                                                var i = 0;
+                                                                console.log("My car is:");
+                                                                console.log(veh);
+                                                                // if (veh) {
+                                                                //     for (var i in veh) {
+                                                                //         if (veh.hasOwnProperty(i)) {
+                                                                //             if (veh[i]) {
+                                                                //                 //vehicle_picturewp
+                                                                //                 //var pic = veh[i].imagePath;
+                                                                //                 var brand = veh[i].brand;
+                                                                //                 var model = veh[i].model;
+                                                                //                 html =
+                                                                //                     html +
+                                                                //                     '<ons-list-item modifier="tappable">' +
+                                                                //                     '<label class="radio-button radio-button--list-item">' +
+                                                                //                     '<input type="radio" name="car" id = ' +
+                                                                //                     "'" +
+                                                                //                     i +
+                                                                //                     "'" +
+                                                                //                     ' checked="checked">' +
+                                                                //                     '<div class="radio-button__checkmark radio-button--list-item__checkmark"></div>' +
+                                                                //                     brand +
+                                                                //                     ' ' +
+                                                                //                     model +
+                                                                //                     '</label>' +
+                                                                //                     '</ons-list-item>';
+                                                                //             }
+                                                                //         }
+                                                                //     }
+                                                                // }
+                                                                if (veh) {
+                                                                    // for (var i in veh) {
+                                                                    // if (veh.hasOwnProperty(i)) {
+                                                                    // if (veh[i]) {
+                                                                    //vehicle_picturewp
+                                                                    //var pic = veh[i].imagePath;
+                                                                    var brand = veh.brand;
+                                                                    var model = veh.model;
+                                                                    html =
+                                                                        html +
+                                                                        '<ons-list-item modifier="tappable">' +
+                                                                        '<label class="radio-button radio-button--list-item">' +
+                                                                        '<input type="radio" name="car" id = ' +
+                                                                        "'" +
+                                                                        i +
+                                                                        "'" +
+                                                                        ' checked="checked">' +
+                                                                        '<div class="radio-button__checkmark radio-button--list-item__checkmark"></div>' +
+                                                                        brand +
+                                                                        ' ' +
+                                                                        model +
+                                                                        '</label>' +
+                                                                        '</ons-list-item>';
+                                                                    // }
+                                                                    // }
+                                                                    // }
+                                                                }
+
+                                                                // ons.notification.alert({
+                                                                //     title: 'Car Selection',
+                                                                //     messageHTML: '<ons-list>' + html + '</ons-list>',
+                                                                //     animation: 'default',
+                                                                //     callback: function() {
+                                                                //         if (veh) {
+                                                                //             for (var i in veh) {
+                                                                //                 if (veh.hasOwnProperty(i)) {
+                                                                //                     if (veh[i]) {
+                                                                //                         if (document.getElementById(i).checked) {
+                                                                //                             journeyVehicle = i;
+                                                                //                         }
+                                                                //                     }
+                                                                //                 }
+                                                                //             }
+                                                                //         }
+
+                                                                ons.notification.alert({
+                                                                    title: 'Car Selection',
+                                                                    messageHTML: '<ons-list>' + html + '</ons-list>',
+                                                                    animation: 'default',
+                                                                    callback: function() {
+                                                                        if (veh) {
+                                                                            // for (var i in veh) {
+                                                                            // if (veh.hasOwnProperty(i)) {
+                                                                            // if (veh[i]) {
+                                                                            if (document.getElementById(i).checked) {
+                                                                                journeyVehicle = i;
+                                                                            }
+                                                                            // }
+                                                                            // }
+                                                                            // }
+                                                                        }
+
+                                                                        // ons.notification.alert({
+                                                                        //     title: 'Available Seats Selection',
+                                                                        //     messageHTML: '<input type="number" id="seatsAvailable" value="' +
+                                                                        //         (veh[i].seats - 1) +
+                                                                        //         '" min="1" max="' +
+                                                                        //         (veh[i].seats - 1) +
+                                                                        //         '"> (Range for this car: 1-' +
+                                                                        //         (veh[i].seats - 1) +
+                                                                        //         ')',
+                                                                        //     animation: 'default',
+                                                                        //     callback: function() {
+                                                                        //         mode = 'driver';
+                                                                        //         seatsAvailable = parseInt(document.getElementById('seatsAvailable').value, 10);
+                                                                        //         saveJourneyInf();
+                                                                        //         destMarker.closePopup();
+                                                                        //         map.removeLayer(destMarker);
+                                                                        //         // control.removeFrom(map);
+                                                                        //         control = null;
+                                                                        //         getCurrentPosition();
+                                                                        //     }
+                                                                        // });
+                                                                        ons.notification.alert({
+                                                                            title: 'Available Seats Selection',
+                                                                            messageHTML: '<input type="number" id="seatsAvailable" value="' +
+                                                                                (veh.seats - 1) +
+                                                                                '" min="1" max="' +
+                                                                                (veh.seats - 1) +
+                                                                                '"> (Range for this car: 1-' +
+                                                                                (veh.seats - 1) +
+                                                                                ')',
+                                                                            animation: 'default',
+                                                                            callback: function() {
+                                                                                mode = 'driver';
+                                                                                seatsAvailable = parseInt(document.getElementById('seatsAvailable').value, 10);
+                                                                                saveJourneyInf();
+                                                                                destMarker.closePopup();
+                                                                                map.removeLayer(destMarker);
+                                                                                // control.removeFrom(map);
+                                                                                control = null;
+                                                                                getCurrentPosition();
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                });
+
+                                                                break;
+                                                            case 1:
+                                                                mode = 'passenger';
+                                                                saveJourneyInf();
+                                                                destMarker.closePopup();
+                                                                map.removeLayer(destMarker);
+                                                                // control.removeFrom(map);
+                                                                control = null;
+                                                                getCurrentPosition();
+                                                                break;
+                                                        }
+                                                    }
+                                                });
+                                            } else {
+                                                ons.notification.confirm({
+                                                    messageHTML: journeyHtml,
+                                                    //messageHTML: 'From:&nbsp;"'+homeAddress+'"<br>To:&nbsp;"'+destAddress+'"<br>On:&nbsp;'+(schedule.getMonth()+1)+'/'+schedule.getDate()+'/'+schedule.getFullYear()+'&nbsp;'+schedule.getHours()+':'+schedule.getMinutes()+'<br>Total distance:&nbsp;'+(totalDist/1000).toFixed(1)+'km<br>Total time:&nbsp;'+dur,
+                                                    title: 'Journey Details',
+                                                    buttonLabels: ['Passenger'],
+                                                    animation: 'default',
+                                                    primaryButtonIndex: 1,
+                                                    cancelable: true,
+
+                                                    callback: function(index) {
+                                                        // -1: Cancel
+                                                        // 0-: Button index from the left
+                                                        mode = 'passenger';
+                                                        saveJourneyInf();
+                                                        destMarker.closePopup();
+                                                        map.removeLayer(destMarker);
+                                                        // control.removeFrom(map);
+                                                        control = null;
+                                                        getCurrentPosition();
+                                                    }
+                                                });
+                                            }
+                                            break;
                                         }
-                                        break;
-                                    }
+                                }
                             }
-                        }
-                    });
-                }
+                        });
+                    }
+                });
+            }
+        } else {
+            ons.notification.alert({
+                message: 'Please tap on the map to select a destination before you continue.',
+                title: 'No destination selected!',
+                buttonLabel: 'OK',
+                animation: 'default'
             });
         }
     } else {
         ons.notification.alert({
-            message: 'Please tap on the map to select a destination before you continue.',
-            title: 'No destination selected!',
+            message: 'Please fill in all your personal information before creating a journey.',
+            title: 'Personal Information Missing!',
             buttonLabel: 'OK',
             animation: 'default'
         });
+        loadMap();
     }
-    // } else {
-    //     ons.notification.alert({
-    //         message: 'Please fill in all your personal information before creating a journey.',
-    //         title: 'Personal Information Missing!',
-    //         buttonLabel: 'OK',
-    //         animation: 'default'
-    //     });
-    // }
 }
 
 function comingSoon() {
