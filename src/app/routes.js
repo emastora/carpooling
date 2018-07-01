@@ -54,14 +54,15 @@ module.exports = (app, passport) => {
         // res.send('Hello World');
         res.render('CarPoolingIndex', {
             user: req.user
-                // user: 'Stelios'
         });
     });
 
     // logout
     app.get('/logout', (req, res) => {
-        // req.logout();
-        res.render('index.ejs');
+        req.logout();
+        // successRedirect: '/'
+        res.redirect('/');
+        // res.render('index');
     });
 
     // app.get('/map', (req, res) => {

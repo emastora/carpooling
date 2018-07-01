@@ -512,6 +512,8 @@ function getToken() {
     };
 }
 
+//NOT USED
+
 function loginFB() {
     openFB.init({ appId: '791967860852638' });
     openFB.login(
@@ -534,9 +536,10 @@ function logout() {
                 case 0:
                     break;
                 case 1:
+                    // "app.slidingMenu.setMainPage('/', {closeMenu: true})"
                     // window.localStorage.clear();
                     // location.reload();
-                    axios.get('/')
+                    axios.get('/logout')
                         .then(function(response) {
                             console.log("User logged out successfully")
                         });

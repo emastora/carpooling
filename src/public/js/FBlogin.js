@@ -32,7 +32,7 @@ function statusChangeCallback(response) {
     if (response.status === 'connected') {
         console.log("logged in and authenticated");
         // setElements(true);
-        testAPI();
+        // testAPI();
     } else {
         console.log("Not authenticated")
             // setElements(false);
@@ -62,10 +62,11 @@ function checkLoginState() {
 //     }
 // }
 
-function logout() {
+function logoutFB() {
     FB.logout(function(response) {
         setElements(false);
     });
+    console.log('Logged out of Facebook');
 }
 
 
@@ -73,15 +74,27 @@ function testAPI() {
     FB.api('/me?fields=name,email,birthday,location', function(response) {
         if (response && !response.error) {
             console.log(response);
+            // window.localStorage.setItem("FBprofile", JSON.stringify(response));
             buildProfile(response);
         }
-        FB.api('/me/feed', function(response) {
-            if (response && !response.error) {
-                buildFeed(response);
-            }
-        });
+        // FB.api('/me/feed', function(response) {
+        //     if (response && !response.error) {
+        //         // window.localStorage.setItem("FBprofile.feed", response);
+        //         buildFeed(response);
+        //     }
+        // });
     })
 }
+
+function testAPI2() {
+    FB.api('/me/feed', function(response) {
+        if (response && !response.error) {
+            // window.localStorage.setItem("FBprofile.feed", response);
+            buildFeed(response);
+        }
+    });
+}
+
 
 function buildProfile(user) {
     console.log(user);
@@ -92,16 +105,21 @@ function buildProfile(user) {
         <li class="list-group-item">Email: ${user.email}</li>
       </ul>
     `;
-    console.log(profile);
-    window.onload = function what() {
-        document.getElementById('profile').innerHTML = profile;
-    }
+    // let name = user.name;
+    // console.log(name);
+    // let profile = JSON.parse(window.localStorage.getItem('FBprofile'));
+    // console.log(profile);
+    // document.getElementById('profileFB').innerHTML = user.name;
+    // window.onload = function what() {
+    //     document.getElementById('profileFB').innerHTML = profile;
+    // }
+    document.getElementById('profileFB').innerHTML = profile;
 }
-
 /* <li class="list-group-item">User ID: ${user.location.name}</li> */
 /* <li class="list-group-item">Birthday: ${user.birthday}</li> */
 
 function buildFeed(feed) {
+    console.log(feed);
     let output = '<h3>Latest Posts</h3>';
     for (let i in feed.data) {
         if (feed.data[i].message) {

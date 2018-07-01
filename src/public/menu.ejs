@@ -55,7 +55,7 @@
             }
         </style>
 
-        <ons-list-item modifier="tappable" id="logout" class="list__item__line-height" onclick="logout()">
+        <ons-list-item modifier="tappable" id="logoutFB" class="list__item__line-height" onclick="logoutFB()">
             <i class="fa fa-comments-o fa-lg" style="color: #666"></i> &nbsp; Logout
         </ons-list-item>
 
@@ -103,7 +103,11 @@
             <i class="fa fa-info fa-lg" style="color: #666"></i> &nbsp; About
         </ons-list-item>
 
-        <ons-list-item modifier="tappable" class="list__item__line-height" onclick="logout();">
+        <!-- <ons-list-item modifier="tappable" class="list__item__line-height" onclick="logout();">
+            <i class="fa fa-sign-out fa-lg" style="color: #666"></i> &nbsp; Sign Out
+        </ons-list-item> -->
+
+        <ons-list-item modifier="tappable" class="list__item__line-height" onclick="app.slidingMenu.setMainPage('/', {closeMenu: true})">
             <i class="fa fa-sign-out fa-lg" style="color: #666"></i> &nbsp; Sign Out
         </ons-list-item>
 

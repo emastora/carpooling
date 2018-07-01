@@ -729,6 +729,8 @@ function saveJourneyInf() {
 
     if (mode == 'driver') {
         var oid = guid();
+        console.log(oid);
+
         //set it to the object
         journey1.setOid(oid);
         journey1.vehicle = journeyVehicle,
@@ -736,6 +738,7 @@ function saveJourneyInf() {
             journey1.seatsAvailable = seatsAvailable,
             journey1.notes = notes
 
+        journeys[oid] = journey1;
         window.localStorage.setItem('journeys', JSON.stringify(journeys));
 
         console.log(journey1);
@@ -749,6 +752,7 @@ function saveJourneyInf() {
         //findMatchingJourney(oid);
         // startIntervalJourneyUpdates(oid);
 
+        // START OF COMMENTS
         //updateCollection(data);
         // createCollection(data, function(r) {
         // console.log(r);
@@ -773,6 +777,7 @@ function saveJourneyInf() {
         mode = "passenger"
             //get a unique id
         var oid = guid();
+        console.log(oid);
         //set it to the object
         journey1.setOid(oid);
         // journey1.vehicle = journeyVehicle,
@@ -788,7 +793,7 @@ function saveJourneyInf() {
             });
 
         //and push it to locastorage as associative array
-        // journeys[oid] = journey1;
+        journeys[oid] = journey1;
         window.localStorage.setItem('journeys', JSON.stringify(journeys));
 
         //Start interval for journey matching
@@ -1307,119 +1312,119 @@ function loadJourneysDriver() {
     if (journ) {
         $('#journeys_list_driver').empty();
         for (var i in journ) {
-            if (journ.hasOwnProperty(i)) {
-                if (journ[i]) {
-                    if (journ[i].mode == 'driver') {
-                        var dep = journ[i].departureAddress;
-                        var dest = journ[i].destinationAddress;
-                        var timestamp = journ[i].schedule;
-                        var date = new Date(timestamp * 1000);
-                        var seconds_left = timestamp - Math.floor(Date.now() / 1000);
-                        var hours_left = parseInt(seconds_left / 3600, 10);
-                        var time_left = '';
-                        var notif = 0;
-                        var jm = journeysMatching;
-                        var notifHTML = '';
-                        var drivHTML = '';
-                        var passHTML = '';
-                        var pendingPassHTML = '';
-                        var acceptedPass = journ[i].acceptedPassengers.length;
-                        var pendingPass = journ[i].pendingPassengers.length;
-                        var seatsAv = journ[i].seatsAvailable;
-                        var notes = journ[i].notes;
-                        var driv;
+            // if (journ.hasOwnProperty(i)) {
+            if (journ[i]) {
+                if (journ[i].mode == 'driver') {
+                    var dep = journ[i].departureAddress;
+                    var dest = journ[i].destinationAddress;
+                    var timestamp = journ[i].schedule;
+                    var date = new Date(timestamp * 1000);
+                    var seconds_left = timestamp - Math.floor(Date.now() / 1000);
+                    var hours_left = parseInt(seconds_left / 3600, 10);
+                    var time_left = '';
+                    var notif = 0;
+                    var jm = journeysMatching;
+                    var notifHTML = '';
+                    var drivHTML = '';
+                    var passHTML = '';
+                    var pendingPassHTML = '';
+                    var acceptedPass = journ[i].acceptedPassengers.length;
+                    var pendingPass = journ[i].pendingPassengers.length;
+                    var seatsAv = journ[i].seatsAvailable;
+                    var notes = journ[i].notes;
+                    var driv;
 
-                        if (journ[i].driver) {
-                            driv = 1;
-                            drivHTML = '<i class="fa fa-check"></i>';
-                        } else {
-                            driv = 0;
-                            drivHTML = '<i class="fa fa-refresh fa-spin"></i>';
-                        }
+                    if (journ[i].driver) {
+                        driv = 1;
+                        drivHTML = '<i class="fa fa-check"></i>';
+                    } else {
+                        driv = 0;
+                        drivHTML = '<i class="fa fa-refresh fa-spin"></i>';
+                    }
 
-                        if (acceptedPass >= seatsAv) {
-                            passHTML = '<i class="fa fa-check"></i>';
-                        } else {
-                            passHTML = '<i class="fa fa-refresh fa-spin"></i>';
-                        }
+                    if (acceptedPass >= seatsAv) {
+                        passHTML = '<i class="fa fa-check"></i>';
+                    } else {
+                        passHTML = '<i class="fa fa-refresh fa-spin"></i>';
+                    }
 
-                        if (jm) {
-                            for (var j in jm) {
-                                if (j == i) {
-                                    for (var k in jm[j]) {
-                                        if (jm[j][k].acceptedPassengers.length < jm[j][k].seatsAvailable) {
-                                            notif = notif + 1;
-                                        }
+                    if (jm) {
+                        for (var j in jm) {
+                            if (j == i) {
+                                for (var k in jm[j]) {
+                                    if (jm[j][k].acceptedPassengers.length < jm[j][k].seatsAvailable) {
+                                        notif = notif + 1;
                                     }
                                 }
                             }
                         }
-
-                        if (notif > 0) {
-                            notifHTML = '<span class="list-item-note"><span class="notification">matches:' + notif + '</span></span>';
-                        }
-
-                        if (pendingPass > 0) {
-                            pendingPassHTML = '<span class="notification">pending:' + pendingPass + '</span>';
-                        }
-
-                        if (hours_left < 1) {
-                            time_left = parseInt(seconds_left / 60, 10) + 'min';
-                        } else if (hours_left <= 24) {
-                            time_left = hours_left + 'h';
-                        } else {
-                            time_left = parseInt(hours_left / 24, 10) + 'd ' + (hours_left % 24) + 'h';
-                        }
-
-                        var list_element =
-                            '<ons-list-item modifier="chevron" class="journey" onClick="myNavigator.pushPage(&#39;journey.html&#39;, { animation : &#39;slide&#39;} );journeySelected(' +
-                            "'" +
-                            i +
-                            "'" +
-                            ');">' +
-                            '<ons-row>' +
-                            '<ons-col width="80px" class="journey-left"><div class="journey-date">' +
-                            (date.getMonth() + 1) +
-                            '/' +
-                            date.getDate() +
-                            '/' +
-                            date.getFullYear() +
-                            '</div><div class="journey-date"><ons-icon icon="fa-clock-o"></ons-icon>' +
-                            date.getHours() +
-                            ':' +
-                            date.getMinutes() +
-                            '</div>' +
-                            '<div class="journey-time_left">' +
-                            time_left +
-                            '</div><div class="journey-seats"><i class="fa fa-users"></i>&nbsp;' +
-                            acceptedPass +
-                            '/' +
-                            seatsAv +
-                            '&nbsp;' +
-                            passHTML +
-                            '</div><div class="journey-seats"><i class="fa fa-car"></i>&nbsp;' +
-                            driv +
-                            '/1&nbsp;' +
-                            drivHTML +
-                            '</div></ons-col>' +
-                            '<ons-col width="6px" class="journey-center" ng-style="{backgroundColor: &#39;#3399ff&#39;}"></ons-col>' +
-                            '<ons-col class="journey-right"><div class="journey-name">Journey' +
-                            notifHTML +
-                            '</div><div class="journey-info"><div><ons-icon icon="fa-home"></ons-icon>' +
-                            dep +
-                            '</div><div><ons-icon icon="fa-crosshairs"></ons-icon>' +
-                            dest +
-                            '</div></div>' +
-                            pendingPassHTML +
-                            '</ons-col>' +
-                            '</ons-row>' +
-                            '</ons-list-item>';
-                        var elm = $(list_element);
-                        elm.appendTo($('#journeys_list_driver')); // Insert to the DOM first
-                        ons.compile(elm[0]); // The argument must be a HTMLElement object
                     }
+
+                    if (notif > 0) {
+                        notifHTML = '<span class="list-item-note"><span class="notification">matches:' + notif + '</span></span>';
+                    }
+
+                    if (pendingPass > 0) {
+                        pendingPassHTML = '<span class="notification">pending:' + pendingPass + '</span>';
+                    }
+
+                    if (hours_left < 1) {
+                        time_left = parseInt(seconds_left / 60, 10) + 'min';
+                    } else if (hours_left <= 24) {
+                        time_left = hours_left + 'h';
+                    } else {
+                        time_left = parseInt(hours_left / 24, 10) + 'd ' + (hours_left % 24) + 'h';
+                    }
+
+                    var list_element =
+                        '<ons-list-item modifier="chevron" class="journey" onClick="myNavigator.pushPage(&#39;journey.html&#39;, { animation : &#39;slide&#39;} );journeySelected(' +
+                        "'" +
+                        i +
+                        "'" +
+                        ');">' +
+                        '<ons-row>' +
+                        '<ons-col width="80px" class="journey-left"><div class="journey-date">' +
+                        (date.getMonth() + 1) +
+                        '/' +
+                        date.getDate() +
+                        '/' +
+                        date.getFullYear() +
+                        '</div><div class="journey-date"><ons-icon icon="fa-clock-o"></ons-icon>' +
+                        date.getHours() +
+                        ':' +
+                        date.getMinutes() +
+                        '</div>' +
+                        '<div class="journey-time_left">' +
+                        time_left +
+                        '</div><div class="journey-seats"><i class="fa fa-users"></i>&nbsp;' +
+                        acceptedPass +
+                        '/' +
+                        seatsAv +
+                        '&nbsp;' +
+                        passHTML +
+                        '</div><div class="journey-seats"><i class="fa fa-car"></i>&nbsp;' +
+                        driv +
+                        '/1&nbsp;' +
+                        drivHTML +
+                        '</div></ons-col>' +
+                        '<ons-col width="6px" class="journey-center" ng-style="{backgroundColor: &#39;#3399ff&#39;}"></ons-col>' +
+                        '<ons-col class="journey-right"><div class="journey-name">Journey' +
+                        notifHTML +
+                        '</div><div class="journey-info"><div><ons-icon icon="fa-home"></ons-icon>' +
+                        dep +
+                        '</div><div><ons-icon icon="fa-crosshairs"></ons-icon>' +
+                        dest +
+                        '</div></div>' +
+                        pendingPassHTML +
+                        '</ons-col>' +
+                        '</ons-row>' +
+                        '</ons-list-item>';
+                    var elm = $(list_element);
+                    elm.appendTo($('#journeys_list_driver')); // Insert to the DOM first
+                    ons.compile(elm[0]); // The argument must be a HTMLElement object
                 }
             }
+            // }
         }
     }
 }
@@ -1430,107 +1435,108 @@ function loadJourneysPassenger() {
 
     if (journ) {
         for (var i in journ) {
-            if (journ.hasOwnProperty(i)) {
-                if (journ[i]) {
-                    if (journ[i].mode == 'passenger') {
-                        var dep = journ[i].departureAddress;
-                        var dest = journ[i].destinationAddress;
-                        var timestamp = journ[i].schedule;
-                        var date = new Date(timestamp * 1000);
-                        var seconds_left = timestamp - Math.floor(Date.now() / 1000);
-                        var hours_left = parseInt(seconds_left / 3600, 10);
-                        var time_left = '';
-                        var notif = 0;
-                        var jm = journeysMatching;
-                        var notifHTML = '';
-                        var drivHTML = '';
-                        var passHTML = '';
-                        var acceptedPass = journ[i].acceptedPassengers.length;
-                        var pendingPass = journ[i].pendingPassengers.length;
-                        var driv;
+            // if (journ.hasOwnProperty(i)) {
+            if (journ[i]) {
+                if (journ[i].mode == 'passenger') {
+                    var dep = journ[i].departureAddress;
+                    var dest = journ[i].destinationAddress;
+                    var timestamp = journ[i].schedule;
+                    var date = new Date(timestamp * 1000);
+                    var seconds_left = timestamp - Math.floor(Date.now() / 1000);
+                    var hours_left = parseInt(seconds_left / 3600, 10);
+                    var time_left = '';
+                    var notif = 0;
+                    var jm = journeysMatching;
+                    var notifHTML = '';
+                    var drivHTML = '';
+                    var passHTML = '';
+                    var acceptedPass = journ[i].acceptedPassengers.length;
+                    var pendingPass = journ[i].pendingPassengers.length;
+                    var driv;
 
-                        if (journ[i].driver) {
-                            driv = 1;
-                            drivHTML = '<i class="fa fa-check"></i>';
-                        } else {
-                            driv = 0;
-                            drivHTML = '<i class="fa fa-refresh fa-spin"></i>';
-                        }
+                    if (journ[i].driver) {
+                        driv = 1;
+                        drivHTML = '<i class="fa fa-check"></i>';
+                    } else {
+                        driv = 0;
+                        drivHTML = '<i class="fa fa-refresh fa-spin"></i>';
+                    }
 
-                        if (acceptedPass >= 4) {
-                            passHTML = '<i class="fa fa-check"></i>';
-                        } else {
-                            passHTML = '<i class="fa fa-refresh fa-spin"></i>';
-                        }
+                    if (acceptedPass >= 4) {
+                        passHTML = '<i class="fa fa-check"></i>';
+                    } else {
+                        passHTML = '<i class="fa fa-refresh fa-spin"></i>';
+                    }
 
-                        if (jm) {
-                            for (var j in jm) {
-                                if (j == i) {
-                                    for (var k in jm[j]) {
-                                        if (jm[j][k].acceptedPassengers.length < jm[j][k].seatsAvailable) {
-                                            notif = notif + 1;
-                                        }
+                    if (jm) {
+                        for (var j in jm) {
+                            if (j == i) {
+                                for (var k in jm[j]) {
+                                    if (jm[j][k].acceptedPassengers.length < jm[j][k].seatsAvailable) {
+                                        notif = notif + 1;
                                     }
                                 }
                             }
                         }
-
-                        if (notif > 0) {
-                            notifHTML = '<span class="list-item-note"><span class="notification">matches:' + notif + '</span></span>';
-                        }
-
-                        if (hours_left < 1) {
-                            time_left = parseInt(seconds_left / 60, 10) + 'min';
-                        } else if (hours_left <= 24) {
-                            time_left = hours_left + 'h';
-                        } else {
-                            time_left = parseInt(hours_left / 24, 10) + 'd ' + (hours_left % 24) + 'h';
-                        }
-
-                        var list_element =
-                            '<ons-list-item modifier="chevron" class="journey" onClick="myNavigator.pushPage(&#39;journey.html&#39;, { animation : &#39;slide&#39; } );journeySelected(' +
-                            "'" +
-                            i +
-                            "'" +
-                            ');">' +
-                            '<ons-row>' +
-                            '<ons-col width="80px" class="journey-left"><div class="journey-date">' +
-                            (date.getMonth() + 1) +
-                            '/' +
-                            date.getDate() +
-                            '/' +
-                            date.getFullYear() +
-                            '</div><div class="journey-date"><ons-icon icon="fa-clock-o"></ons-icon>' +
-                            date.getHours() +
-                            ':' +
-                            date.getMinutes() +
-                            '</div>' +
-                            '<div class="journey-time_left">' +
-                            time_left +
-                            '</div><div class="journey-seats"><i class="fa fa-users"></i>&nbsp;' +
-                            acceptedPass +
-                            '/4&nbsp;' +
-                            passHTML +
-                            '</div><div class="journey-seats"><i class="fa fa-car"></i>&nbsp;' +
-                            driv +
-                            '/1&nbsp;' +
-                            drivHTML +
-                            '</div></ons-col>' +
-                            '<ons-col width="6px" class="journey-center" ng-style="{backgroundColor: &#39;#3399ff&#39;}"></ons-col>' +
-                            '<ons-col class="journey-right"><div class="journey-name">Journey' +
-                            notifHTML +
-                            '</div><div class="journey-info"><div><ons-icon icon="fa-home"></ons-icon>' +
-                            dep +
-                            '</div><div><ons-icon icon="fa-crosshairs"></ons-icon>' +
-                            dest +
-                            '</div></div></ons-col>' +
-                            '</ons-row>' +
-                            '</ons-list-item>';
-                        var elm = $(list_element);
-                        elm.appendTo($('#journeys_list_passenger')); // Insert to the DOM first
-                        ons.compile(elm[0]); // The argument must be a HTMLElement object
                     }
+
+                    if (notif > 0) {
+                        notifHTML = '<span class="list-item-note"><span class="notification">matches:' + notif + '</span></span>';
+                    }
+
+                    if (hours_left < 1) {
+                        time_left = parseInt(seconds_left / 60, 10) + 'min';
+                    } else if (hours_left <= 24) {
+                        time_left = hours_left + 'h';
+                    } else {
+                        time_left = parseInt(hours_left / 24, 10) + 'd ' + (hours_left % 24) + 'h';
+                    }
+
+                    var i = 0;
+                    var list_element =
+                        '<ons-list-item modifier="chevron" class="journey" onClick="myNavigator.pushPage(&#39;journey.html&#39;, { animation : &#39;slide&#39; } );journeySelected(' +
+                        "'" +
+                        i +
+                        "'" +
+                        ');">' +
+                        '<ons-row>' +
+                        '<ons-col width="80px" class="journey-left"><div class="journey-date">' +
+                        (date.getMonth() + 1) +
+                        '/' +
+                        date.getDate() +
+                        '/' +
+                        date.getFullYear() +
+                        '</div><div class="journey-date"><ons-icon icon="fa-clock-o"></ons-icon>' +
+                        date.getHours() +
+                        ':' +
+                        date.getMinutes() +
+                        '</div>' +
+                        '<div class="journey-time_left">' +
+                        time_left +
+                        '</div><div class="journey-seats"><i class="fa fa-users"></i>&nbsp;' +
+                        acceptedPass +
+                        '/4&nbsp;' +
+                        passHTML +
+                        '</div><div class="journey-seats"><i class="fa fa-car"></i>&nbsp;' +
+                        driv +
+                        '/1&nbsp;' +
+                        drivHTML +
+                        '</div></ons-col>' +
+                        '<ons-col width="6px" class="journey-center" ng-style="{backgroundColor: &#39;#3399ff&#39;}"></ons-col>' +
+                        '<ons-col class="journey-right"><div class="journey-name">Journey' +
+                        notifHTML +
+                        '</div><div class="journey-info"><div><ons-icon icon="fa-home"></ons-icon>' +
+                        dep +
+                        '</div><div><ons-icon icon="fa-crosshairs"></ons-icon>' +
+                        dest +
+                        '</div></div></ons-col>' +
+                        '</ons-row>' +
+                        '</ons-list-item>';
+                    var elm = $(list_element);
+                    elm.appendTo($('#journeys_list_passenger')); // Insert to the DOM first
+                    ons.compile(elm[0]); // The argument must be a HTMLElement object
                 }
+                // }
             }
         }
     }
@@ -3905,6 +3911,8 @@ function createJourney() {
                                                 callback: function() {
                                                     // control.removeFrom(map);
                                                     control = null;
+                                                    map.remove();
+                                                    loadMap();
                                                     createJourney();
                                                 }
                                             });
@@ -3917,6 +3925,8 @@ function createJourney() {
                                                 callback: function() {
                                                     // control.removeFrom(map);
                                                     control = null;
+                                                    map.remove();
+                                                    loadMap();
                                                     createJourney();
                                                 }
                                             });
@@ -3932,6 +3942,8 @@ function createJourney() {
                                                 callback: function() {
                                                     // control.removeFrom(map);
                                                     control = null;
+                                                    map.remove();
+                                                    loadMap();
                                                     createJourney();
                                                 }
                                             });
@@ -4178,6 +4190,8 @@ function createJourney() {
                 buttonLabel: 'OK',
                 animation: 'default'
             });
+            map.remove();
+            loadMap();
         }
     } else {
         ons.notification.alert({
@@ -4186,6 +4200,7 @@ function createJourney() {
             buttonLabel: 'OK',
             animation: 'default'
         });
+        map.remove();
         loadMap();
     }
 }
