@@ -239,6 +239,44 @@ module.exports = (app, passport) => {
 
     });
 
+
+    app.get('/GetJourneysForAll', async(req, res) => {
+        try {
+            const journeyAll = await Journey.find({ 'local.schedule': { $gte: req.query.time }, 'local.driver': { $ne: req.query.email } }).lean()
+            console.log('/GetJourneysForAll', journeyAll)
+            if (typeof journeyAll == 'undefined' || journeyAll.length == 0) {
+                console.log('No matching journeys found');
+            } else {
+                for (var i in req.query.joursArray) {
+                    for (var k in journeyAll) {
+                        if (Math.abs(journeyAll[k].schedule - req.query.joursArray[i].schedule) < 43200) {
+
+                            var distance1 = calculateDistance(req.query.joursArray[i].departureLat, req.query.joursArray[i].departureLng, journeyAll[k].departureLat, journeyAll[k].departureLng);
+                            if (distance1 <= req.query.radius) {
+                                var distance2 = calculateDistance(req.query.joursArray[i].destinationLat, req.query.joursArray[i].destinationLng, journeyAll[k].destinationLat, journeyAll[k].destinationLng)
+                                if (distance2 <= req.query.radius) {
+                                    var journeyMatch = [];
+                                    journeyMatch.push(journeyAll[k]);
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+            res.json(journeyMatch);
+            console.log("JourneyMatch is" + journeyMatch);
+        } catch (e) {
+            console.log(e)
+            res.send(e)
+        }
+    });
+
+
 };
 
 function isLoggedIn(req, res, next) {

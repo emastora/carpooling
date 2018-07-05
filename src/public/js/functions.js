@@ -558,7 +558,7 @@ function onRejected(obj) {
                 if (obj[i].hasOwnProperty(j)) {
                     if (obj[i][j].rejectedPassengers) {
                         for (var k in obj[i][j].rejectedPassengers) {
-                            if (obj[i][j].rejectedPassengers[k] == window.localStorage.getItem('email')) {
+                            if (obj[i][j].rejectedPassengers[k] == window.localStorage.getItem('Email Session')) {
                                 ret.push([i, j, obj[i][j]['_id']['$id']]);
                             }
                         }
@@ -582,7 +582,7 @@ function onAccepted(obj) {
                 if (obj[i].hasOwnProperty(j)) {
                     if (obj[i][j].acceptedPassengers) {
                         for (var k in obj[i][j].acceptedPassengers) {
-                            if (obj[i][j].acceptedPassengers[k] == window.localStorage.getItem('email')) {
+                            if (obj[i][j].acceptedPassengers[k] == window.localStorage.getItem('Email Session')) {
                                 ret.push([i, j, obj[i][j]['_id']['$id']]);
                             }
                         }
@@ -612,7 +612,7 @@ function onAccepted2(obj) {
                     if (journeysAccepted[obj[i][j]['_id']['$id']]) {
                         for (var k in journeysAccepted[obj[i][j]['_id']['$id']].acceptedPassengers) {
                             if (
-                                journeysAccepted[obj[i][j]['_id']['$id']].acceptedPassengers[k] == window.localStorage.getItem('email')
+                                journeysAccepted[obj[i][j]['_id']['$id']].acceptedPassengers[k] == window.localStorage.getItem('Email Session')
                             ) {
                                 ret.push([i, j, obj[i][j]['_id']['$id']]);
                             }
@@ -767,9 +767,9 @@ function saveJourneyInf() {
         //and push it to locastorage as associative array
         // journeys[oid] = journey1;
         // window.localStorage.setItem('journeys', JSON.stringify(journeys));
+
         //Start interval for journey matching
         //findMatchingJourney(oid);
-
         //Start interval for journey updates
         // startIntervalJourneyUpdates(oid);
         // });

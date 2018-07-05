@@ -1138,7 +1138,21 @@ function killJourneyMatcher() {
     }
 }*/
 
-function findMatchingJourneyForAll() {
+var calculateDistance = function(lat1, lon1, lat2, lon2) {
+    var R = 6371; // km
+    var dLat = (lat2 - lat1).toRad();
+    var dLon = (lon2 - lon1).toRad();
+    var lat1 = lat1.toRad();
+    var lat2 = lat2.toRad();
+
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c;
+    return d;
+}
+
+async function findMatchingJourneyForAll() {
     var jours = JSON.parse(window.localStorage.getItem('journeys'));
 
     var joursArray = [];
@@ -1149,78 +1163,170 @@ function findMatchingJourneyForAll() {
                 joursArray.push(jours[i]);
             }
         }
-        //console.log(joursArray);
-        var data = {
-            access_token: window.localStorage.getItem('token'),
-            clientTime: Math.floor(Date.now() / 1000),
-            object: joursArray,
-            radius: radius,
-            user: window.localStorage.getItem('email')
-        };
-        var JSONdata = JSON.stringify(data);
-        //console.log(JSONdata);
-        var url_getJourneysForAll = 'http://' + server + '/getJourneysForAll';
-        var ajaxWorker_getJourneysForAll = new Worker('js/ajax.js');
-        ajaxWorker_getJourneysForAll.postMessage([url_getJourneysForAll, JSONdata]);
 
-        ajaxWorker_getJourneysForAll.onmessage = function(e) {
-            if (e.data == 0 || e.data == 500) {
-                alert('A network error occurred when trying communicate with the server. Please try again.', 'Error');
-            } else {
-                data = JSON.parse(e.data);
-                if (data.data) {
-                    var j = data.data;
+        // let journeysGet = {};
+        var EmailSession = window.localStorage.getItem("Email Session");
+        var clientTime = Math.floor(Date.now() / 1000);
+        console.log(radius);
+        console.log(joursArray);
 
-                    var onRej = onRejected(j);
-                    var onAcc = onAccepted(j);
-                    var onAcc2 = onAccepted2(j);
+        try {
+            res = await axios.get('/GetJourneysForAll', {
+                params: {
+                    email: EmailSession,
+                    time: clientTime,
+                    radius: radius,
+                    joursArray: joursArray
+                }
+            })
+            console.log(res);
+            console.log("Hey!");
+            console.log("Res.data is" + res.data);
+            // var journeysGet = JSON.parse(res.data);
+            var journeysGet = res.data;
+            console.log("JourneysGet is" + journeysGet);
+        } catch (e) {
+            console.log(e)
+        }
 
-                    if (onAcc != -1) {
-                        for (var r in onAcc) {
-                            checkIfAccepted(j[onAcc[r][0]][onAcc[r][1]], onAcc[r][2], onAcc[r][0]);
-                        }
-                    }
+        var data = journeysGet;
+        console.log("Data is" + data);
+        if (data) {
+            var j = data;
 
-                    if (onAcc2 != -1) {
-                        for (var r in onAcc2) {
-                            delete j[onAcc2[r][0]][onAcc2[r][1]];
-                        }
-                    }
+            var onRej = onRejected(j);
+            var onAcc = onAccepted(j);
+            var onAcc2 = onAccepted2(j);
 
-                    if (onRej != -1) {
-                        for (var r in onRej) {
-                            checkIfRejected(j[onRej[r][0]][onRej[r][1]], onRej[r][2]);
-                            delete j[onRej[r][0]][onRej[r][1]];
-                        }
-                    }
-
-                    if (Object.size(j) > Object.size(journeysMatching)) {
-                        ons.notification.alert({
-                            message: 'Matches found: ' + (Object.size(j) - Object.size(journeysMatching)),
-                            // or messageHTML: '<div>Message in HTML</div>',
-                            title: 'New Matches',
-                            buttonLabel: 'OK',
-                            animation: 'default', // or 'none'
-                            // modifier: 'optional-modifier'
-                            callback: function() {
-                                // Alert button is closed!
-                            }
-                        });
-                    }
-
-                    if (Object.size(journeysMatching) > 0) {
-                        document.getElementById('journeyNotification').innerHTML = Object.size(journeysMatching);
-                    }
-
-                    journeysMatching = j;
-                    //console.log(JSON.stringify(data));
+            if (onAcc != -1) {
+                for (var r in onAcc) {
+                    checkIfAccepted(j[onAcc[r][0]][onAcc[r][1]], onAcc[r][2], onAcc[r][0]);
                 }
             }
 
-            ajaxWorker_getJourneysForAll.terminate();
-        };
+            if (onAcc2 != -1) {
+                for (var r in onAcc2) {
+                    delete j[onAcc2[r][0]][onAcc2[r][1]];
+                }
+            }
+
+            if (onRej != -1) {
+                for (var r in onRej) {
+                    checkIfRejected(j[onRej[r][0]][onRej[r][1]], onRej[r][2]);
+                    delete j[onRej[r][0]][onRej[r][1]];
+                }
+            }
+
+            if (Object.size(j) > Object.size(journeysMatching)) {
+                ons.notification.alert({
+                    message: 'Matches found: ' + (Object.size(j) - Object.size(journeysMatching)),
+                    // or messageHTML: '<div>Message in HTML</div>',
+                    title: 'New Matches',
+                    buttonLabel: 'OK',
+                    animation: 'default', // or 'none'
+                    // modifier: 'optional-modifier'
+                    callback: function() {
+                        // Alert button is closed!
+                    }
+                });
+
+                if (Object.size(journeysMatching) > 0) {
+                    document.getElementById('journeyNotification').innerHTML = Object.size(journeysMatching);
+                }
+
+                journeysMatching = j;
+                //console.log(JSON.stringify(data));
+            }
+        }
+
     }
 }
+
+// OLD FUNCTION
+
+// function findMatchingJourneyForAll() {
+//     var jours = JSON.parse(window.localStorage.getItem('journeys'));
+
+//     var joursArray = [];
+//     if (jours) {
+//         //Construct the joursArray
+//         for (var i in jours) {
+//             if (jours[i].acceptedPassengers.length == 0) {
+//                 joursArray.push(jours[i]);
+//             }
+//         }
+//         //console.log(joursArray);
+//         var data = {
+//             access_token: window.localStorage.getItem('token'),
+//             clientTime: Math.floor(Date.now() / 1000),
+//             object: joursArray,
+//             radius: radius,
+//             user: window.localStorage.getItem('email')
+//         };
+//         var JSONdata = JSON.stringify(data);
+//         //console.log(JSONdata);
+//         var url_getJourneysForAll = 'http://' + server + '/getJourneysForAll';
+//         var ajaxWorker_getJourneysForAll = new Worker('js/ajax.js');
+//         ajaxWorker_getJourneysForAll.postMessage([url_getJourneysForAll, JSONdata]);
+
+//         ajaxWorker_getJourneysForAll.onmessage = function(e) {
+//             if (e.data == 0 || e.data == 500) {
+//                 alert('A network error occurred when trying communicate with the server. Please try again.', 'Error');
+//             } else {
+//                 data = JSON.parse(e.data);
+//                 if (data.data) {
+//                     var j = data.data;
+
+//                     var onRej = onRejected(j);
+//                     var onAcc = onAccepted(j);
+//                     var onAcc2 = onAccepted2(j);
+
+//                     if (onAcc != -1) {
+//                         for (var r in onAcc) {
+//                             checkIfAccepted(j[onAcc[r][0]][onAcc[r][1]], onAcc[r][2], onAcc[r][0]);
+//                         }
+//                     }
+
+//                     if (onAcc2 != -1) {
+//                         for (var r in onAcc2) {
+//                             delete j[onAcc2[r][0]][onAcc2[r][1]];
+//                         }
+//                     }
+
+//                     if (onRej != -1) {
+//                         for (var r in onRej) {
+//                             checkIfRejected(j[onRej[r][0]][onRej[r][1]], onRej[r][2]);
+//                             delete j[onRej[r][0]][onRej[r][1]];
+//                         }
+//                     }
+
+//                     if (Object.size(j) > Object.size(journeysMatching)) {
+//                         ons.notification.alert({
+//                             message: 'Matches found: ' + (Object.size(j) - Object.size(journeysMatching)),
+//                             // or messageHTML: '<div>Message in HTML</div>',
+//                             title: 'New Matches',
+//                             buttonLabel: 'OK',
+//                             animation: 'default', // or 'none'
+//                             // modifier: 'optional-modifier'
+//                             callback: function() {
+//                                 // Alert button is closed!
+//                             }
+//                         });
+//                     }
+
+//                     if (Object.size(journeysMatching) > 0) {
+//                         document.getElementById('journeyNotification').innerHTML = Object.size(journeysMatching);
+//                     }
+
+//                     journeysMatching = j;
+//                     //console.log(JSON.stringify(data));
+//                 }
+//             }
+
+//             ajaxWorker_getJourneysForAll.terminate();
+//         };
+//     }
+// }
 
 function removeOldJourneys() {
     var jour = JSON.parse(window.localStorage.getItem('journeys'));
