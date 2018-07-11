@@ -214,7 +214,7 @@ module.exports = (app, passport) => {
 
         var journey2 = new Journey();
         console.log(req.body);
-        journey2.local._id = req.body.oid;
+        journey2._id = req.body.oid;
         journey2.local.vehicle = req.body.vehicle;
         journey2.local.driver = req.body.driver;
         journey2.local.mode = req.body.mode;
@@ -242,21 +242,27 @@ module.exports = (app, passport) => {
 
     app.get('/GetJourneysForAll', async(req, res) => {
         try {
-            const journeyAll = await Journey.find({ 'local.schedule': { $gte: req.query.time }, 'local.driver': { $ne: req.query.email } }).lean()
-            console.log('/GetJourneysForAll', journeyAll)
+            const journeyAll = await Journey.find({ 'local.schedule': { $gte: req.query.time }, 'local.driver': { $ne: req.query.email } }).lean();
+            // console.log('/GetJourneysForAll', journeyAll)
+            console.log("Journey All are" + journeyAll);
+            console.log("Journey Array are" + req.query.joursArray);
+
             if (typeof journeyAll == 'undefined' || journeyAll.length == 0) {
                 console.log('No matching journeys found');
             } else {
                 for (var i in req.query.joursArray) {
                     for (var k in journeyAll) {
                         if (Math.abs(journeyAll[k].schedule - req.query.joursArray[i].schedule) < 43200) {
-
                             var distance1 = calculateDistance(req.query.joursArray[i].departureLat, req.query.joursArray[i].departureLng, journeyAll[k].departureLat, journeyAll[k].departureLng);
+                            console.log("Distance1 is " + distance1);
                             if (distance1 <= req.query.radius) {
                                 var distance2 = calculateDistance(req.query.joursArray[i].destinationLat, req.query.joursArray[i].destinationLng, journeyAll[k].destinationLat, journeyAll[k].destinationLng)
                                 if (distance2 <= req.query.radius) {
+                                    console.log("Distance2 is " + distance2);
                                     var journeyMatch = [];
                                     journeyMatch.push(journeyAll[k]);
+
+                                    console.log("journeyMatch is " + journeyMatch);
                                 }
 
                             }

@@ -559,6 +559,7 @@ function onRejected(obj) {
                     if (obj[i][j].rejectedPassengers) {
                         for (var k in obj[i][j].rejectedPassengers) {
                             if (obj[i][j].rejectedPassengers[k] == window.localStorage.getItem('Email Session')) {
+                                // ret.push([i, j, obj[i][j]['_id']['$id']]);
                                 ret.push([i, j, obj[i][j]['_id']['$id']]);
                             }
                         }
@@ -752,27 +753,6 @@ function saveJourneyInf() {
         //findMatchingJourney(oid);
         // startIntervalJourneyUpdates(oid);
 
-        // START OF COMMENTS
-        //updateCollection(data);
-        // createCollection(data, function(r) {
-        // console.log(r);
-        // var rr = JSON.parse(r);
-        //Get the oid as inserted in database
-        // var oid = rr['oid']['$id'];
-        //Set the oid,vehicle,driver,seats to the object
-        // journey1.setOid(oid);
-        // journey1.setVehicle(journeyVehicle);
-        // journey1.setDriver(window.localStorage.getItem('email'));
-        // journey1.setSeatsAvailable(seatsAvailable);
-        //and push it to locastorage as associative array
-        // journeys[oid] = journey1;
-        // window.localStorage.setItem('journeys', JSON.stringify(journeys));
-
-        //Start interval for journey matching
-        //findMatchingJourney(oid);
-        //Start interval for journey updates
-        // startIntervalJourneyUpdates(oid);
-        // });
     } else {
         mode = "passenger"
             //get a unique id
@@ -780,10 +760,6 @@ function saveJourneyInf() {
         console.log(oid);
         //set it to the object
         journey1.setOid(oid);
-        // journey1.vehicle = journeyVehicle,
-        // journey1.driver = window.localStorage.getItem('Email Session'),
-        // journey1.seatsAvailable = seatsAvailable,
-        // journey1.notes = notes
 
         axios.post('/CreateJourney', journey1)
             .then(function(response) {
