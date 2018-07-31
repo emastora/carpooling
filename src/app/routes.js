@@ -126,11 +126,11 @@ module.exports = (app, passport) => {
                 user.update({
                         'local.name': req.body.name,
                         'local.surname': req.body.surname,
-                        'user.local.birthdate': req.body.birthdate,
-                        'user.local.occupation': req.body.occupation,
-                        'user.local.interests': req.body.interests,
-                        'user.local.music': req.body.music,
-                        'user.local.smoker': req.body.smoker
+                        'local.birthDate': req.body.birthdate,
+                        'local.occupation': req.body.occupation,
+                        'local.interests': req.body.interests,
+                        'local.music': req.body.music,
+                        'local.smoker': req.body.smoker
                     },
 
                     function(err) {
@@ -246,6 +246,7 @@ module.exports = (app, passport) => {
             // console.log('/GetJourneysForAll', journeyAll)
             console.log("Journey All are" + journeyAll);
             console.log("Journey Array are" + req.query.joursArray);
+            var journeyMatch = [];
 
             if (typeof journeyAll == 'undefined' || journeyAll.length == 0) {
                 console.log('No matching journeys found');
@@ -259,7 +260,6 @@ module.exports = (app, passport) => {
                                 var distance2 = calculateDistance(req.query.joursArray[i].destinationLat, req.query.joursArray[i].destinationLng, journeyAll[k].destinationLat, journeyAll[k].destinationLng)
                                 if (distance2 <= req.query.radius) {
                                     console.log("Distance2 is " + distance2);
-                                    var journeyMatch = [];
                                     journeyMatch.push(journeyAll[k]);
 
                                     console.log("journeyMatch is " + journeyMatch);
@@ -275,7 +275,7 @@ module.exports = (app, passport) => {
 
             }
             res.json(journeyMatch);
-            console.log("JourneyMatch is" + journeyMatch);
+            console.log("JourneyMatch is " + journeyMatch);
         } catch (e) {
             console.log(e)
             res.send(e)

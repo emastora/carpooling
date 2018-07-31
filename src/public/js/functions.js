@@ -1037,7 +1037,7 @@ async function loadPersonalInf() {
 
     // document.getElementById("smoker").innerHTML = window.localStorage.getItem("person.smoker");
 
-    document.getElementById("smoker").innerHTML = user.local.smoker;
+    document.getElementById("smoker").innerHTML = user.local.smoker === "on" ? "Yes" : "No";
 
 
     // document.getElementById('rating').innerHTML = html;

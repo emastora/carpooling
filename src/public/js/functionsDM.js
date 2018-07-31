@@ -24,7 +24,8 @@ function savePersonalInf() {
     // trustLevel = window.localStorage.getItem("person.trustLevel");
     // project = window.localStorage.getItem("person.project");
     // credits = window.localStorage.getItem("person.credits");
-
+    console.log('Music2 is ', document.getElementById('music2').value);
+    console.log('Smoker2 is ', document.getElementById('smoker2').checked);
     if (document.getElementById('smoker2').checked) {
         smoker = "Yes";
     } else {
@@ -58,7 +59,7 @@ function savePersonalInf() {
 
         window.localStorage.setItem("person", JSON.stringify(person2));
 
-        console.log(person2);
+        console.log('Person2 is ', person2);
 
         axios.post('/UpdateUser', person2)
             .then(function(response) {

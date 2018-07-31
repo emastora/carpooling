@@ -1,18 +1,17 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 
-const userSchema = new mongoose.Schema(
-  {
+const userSchema = new mongoose.Schema({
     local: {
-      email: String,
-      password: String,
-      name: String,
-      surname: String,
-      occupation: String,
-      interests: String,
-      music: String,
-      smoker: String,
-      birthDate: Date
+        email: String,
+        password: String,
+        name: String,
+        surname: String,
+        occupation: String,
+        interests: String,
+        music: String,
+        smoker: String,
+        birthDate: Date
     }
     // facebook: {
     //     id: String,
@@ -32,18 +31,16 @@ const userSchema = new mongoose.Schema(
     //     email: String,
     //     password: String
     // }
-  },
-  { versionKey: false }
-);
+}, { versionKey: false });
 
 // generating a hash
 userSchema.methods.generateHash = function(password) {
-  return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 };
 
 // checking if password is valid
 userSchema.methods.validPassword = function(password) {
-  return bcrypt.compareSync(password, this.local.password);
+    return bcrypt.compareSync(password, this.local.password);
 };
 
 // create the model for user and expose it to our app
