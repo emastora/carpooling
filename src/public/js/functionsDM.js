@@ -326,9 +326,9 @@ async function loadVehicleInf() {
     document.getElementById("petsAllowed2").innerHTML = car.local.petsAllowed;
 
     // if (veh.imagePath) {
-    //     document.getElementById('vehicle_picture2').src = veh.imagePath;
+    //     document.getElementById('vehicle_picture2').src = ce.imagePath;
     // } else {
-    //     document.getElementById('vehicle_picture2').src = "images/vehicle.png";
+    document.getElementById('vehicle_picture2').src = "images/vehicle.png";
     // }
 
     // Old function

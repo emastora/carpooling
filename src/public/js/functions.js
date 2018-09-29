@@ -1007,6 +1007,9 @@ async function loadPersonalInf() {
     } catch (e) {
         console.log(e)
     }
+
+    document.getElementById('user_picture').src = "images/user.png";
+
     // document.getElementById("name").innerHTML = window.localStorage.getItem("person.name");
 
     document.getElementById("name").innerHTML = user.local.name;
@@ -2548,6 +2551,8 @@ function reloadMatchingJourneyVal() {
 function loadJourneyVal() {
     var journ = JSON.parse(window.localStorage.getItem('journeys'));
 
+    console.log(journ);
+
     var dep = journ[selectedJourney].departureAddress;
     var depLat = journ[selectedJourney].departureLat;
     var depLng = journ[selectedJourney].departureLng;
@@ -3735,7 +3740,7 @@ function findAddress(callback, x, y) {
     //y = typeof y !== 'undefined' ? y : destMarker.getLatLng().lng;
 
     var url =
-        'http://dev.virtualearth.net/REST/v1/Locations/' +
+        'https://dev.virtualearth.net/REST/v1/Locations/' +
         x +
         ',' +
         y +
@@ -4171,8 +4176,8 @@ function createJourney() {
         }
     } else {
         ons.notification.alert({
-            message: 'Please fill in all your personal information before creating a journey.',
-            title: 'Personal Information Missing!',
+            message: 'Please make sure your personal information are correct before creating a journey.',
+            title: 'Personal Information Check!',
             buttonLabel: 'OK',
             animation: 'default'
         });
