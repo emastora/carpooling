@@ -215,6 +215,7 @@ module.exports = (app, passport) => {
         var journey2 = new Journey();
         console.log(req.body);
         journey2._id = req.body.oid;
+        journey2.local.requester = req.body.requester;
         journey2.local.vehicle = req.body.vehicle;
         journey2.local.driver = req.body.driver;
         journey2.local.mode = req.body.mode;
@@ -237,6 +238,17 @@ module.exports = (app, passport) => {
             res.json({ message: 'Journey created!' });
         });
 
+    });
+
+    app.get('/GetJourney', async(req, res) => {
+        try {
+            const journe = await Journey.findOne({ 'local.requester': req.query.email }).lean()
+            console.log('/GetJourney', journe)
+            res.json(journe);
+        } catch (e) {
+            console.log(e)
+            res.send(e)
+        }
     });
 
 

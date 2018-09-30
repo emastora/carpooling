@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const journeySchema = new mongoose.Schema({
     local: {
+        requester: String,
         oid: Number,
         vehicle: Number,
         driver: String,

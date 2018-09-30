@@ -151,6 +151,7 @@ vehicle.prototype.getImage = function() {
 
 // journey constructor
 function journey(
+    requester,
     oid,
     vehicle,
     driver,
@@ -171,6 +172,7 @@ function journey(
     seatsAvailable,
     notes
 ) {
+    this.requester = requester;
     this.oid = oid;
     this.vehicle = vehicle;
     this.driver = driver;
@@ -288,7 +290,8 @@ var schedule = null;
 var journeyWaypoints = null;
 var mode = null;
 var journeyVehicle = null;
-var selectedJourney = '';
+// var selectedJourney = '';
+var selectedJourney = "58f87961f7cf66592528a6b5";
 var selectedMatchingJourneyI = '';
 var selectedMatchingJourneyJ = '';
 var seatsAvailable = null;
