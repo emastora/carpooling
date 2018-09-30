@@ -2,18 +2,18 @@ const mongoose = require('mongoose');
 
 const vehicleSchema = new mongoose.Schema({
     local: {
+        owner: String,
         brand: String,
-        departLet: String,
         model: String,
-        noofseats: String,
+        seats: String,
         color: String,
-        destinLng: String,
+        licencePlate: String,
         year: String,
-        air_condition: String,
-        licencePlate: String
+        cc: String,
+        aircondition: String,
+        petsAllowed: String
     }
-});
+}, { versionKey: false });
 
-
-// create the model for user and expose it to our app
-module.exports = mongoose.model('Vehicle', vehicleSchema);
+// create the model for vehicle and expose it to our app
+module.exports = mongoose.model('Car', vehicleSchema);

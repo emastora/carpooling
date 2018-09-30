@@ -12,26 +12,26 @@ const userSchema = new mongoose.Schema({
         music: String,
         smoker: String,
         birthDate: Date
-    },
-    facebook: {
-        id: String,
-        token: String,
-        email: String,
-        password: String
-    },
-    twitter: {
-        id: String,
-        token: String,
-        email: String,
-        password: String
-    },
-    google: {
-        id: String,
-        token: String,
-        email: String,
-        password: String
     }
-});
+    // facebook: {
+    //     id: String,
+    //     token: String,
+    //     email: String,
+    //     password: String
+    // },
+    // twitter: {
+    //     id: String,
+    //     token: String,
+    //     email: String,
+    //     password: String
+    // },
+    // google: {
+    //     id: String,
+    //     token: String,
+    //     email: String,
+    //     password: String
+    // }
+}, { versionKey: false });
 
 // generating a hash
 userSchema.methods.generateHash = function(password) {

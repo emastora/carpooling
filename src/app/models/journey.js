@@ -2,19 +2,28 @@ const mongoose = require('mongoose');
 
 const journeySchema = new mongoose.Schema({
     local: {
-        departAddress: String,
-        departLet: String,
-        departLng: String,
-        destinAddress: String,
-        destinLet: String,
-        destinLng: String,
-        time: String,
-        date: String,
-        distance: String,
-        duration: String
+        requester: String,
+        oid: Number,
+        vehicle: Number,
+        driver: String,
+        mode: String,
+        departureAddress: String,
+        departureLat: Number,
+        departureLng: Number,
+        destinationAddress: String,
+        destinationLat: Number,
+        destinationLng: Number,
+        schedule: Number,
+        distance: Number,
+        journeyDuration: Number,
+        acceptedPassengers: Array,
+        pendingPassengers: Array,
+        rejectedPassengers: Array,
+        waypoints: Array,
+        seatsAvailable: Number,
+        notes: String
     }
-});
+}, { versionKey: false });
 
-
-// create the model for user and expose it to our app
-module.exports = mongoose.model('Journey', journeyrSchema);
+// create the model for journey and expose it to our app
+module.exports = mongoose.model('Journey', journeySchema);
