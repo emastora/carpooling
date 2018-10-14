@@ -1139,62 +1139,63 @@ function killJourneyMatcher() {
     }
 }*/
 
-var calculateDistance = function(lat1, lon1, lat2, lon2) {
-    var R = 6371; // km
-    var dLat = (lat2 - lat1).toRad();
-    var dLon = (lon2 - lon1).toRad();
-    var lat1 = lat1.toRad();
-    var lat2 = lat2.toRad();
-
-    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c;
-    return d;
-}
 
 async function findMatchingJourneyForAll() {
     var jours = JSON.parse(window.localStorage.getItem('journeys'));
 
-    console.log(jours);
-
-    var joursArray = [];
-    if (jours) {
-        //Construct the joursArray
-        for (var i in jours) {
-            if (jours[i].acceptedPassengers.length == 0) {
-                joursArray.push(jours[i]);
+    var EmailSession = window.localStorage.getItem("Email Session");
+    try {
+        res = await axios.get('/GetJourney', {
+            params: {
+                email: EmailSession,
             }
-        }
+        })
+        console.log(res);
+        // var journeysGet = JSON.parse(res.data);
+        var journeysGet = res.data;
+    } catch (e) {
+        console.log(e)
+    }
+    var scheduleBack = journeysGet.local.schedule;
+    var departureLatBack = journeysGet.local.departureLat;
+    var departureLngBack = journeysGet.local.departureLng;
+    var destinationLatBack = journeysGet.local.destinationLat;
+    var destinationLngBack = journeysGet.local.destinationLng;
 
-        console.log("JoursArray that i am sending back is " + joursArray);
 
-        // let journeysGet = {};
-        var EmailSession = window.localStorage.getItem("Email Session");
+    // var joursArray = [];
+    if (journeysGet) {
+        //Construct the joursArray
+        // for (var i in jours) {
+        //     if (jours[i].acceptedPassengers.length == 0) {
+        //         joursArray.push(jours[i]);
+        //     }
+        // }
+
         var clientTime = Math.floor(Date.now() / 1000);
         console.log("Radius for matching journey is" + radius);
-        console.log("Journeys to search are" + joursArray[0]);
 
         try {
-            res = await axios.get('/GetJourneysForAll', {
+            res2 = await axios.get('/GetJourneysForAll', {
                 params: {
                     email: EmailSession,
                     time: clientTime,
                     radius: radius,
-                    joursArray: joursArray
+                    scheduleBack: scheduleBack,
+                    departureLatBack: departureLatBack,
+                    departureLngBack: departureLngBack,
+                    destinationLatBack: destinationLatBack,
+                    destinationLngBack: destinationLngBack
                 }
             })
-            console.log(res);
-            console.log("Hey!");
-            console.log("Res.data is" + res.data);
-            // var journeysGet = JSON.parse(res.data);
-            var journeysGet = res.data;
-            console.log("JourneysGet is" + journeysGet);
+            console.log(res2);
+            var journeymatching = res2.data;
+            console.log("journeymatching is" + journeymatching._id);
         } catch (e) {
             console.log(e)
         }
 
-        var data = journeysGet;
+        var data = journeymatching;
         console.log("Data is" + data);
         if (data) {
             var j = data;

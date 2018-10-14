@@ -67,24 +67,8 @@ module.exports = (app, passport) => {
     //     });
     // });
 
-    // app.get('/GetUser', (req, res) => {
-    //     // req.logout();
-    //     // res.redirect('/');
 
-    //     User.findOne({ 'local.email': req.params.Iden }, function(err, user) {
-    //         if (err) {
-    //             res.send(err);
-    //             // console.log(req);
-    //             // console.log(res.status);
-    //         } else if (user) {
-    //             res.json(User);
-    //             console.log("brika user blaks");
-    //             // console.log(res);
-    //             // console.log(res.body);
-    //         } else
-    //             console.log("Paparia")
-    //     });
-    // });
+    // USER BACKEND
 
     app.get('/GetUser', async(req, res) => {
         try {
@@ -96,19 +80,6 @@ module.exports = (app, passport) => {
             res.send(e)
         }
     });
-
-    // app.post('/UpdateUser', async(req, res) => {
-    //     try {
-    //         const user = await User.findOne({ 'local.email': req.body.email }).lean();
-    //         console.log('/UpdateUser found', user)
-    //         user = await User.update({ 'local.name': req.body.name, 'local.surname': req.body.surname }).lean()
-    //         console.log('/UpdateUser updated', user)
-    //         res.json({ data: user, message: 'User updated!' })
-    //     } catch (e) {
-    //         console.log(e)
-    //         res.send(e)
-    //     }
-    // });
 
     app.post('/UpdateUser', (req, res) => {
 
@@ -140,6 +111,8 @@ module.exports = (app, passport) => {
         })
     });
 
+
+    // VEHICLE BACKEND
     app.get('/GetVehicle', async(req, res) => {
         try {
             const car = await Car.findOne({ 'local.owner': req.query.email }).lean()
@@ -150,7 +123,6 @@ module.exports = (app, passport) => {
             res.send(e)
         }
     });
-
 
     app.post('/CreateVehicle', (req, res) => {
 
@@ -206,6 +178,7 @@ module.exports = (app, passport) => {
         })
     });
 
+    // JOURNEY BACKEND
     app.post('/CreateJourney', (req, res) => {
 
         var journey2 = new Journey();
@@ -250,37 +223,43 @@ module.exports = (app, passport) => {
         }
     });
 
+    var calculateDistance = function(lat1, lon1, lat2, lon2) {
+        var R = 6371; // km
+        var dLat = (lat2 - lat1) * Math.PI / 180;
+        var dLon = (lon2 - lon1) * Math.PI / 180;
+        var lat1 = lat1 * Math.PI / 180;
+        var lat2 = lat2 * Math.PI / 180;
+
+        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        var d = R * c;
+        return d;
+    }
 
     app.get('/GetJourneysForAll', async(req, res) => {
         try {
             const journeyAll = await Journey.find({ 'local.schedule': { $gte: req.query.time }, 'local.requester': { $ne: req.query.email } }).lean();
-            // console.log('/GetJourneysForAll', journeyAll)
             console.log("Journeys All available are ");
             console.log(journeyAll);
-            console.log("Journey Array are " + req.query.joursArray);
-            var journeyMatch = [];
 
-            console.log("Journey All schedule is " + journeyAll[0].local.schedule);
-            // console.log("Journey All [0] schedule is " + journeyAll[0].local.schedule);
-            console.log("Journey query [0] schedule is " + req.query.joursArray.schedule);
+            var journeyMatch = [];
 
             if (typeof journeyAll == 'undefined' || journeyAll.length == 0) {
                 console.log('No matching journeys found');
             } else {
-                for (var i in req.query.joursArray) {
-                    for (var k in journeyAll) {
-                        if (Math.abs(journeyAll[k].schedule - req.query.joursArray[i].schedule) < 43200) {
-                            var distance1 = calculateDistance(req.query.joursArray[i].departureLat, req.query.joursArray[i].departureLng, journeyAll[k].departureLat, journeyAll[k].departureLng);
-                            console.log("Distance1 is " + distance1);
-                            if (distance1 <= req.query.radius) {
-                                var distance2 = calculateDistance(req.query.joursArray[i].destinationLat, req.query.joursArray[i].destinationLng, journeyAll[k].destinationLat, journeyAll[k].destinationLng)
-                                if (distance2 <= req.query.radius) {
-                                    console.log("Distance2 is " + distance2);
-                                    journeyMatch.push(journeyAll[k]);
+                // for (var i in req.query.joursArray) {
+                for (var k in journeyAll) {
+                    if (Math.abs(journeyAll[k].local.schedule - req.query.scheduleBack) < 43200) {
+                        var distance1 = calculateDistance(req.query.departureLatBack, req.query.departureLngBack, journeyAll[k].local.departureLat, journeyAll[k].local.departureLng);
+                        console.log("Distance1 is " + distance1);
+                        if (distance1 <= req.query.radius) {
+                            var distance2 = calculateDistance(req.query.destinationLatBack, req.query.destinationLngBack, journeyAll[k].local.destinationLat, journeyAll[k].local.destinationLng)
+                            if (distance2 <= req.query.radius) {
+                                console.log("Distance2 is " + distance2);
+                                journeyMatch.push(journeyAll[k]);
 
-                                    console.log("journeyMatch is " + journeyMatch);
-                                }
-
+                                console.log("journeyMatch is " + journeyMatch[k]._id);
                             }
 
                         }
@@ -289,9 +268,9 @@ module.exports = (app, passport) => {
 
                 }
 
+                // }
+
             }
-            res.json(journeyMatch);
-            console.log("JourneyMatch is " + journeyMatch);
         } catch (e) {
             console.log(e)
             res.send(e)
