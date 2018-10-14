@@ -1156,6 +1156,8 @@ var calculateDistance = function(lat1, lon1, lat2, lon2) {
 async function findMatchingJourneyForAll() {
     var jours = JSON.parse(window.localStorage.getItem('journeys'));
 
+    console.log(jours);
+
     var joursArray = [];
     if (jours) {
         //Construct the joursArray
@@ -1165,11 +1167,13 @@ async function findMatchingJourneyForAll() {
             }
         }
 
+        console.log("JoursArray that i am sending back is " + joursArray);
+
         // let journeysGet = {};
         var EmailSession = window.localStorage.getItem("Email Session");
         var clientTime = Math.floor(Date.now() / 1000);
-        console.log(radius);
-        console.log(joursArray);
+        console.log("Radius for matching journey is" + radius);
+        console.log("Journeys to search are" + joursArray[0]);
 
         try {
             res = await axios.get('/GetJourneysForAll', {

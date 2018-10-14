@@ -674,7 +674,7 @@ function saveJourneyInf() {
     destinationLng = destMarker.getLatLng().lng;
     schedule = schedule.getTime() / 1000;
     distance = totalDist;
-    waypoints = journeyWaypoints;
+    // waypoints = journeyWaypoints;
     journeyDuration = totalTime;
 
     /*********** RECONSIDER!!!! ****************************/
@@ -724,7 +724,7 @@ function saveJourneyInf() {
         acceptedPassengers,
         pendingPassengers,
         rejectedPassengers,
-        waypoints,
+        // waypoints,
         '',
         notes
     );

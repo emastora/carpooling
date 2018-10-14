@@ -218,12 +218,15 @@ module.exports = (app, passport) => {
         journey2.local.departureAddress = req.body.departureAddress;
         journey2.local.departureLat = req.body.departureLat;
         journey2.local.departureLng = req.body.departureLng;
+        journey2.local.destinationAddress = req.body.destinationAddress;
+        journey2.local.destinationLat = req.body.destinationLat;
+        journey2.local.destinationLng = req.body.destinationLng;
         journey2.local.schedule = req.body.schedule;
         journey2.local.distance = req.body.distance;
         journey2.local.acceptedPassengers = req.body.acceptedPassengers;
         journey2.local.pendingPassengers = req.body.pendingPassengers;
         journey2.local.rejectedPassengers = req.body.rejectedPassengers;
-        journey2.local.waypoints = req.body.waypoints;
+        // journey2.local.waypoints = req.body.waypoints;
         journey2.local.seatsAvailable = req.body.seatsAvailable;
         journey2.local.notes = req.body.notes;
 
@@ -250,11 +253,16 @@ module.exports = (app, passport) => {
 
     app.get('/GetJourneysForAll', async(req, res) => {
         try {
-            const journeyAll = await Journey.find({ 'local.schedule': { $gte: req.query.time }, 'local.driver': { $ne: req.query.email } }).lean();
+            const journeyAll = await Journey.find({ 'local.schedule': { $gte: req.query.time }, 'local.requester': { $ne: req.query.email } }).lean();
             // console.log('/GetJourneysForAll', journeyAll)
-            console.log("Journey All are" + journeyAll);
-            console.log("Journey Array are" + req.query.joursArray);
+            console.log("Journeys All available are ");
+            console.log(journeyAll);
+            console.log("Journey Array are " + req.query.joursArray);
             var journeyMatch = [];
+
+            console.log("Journey All schedule is " + journeyAll[0].local.schedule);
+            // console.log("Journey All [0] schedule is " + journeyAll[0].local.schedule);
+            console.log("Journey query [0] schedule is " + req.query.joursArray.schedule);
 
             if (typeof journeyAll == 'undefined' || journeyAll.length == 0) {
                 console.log('No matching journeys found');
