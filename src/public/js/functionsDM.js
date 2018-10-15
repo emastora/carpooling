@@ -1141,7 +1141,7 @@ function killJourneyMatcher() {
 
 
 async function findMatchingJourneyForAll() {
-    var jours = JSON.parse(window.localStorage.getItem('journeys'));
+    // var jours = JSON.parse(window.localStorage.getItem('journeys'));
 
     var EmailSession = window.localStorage.getItem("Email Session");
     try {
@@ -1174,6 +1174,7 @@ async function findMatchingJourneyForAll() {
 
         var clientTime = Math.floor(Date.now() / 1000);
         console.log("Radius for matching journey is" + radius);
+        var journeymatching = [];
 
         try {
             res2 = await axios.get('/GetJourneysForAll', {
@@ -1189,43 +1190,50 @@ async function findMatchingJourneyForAll() {
                 }
             })
             console.log(res2);
-            var journeymatching = res2.data;
-            console.log("journeymatching is" + journeymatching._id);
+            for (i in res2.data) {
+                journeymatching.push(res2.data[i]);
+                console.log("journeymatching is" + journeymatching[i]._id);
+            }
         } catch (e) {
             console.log(e)
         }
 
-        var data = journeymatching;
-        console.log("Data is" + data);
+        var data = journeymatching[0];
+        // console.log("Data is" + data);
+        console.log("Journey matching id " + data._id);
+
         if (data) {
             var j = data;
 
-            var onRej = onRejected(j);
-            var onAcc = onAccepted(j);
-            var onAcc2 = onAccepted2(j);
+            // REMOVE MESSAGES LOGIC
 
-            if (onAcc != -1) {
-                for (var r in onAcc) {
-                    checkIfAccepted(j[onAcc[r][0]][onAcc[r][1]], onAcc[r][2], onAcc[r][0]);
-                }
-            }
+            // var onRej = onRejected(j);
+            // var onAcc = onAccepted(j);
+            // var onAcc2 = onAccepted2(j);
 
-            if (onAcc2 != -1) {
-                for (var r in onAcc2) {
-                    delete j[onAcc2[r][0]][onAcc2[r][1]];
-                }
-            }
+            // if (onAcc != -1) {
+            //     for (var r in onAcc) {
+            //         checkIfAccepted(j[onAcc[r][0]][onAcc[r][1]], onAcc[r][2], onAcc[r][0]);
+            //     }
+            // }
 
-            if (onRej != -1) {
-                for (var r in onRej) {
-                    checkIfRejected(j[onRej[r][0]][onRej[r][1]], onRej[r][2]);
-                    delete j[onRej[r][0]][onRej[r][1]];
-                }
-            }
+            // if (onAcc2 != -1) {
+            //     for (var r in onAcc2) {
+            //         delete j[onAcc2[r][0]][onAcc2[r][1]];
+            //     }
+            // }
+
+            // if (onRej != -1) {
+            //     for (var r in onRej) {
+            //         checkIfRejected(j[onRej[r][0]][onRej[r][1]], onRej[r][2]);
+            //         delete j[onRej[r][0]][onRej[r][1]];
+            //     }
+            // }
 
             if (Object.size(j) > Object.size(journeysMatching)) {
                 ons.notification.alert({
-                    message: 'Matches found: ' + (Object.size(j) - Object.size(journeysMatching)),
+                    // message: 'Matches found: ' + (Object.size(j) - Object.size(journeysMatching)),
+                    message: 'A Mathcing Journey has been found for you! ',
                     // or messageHTML: '<div>Message in HTML</div>',
                     title: 'New Matches',
                     buttonLabel: 'OK',
@@ -1239,7 +1247,6 @@ async function findMatchingJourneyForAll() {
                 if (Object.size(journeysMatching) > 0) {
                     document.getElementById('journeyNotification').innerHTML = Object.size(journeysMatching);
                 }
-
                 journeysMatching = j;
                 //console.log(JSON.stringify(data));
             }

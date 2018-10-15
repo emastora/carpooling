@@ -258,7 +258,6 @@ module.exports = (app, passport) => {
                             if (distance2 <= req.query.radius) {
                                 console.log("Distance2 is " + distance2);
                                 journeyMatch.push(journeyAll[k]);
-
                                 console.log("journeyMatch is " + journeyMatch[k]._id);
                             }
 
@@ -271,6 +270,7 @@ module.exports = (app, passport) => {
                 // }
 
             }
+            res.json(journeyMatch);
         } catch (e) {
             console.log(e)
             res.send(e)
