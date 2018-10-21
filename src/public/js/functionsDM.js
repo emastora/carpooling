@@ -1240,6 +1240,7 @@ async function findMatchingJourneyForAll() {
                     animation: 'default', // or 'none'
                     // modifier: 'optional-modifier'
                     callback: function() {
+                        // myNavigator.pushPage("my_journeys_matching.ejs", { onTransitionEnd: loadJourneysMatching() });
                         // Alert button is closed!
                     }
                 });
