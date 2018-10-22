@@ -20,7 +20,7 @@
 
         ons.ready(function() {
             //******************Check Authentication******************//
-            if (localStorage.length > 3) { //User is logedin
+            if (localStorage.length >= 2) { //User is logedin
                 // document.getElementById('unauthenticated').className = "hide";
                 // document.getElementById('authenticated').className = "show";
 
@@ -30,7 +30,7 @@
                 removeOldJourneys();
 
                 //******************Start Intervals******************//
-                startIntervalForFindMatchingJourneys();
+                // startIntervalForFindMatchingJourneys();
                 startIntervalsForEachLocalJourney();
                 startIntervalsForEachAcceptedJourney();
 
@@ -38,10 +38,11 @@
                 startIntervalForGetSentMessages();
 
 
-            } else {
-                // document.getElementById('unauthenticated').className = "show";
-                // document.getElementById('authenticated').className = "hide";
             }
+            //  else {
+            // document.getElementById('unauthenticated').className = "show";
+            // document.getElementById('authenticated').className = "hide";
+            // }
 
             //Google Login
             // googleLogin();
@@ -86,6 +87,7 @@
 
             if (e.target.id == "personal_inf") {
                 loadPersonalInf();
+                startIntervalForFindMatchingJourneys();
             }
 
             if (e.target.id == "edit_personal") {

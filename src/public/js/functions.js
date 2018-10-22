@@ -1262,6 +1262,8 @@ async function loadVehiclesList() {
         console.log(e)
     }
 
+    window.localStorage.setItem('vehicles', JSON.stringify(car));
+
     if (car.local.brand != undefined) {
         var pic = "images/vehicle.png";
         var brand = car.local.brand;
@@ -1286,8 +1288,24 @@ async function loadVehiclesList() {
     }
 }
 
-function loadJourneysDriver() {
-    var journ = JSON.parse(window.localStorage.getItem('journeys'));
+async function loadJourneysDriver() {
+
+    var EmailSession = window.localStorage.getItem("Email Session");
+    try {
+        res = await axios.get('/GetJourney', {
+            params: {
+                email: EmailSession,
+            }
+        })
+        console.log(res);
+        // var journeysGet = JSON.parse(res.data);
+        var journ = res.data;
+    } catch (e) {
+        console.log(e)
+    }
+
+    window.localStorage.setItem('journeys', JSON.stringify(journ));
+    // var journ = JSON.parse(window.localStorage.getItem('journeys'));
 
     if (journ) {
         $('#journeys_list_driver').empty();
@@ -1328,17 +1346,17 @@ function loadJourneysDriver() {
                         passHTML = '<i class="fa fa-refresh fa-spin"></i>';
                     }
 
-                    if (jm) {
-                        for (var j in jm) {
-                            if (j == i) {
-                                for (var k in jm[j]) {
-                                    if (jm[j][k].acceptedPassengers.length < jm[j][k].seatsAvailable) {
-                                        notif = notif + 1;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    // if (jm) {
+                    //     for (var j in jm) {
+                    //         if (j == i) {
+                    //             for (var k in jm[j]) {
+                    //                 if (jm[j][k].acceptedPassengers.length < jm[j][k].seatsAvailable) {
+                    //                     notif = notif + 1;
+                    //                 }
+                    //             }
+                    //         }
+                    //     }
+                    // }
 
                     if (notif > 0) {
                         notifHTML = '<span class="list-item-note"><span class="notification">matches:' + notif + '</span></span>';
@@ -1409,9 +1427,25 @@ function loadJourneysDriver() {
     }
 }
 
-function loadJourneysPassenger() {
-    var journ = JSON.parse(window.localStorage.getItem('journeys'));
-    var journAcc = JSON.parse(window.localStorage.getItem('journeysAccepted'));
+async function loadJourneysPassenger() {
+
+    var EmailSession = window.localStorage.getItem("Email Session");
+    try {
+        res = await axios.get('/GetJourney', {
+            params: {
+                email: EmailSession,
+            }
+        })
+        console.log(res);
+        // var journeysGet = JSON.parse(res.data);
+        var journ = res.data;
+    } catch (e) {
+        console.log(e)
+    }
+
+    window.localStorage.setItem('journeys', JSON.stringify(journ));
+    // var journ = JSON.parse(window.localStorage.getItem('journeys'));
+    // var journAcc = JSON.parse(window.localStorage.getItem('journeysAccepted'));
 
     if (journ) {
         for (var i in journ) {
@@ -1448,17 +1482,17 @@ function loadJourneysPassenger() {
                         passHTML = '<i class="fa fa-refresh fa-spin"></i>';
                     }
 
-                    if (jm) {
-                        for (var j in jm) {
-                            if (j == i) {
-                                for (var k in jm[j]) {
-                                    if (jm[j][k].acceptedPassengers.length < jm[j][k].seatsAvailable) {
-                                        notif = notif + 1;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    // if (jm) {
+                    //     for (var j in jm) {
+                    //         if (j == i) {
+                    //             for (var k in jm[j]) {
+                    //                 if (jm[j][k].acceptedPassengers.length < jm[j][k].seatsAvailable) {
+                    //                     notif = notif + 1;
+                    //                 }
+                    //             }
+                    //         }
+                    //     }
+                    // }
 
                     if (notif > 0) {
                         notifHTML = '<span class="list-item-note"><span class="notification">matches:' + notif + '</span></span>';
@@ -1521,92 +1555,92 @@ function loadJourneysPassenger() {
         }
     }
 
-    if (journAcc) {
-        for (var i in journAcc) {
-            if (journAcc.hasOwnProperty(i)) {
-                if (journAcc[i]) {
-                    var dep = journAcc[i].departureAddress;
-                    var dest = journAcc[i].destinationAddress;
-                    var timestamp = journAcc[i].schedule;
-                    var date = new Date(timestamp * 1000);
-                    var seconds_left = timestamp - Math.floor(Date.now() / 1000);
-                    var hours_left = parseInt(seconds_left / 3600, 10);
-                    var time_left = '';
-                    var drivHTML = '';
-                    var passHTML = '';
-                    var seatsAv = journAcc[i].seatsAvailable;
-                    var acceptedPass = journAcc[i].acceptedPassengers.length;
-                    var pendingPass = journAcc[i].pendingPassengers.length;
-                    var driv;
+    // if (journAcc) {
+    //     for (var i in journAcc) {
+    //         if (journAcc.hasOwnProperty(i)) {
+    //             if (journAcc[i]) {
+    //                 var dep = journAcc[i].departureAddress;
+    //                 var dest = journAcc[i].destinationAddress;
+    //                 var timestamp = journAcc[i].schedule;
+    //                 var date = new Date(timestamp * 1000);
+    //                 var seconds_left = timestamp - Math.floor(Date.now() / 1000);
+    //                 var hours_left = parseInt(seconds_left / 3600, 10);
+    //                 var time_left = '';
+    //                 var drivHTML = '';
+    //                 var passHTML = '';
+    //                 var seatsAv = journAcc[i].seatsAvailable;
+    //                 var acceptedPass = journAcc[i].acceptedPassengers.length;
+    //                 var pendingPass = journAcc[i].pendingPassengers.length;
+    //                 var driv;
 
-                    if (journAcc[i].driver) {
-                        driv = 1;
-                        drivHTML = '<i class="fa fa-check"></i>';
-                    } else {
-                        driv = 0;
-                        drivHTML = '<i class="fa fa-refresh fa-spin"></i>';
-                    }
+    //                 if (journAcc[i].driver) {
+    //                     driv = 1;
+    //                     drivHTML = '<i class="fa fa-check"></i>';
+    //                 } else {
+    //                     driv = 0;
+    //                     drivHTML = '<i class="fa fa-refresh fa-spin"></i>';
+    //                 }
 
-                    if (acceptedPass >= seatsAv) {
-                        passHTML = '<i class="fa fa-check"></i>';
-                    } else {
-                        passHTML = '<i class="fa fa-refresh fa-spin"></i>';
-                    }
+    //                 if (acceptedPass >= seatsAv) {
+    //                     passHTML = '<i class="fa fa-check"></i>';
+    //                 } else {
+    //                     passHTML = '<i class="fa fa-refresh fa-spin"></i>';
+    //                 }
 
-                    if (hours_left < 1) {
-                        time_left = parseInt(seconds_left / 60, 10) + 'min';
-                    } else if (hours_left <= 24) {
-                        time_left = hours_left + 'h';
-                    } else {
-                        time_left = parseInt(hours_left / 24, 10) + 'd ' + (hours_left % 24) + 'h';
-                    }
+    //                 if (hours_left < 1) {
+    //                     time_left = parseInt(seconds_left / 60, 10) + 'min';
+    //                 } else if (hours_left <= 24) {
+    //                     time_left = hours_left + 'h';
+    //                 } else {
+    //                     time_left = parseInt(hours_left / 24, 10) + 'd ' + (hours_left % 24) + 'h';
+    //                 }
 
-                    var list_element =
-                        '<ons-list-item modifier="chevron" class="journey" onClick="myNavigator.pushPage(&#39;journey_accepted.html&#39;, { animation : &#39;slide&#39; } );acceptedJourneySelected(' +
-                        "'" +
-                        i +
-                        "'" +
-                        ');">' +
-                        '<ons-row>' +
-                        '<ons-col width="80px" class="journey-left"><div class="journey-date">' +
-                        (date.getMonth() + 1) +
-                        '/' +
-                        date.getDate() +
-                        '/' +
-                        date.getFullYear() +
-                        '</div><div class="journey-date"><ons-icon icon="fa-clock-o"></ons-icon>' +
-                        date.getHours() +
-                        ':' +
-                        date.getMinutes() +
-                        '</div>' +
-                        '<div class="journey-time_left">' +
-                        time_left +
-                        '</div><div class="journey-seats"><i class="fa fa-users"></i>&nbsp;' +
-                        acceptedPass +
-                        '/' +
-                        seatsAv +
-                        '&nbsp;' +
-                        passHTML +
-                        '</div><div class="journey-seats"><i class="fa fa-car"></i>&nbsp;' +
-                        driv +
-                        '/1&nbsp;' +
-                        drivHTML +
-                        '</div></ons-col>' +
-                        '<ons-col width="6px" class="journey-center" ng-style="{backgroundColor: &#39;#ff0000&#39;}"></ons-col>' +
-                        '<ons-col class="journey-right"><div class="journey-name">Journey<span class="list-item-note"><span class="notification">accepted&nbsp;<i class="fa fa-check"></i></span></span></div><div class="journey-info"><div><ons-icon icon="fa-home"></ons-icon>' +
-                        dep +
-                        '</div><div><ons-icon icon="fa-crosshairs"></ons-icon>' +
-                        dest +
-                        '</div></div></ons-col>' +
-                        '</ons-row>' +
-                        '</ons-list-item>';
-                    var elm = $(list_element);
-                    elm.appendTo($('#journeys_list_passenger')); // Insert to the DOM first
-                    ons.compile(elm[0]); // The argument must be a HTMLElement object
-                }
-            }
-        }
-    }
+    //                 var list_element =
+    //                     '<ons-list-item modifier="chevron" class="journey" onClick="myNavigator.pushPage(&#39;journey_accepted.html&#39;, { animation : &#39;slide&#39; } );acceptedJourneySelected(' +
+    //                     "'" +
+    //                     i +
+    //                     "'" +
+    //                     ');">' +
+    //                     '<ons-row>' +
+    //                     '<ons-col width="80px" class="journey-left"><div class="journey-date">' +
+    //                     (date.getMonth() + 1) +
+    //                     '/' +
+    //                     date.getDate() +
+    //                     '/' +
+    //                     date.getFullYear() +
+    //                     '</div><div class="journey-date"><ons-icon icon="fa-clock-o"></ons-icon>' +
+    //                     date.getHours() +
+    //                     ':' +
+    //                     date.getMinutes() +
+    //                     '</div>' +
+    //                     '<div class="journey-time_left">' +
+    //                     time_left +
+    //                     '</div><div class="journey-seats"><i class="fa fa-users"></i>&nbsp;' +
+    //                     acceptedPass +
+    //                     '/' +
+    //                     seatsAv +
+    //                     '&nbsp;' +
+    //                     passHTML +
+    //                     '</div><div class="journey-seats"><i class="fa fa-car"></i>&nbsp;' +
+    //                     driv +
+    //                     '/1&nbsp;' +
+    //                     drivHTML +
+    //                     '</div></ons-col>' +
+    //                     '<ons-col width="6px" class="journey-center" ng-style="{backgroundColor: &#39;#ff0000&#39;}"></ons-col>' +
+    //                     '<ons-col class="journey-right"><div class="journey-name">Journey<span class="list-item-note"><span class="notification">accepted&nbsp;<i class="fa fa-check"></i></span></span></div><div class="journey-info"><div><ons-icon icon="fa-home"></ons-icon>' +
+    //                     dep +
+    //                     '</div><div><ons-icon icon="fa-crosshairs"></ons-icon>' +
+    //                     dest +
+    //                     '</div></div></ons-col>' +
+    //                     '</ons-row>' +
+    //                     '</ons-list-item>';
+    //                 var elm = $(list_element);
+    //                 elm.appendTo($('#journeys_list_passenger')); // Insert to the DOM first
+    //                 ons.compile(elm[0]); // The argument must be a HTMLElement object
+    //             }
+    //         }
+    //     }
+    // }
 }
 
 function loadJourneysMatching() {

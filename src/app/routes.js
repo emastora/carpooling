@@ -239,7 +239,9 @@ module.exports = (app, passport) => {
 
     app.get('/GetJourneysForAll', async(req, res) => {
         try {
-            const journeyAll = await Journey.find({ 'local.schedule': { $gte: req.query.time }, 'local.requester': { $ne: req.query.email } }).lean();
+            const journeyAll = await Journey.find({ 'local.schedule': { $gte: req.query.time }, 'local.driver': { $ne: req.query.email }, 'local.requester': { $ne: req.query.email } }).lean();
+            // const journeyAll = await Journey.find({ 'local.schedule': { $gte: req.query.time } }, { $and: [{ 'local.driver': { $ne: req.query.email } }, { 'local.requester': { $ne: req.query.email } }] }).lean();
+            // , 'local.requester': { $ne: req.query.email } 
             console.log("Journeys All available are ");
             console.log(journeyAll);
 
@@ -250,6 +252,7 @@ module.exports = (app, passport) => {
             } else {
                 // for (var i in req.query.joursArray) {
                 for (var k in journeyAll) {
+                    // console.log("Schedule is for all" + journeyAll[k].schedule);
                     if (Math.abs(journeyAll[k].local.schedule - req.query.scheduleBack) < 43200) {
                         var distance1 = calculateDistance(req.query.departureLatBack, req.query.departureLngBack, journeyAll[k].local.departureLat, journeyAll[k].local.departureLng);
                         console.log("Distance1 is " + distance1);
