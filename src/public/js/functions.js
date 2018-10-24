@@ -1094,7 +1094,7 @@ function loadPendingPersonalInf() {
     }
 }
 
-function loadOthersPersonalInf() {
+async function loadOthersPersonalInf() {
     //document.getElementById("userVehicle").innerHTML = window.localStorage.getItem("vehicle.brand")+" "+window.localStorage.getItem("vehicle.model");
 
     if (user) {
@@ -1105,45 +1105,65 @@ function loadOthersPersonalInf() {
             elm.replaceAll($('#messageBtn')); // Insert to the DOM first
             ons.compile(elm[0]);
         }
+        var driv4 = JSON.parse(window.localStorage.getItem('driverInfo'));
+        console.log("driv4 is " + driv4.local.name);
+        // getUser({ email: user, access_token: localStorage.getItem('token') }, function(u) {
+        //     var uu = JSON.parse(u);
+        //     var usr = uu['data'][0];
 
-        getUser({ email: user, access_token: localStorage.getItem('token') }, function(u) {
-            var uu = JSON.parse(u);
-            var usr = uu['data'][0];
+        // let driv4 = {}
+        // try {
+        //     console.log({ params: { email: drivEmail2 } })
+        //     res = await axios.get('/GetUser', {
+        //             params: {
+        //                 email: drivEmail2
+        //             }
+        //         })
+        //         // console.log(res);
+        //     driv4 = res.data;
+        //     // uu = res.data;
+        //     // var driv4 = JSON.parse(uu);
+        //     console.log("driv4 is " + driv4.local.name);
+        // } catch (e) {
+        //     console.log(e)
+        // }
 
-            document.getElementById('name').innerHTML = usr['name'];
-            document.getElementById('surname').innerHTML = usr['surname'];
-            document.getElementById('user_email').innerHTML = usr['username'];
-            document.getElementById('birthDate').innerHTML = usr['birthDate'];
-            document.getElementById('occupation').innerHTML = usr['occupation'];
-            document.getElementById('interests').value = usr['interests'];
-            document.getElementById('music').innerHTML = usr['music'];
-            document.getElementById('smoker').innerHTML = usr['smoker'];
 
-            if (usr['imagePath']) {
-                document.getElementById('user_picture').src = usr['imagePath'];
-            } else {
-                document.getElementById('user_picture').src = 'images/user.png';
-            }
 
-            var html = '';
-            var rate = usr['TrustLevel'] * 5;
+        document.getElementById('name').innerHTML = driv4.local.name;
+        document.getElementById('surname').innerHTML = driv4.local.surname;
+        document.getElementById('user_email').innerHTML = driv4.local.email;
+        document.getElementById('birthDate').innerHTML = driv4.local.birthdate;
+        document.getElementById('occupation').innerHTML = driv4.local.occupation;
+        document.getElementById('interests').value = driv4.local.interests;
+        document.getElementById('music').innerHTML = driv4.local.music;
+        document.getElementById('smoker').innerHTML = driv4.local.smoker;
 
-            if (rate) {
-                for (var i = 1; i <= 5; i++) {
-                    if (i <= rate) {
-                        html = html + '<ons-icon icon="fa-star" fixed-width="false" class="ons-icon fa-star fa fa-lg"></ons-icon>';
-                    } else {
-                        html =
-                            html + '<ons-icon icon="fa-star-o" fixed-width="false" class="ons-icon fa-star-o fa fa-lg"></ons-icon>';
-                    }
+        if (driv4['imagePath']) {
+            document.getElementById('user_picture').src = usr['imagePath'];
+        } else {
+            document.getElementById('user_picture').src = 'images/user.png';
+        }
+
+        var html = '';
+        var rate = driv4['TrustLevel'] * 5;
+
+        if (rate) {
+            for (var i = 1; i <= 5; i++) {
+                if (i <= rate) {
+                    html = html + '<ons-icon icon="fa-star" fixed-width="false" class="ons-icon fa-star fa fa-lg"></ons-icon>';
+                } else {
+                    html =
+                        html + '<ons-icon icon="fa-star-o" fixed-width="false" class="ons-icon fa-star-o fa fa-lg"></ons-icon>';
                 }
-                html = html + '&nbsp;' + rate + '/5';
-            } else {
-                html = 'User has no ratings yet';
             }
+            html = html + '&nbsp;' + rate + '/5';
+        } else {
+            html = 'User has no ratings yet';
+        }
 
-            document.getElementById('rating').innerHTML = html;
-        });
+        document.getElementById('rating').innerHTML = html;
+        // });
     }
 }
 
@@ -2116,7 +2136,7 @@ function loadAcceptedJourneyVal() {
     }
 }
 
-function loadMatchingJourneyVal() {
+async function loadMatchingJourneyVal() {
     var journ = journeysMatching;
 
     var dep2 = journ.local.departureAddress;
@@ -2254,77 +2274,125 @@ function loadMatchingJourneyVal() {
     document.getElementById('notesM').value = notes2;
 
     if (drivEmail2) {
-        getUser({ email: drivEmail2, access_token: localStorage.getItem('token') }, function(d) {
-            var dd = JSON.parse(d);
-            var driv2 = dd['data'][0];
+        // getUser({ email: drivEmail2, access_token: localStorage.getItem('token') }, function(d) {
+        //     var dd = JSON.parse(d);
+        //     var driv2 = dd['data'][0];
+        let driv3 = {}
+        try {
+            console.log({ params: { email: drivEmail2 } })
+            res = await axios.get('/GetUser', {
+                    params: {
+                        email: drivEmail2
+                    }
+                })
+                // console.log(res);
+            driv3 = res.data;
+            // dd = res.data;
+            // var driv3 = JSON.parse(dd);
+            // console.log(driv3);
+            console.log("driv3 is " + driv3.local.name);
+            console.log("driv3 is " + driv3['local']['name']);
+            window.localStorage.setItem("driverInfo", JSON.stringify(driv3));
+
+        } catch (e) {
+            console.log(e)
+        }
+
+        var list_element =
+            '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;other_personal_inf.html&#39;, { animation : &#39;slide&#39; } ); setUser(' +
+            "'" +
+            drivEmail2 +
+            "'" +
+            ')">' +
+            '<ons-row>' +
+            // '<ons-col width="40px">' +
+            // '<img src="' +
+            // driv2['imagePath'] +
+            // '" class="person-image">' +
+            // '</ons-col>' +
+            '<ons-col class="person-name">' +
+            driv3['local']['name'] +
+            // driv3['name'] +
+            // "'" +
+            // driv3.local.name +
+            // "'" +
+            ' ' +
+            driv3['local']['surname'] +
+            // driv3['surname'] +
+            // "'" +
+            // driv2.local.surname +
+            // "'" +
+            '<ons-col>' +
+            '</ons-row>' +
+            '</ons-list-item>';
+        //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
+        var elm = $(list_element);
+        elm.appendTo($('#journeys_list_driver_m')); // Insert to the DOM first
+        ons.compile(elm[0]); // The argument must be a HTMLElement object
+
+        loadOtherVehicle();
+        // });
+    } else {
+        loadOtherVehicle();
+    }
+
+    async function loadOtherVehicle() {
+        if (veh2) {
+            // var data = { access_token: localStorage.getItem('token'), collection: 'vehicles', id: veh2 };
+
+            // getCollection(data, function(v) {
+            //     var vv = JSON.parse(v);
+            //     var vehicle2 = vv['data'][0];
+
+            let car = {}
+            try {
+                console.log({ params: { email: drivEmail2 } })
+                res = await axios.get('/GetVehicle', {
+                        params: {
+                            email: drivEmail2
+                        }
+                    })
+                    // console.log(res);
+                car = res.data
+                console.log("car is" + car);
+            } catch (e) {
+                console.log(e)
+            }
 
             var list_element =
-                '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;other_personal_inf.html&#39;, { animation : &#39;slide&#39; } ); setUser(' +
+                '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;other_vehicle_inf.html&#39;, { animation : &#39;slide&#39; } ); setVehicle(' +
                 "'" +
-                drivEmail2 +
+                veh2 +
                 "'" +
                 ')">' +
                 '<ons-row>' +
-                '<ons-col width="40px">' +
-                '<img src="' +
-                driv2['imagePath'] +
-                '" class="person-image">' +
-                '</ons-col>' +
+                // '<ons-col width="40px">' +
+                // '<img src="' +
+                // vehicle2['imagePath'] +
+                // '" class="person-image">' +
+                // '</ons-col>' +
                 '<ons-col class="person-name">' +
-                driv2['name'] +
+                car['local.brand'] +
+                // car['brand'] +
+                // car.local.brand +
                 ' ' +
-                driv2['surname'] +
+                car['local.model'] +
+                // car['model'] +
+                // car.local.model +
                 '<ons-col>' +
                 '</ons-row>' +
                 '</ons-list-item>';
             //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
             var elm = $(list_element);
-            elm.appendTo($('#journeys_list_driver_m')); // Insert to the DOM first
+            elm.appendTo($('#journeys_list_vehicle_m')); // Insert to the DOM first
             ons.compile(elm[0]); // The argument must be a HTMLElement object
 
-            loadOtherVehicle();
-        });
-    } else {
-        loadOtherVehicle();
-    }
-
-    function loadOtherVehicle() {
-        if (veh2) {
-            var data = { access_token: localStorage.getItem('token'), collection: 'vehicles', id: veh2 };
-
-            getCollection(data, function(v) {
-                var vv = JSON.parse(v);
-                var vehicle2 = vv['data'][0];
-
-                var list_element =
-                    '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;other_vehicle_inf.html&#39;, { animation : &#39;slide&#39; } ); setVehicle(' +
-                    "'" +
-                    veh2 +
-                    "'" +
-                    ')">' +
-                    '<ons-row>' +
-                    '<ons-col width="40px">' +
-                    '<img src="' +
-                    vehicle2['imagePath'] +
-                    '" class="person-image">' +
-                    '</ons-col>' +
-                    '<ons-col class="person-name">' +
-                    vehicle2['brand'] +
-                    ' ' +
-                    vehicle2['model'] +
-                    '<ons-col>' +
-                    '</ons-row>' +
-                    '</ons-list-item>';
-                //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
-                var elm = $(list_element);
-                elm.appendTo($('#journeys_list_vehicle_m')); // Insert to the DOM first
-                ons.compile(elm[0]); // The argument must be a HTMLElement object
-
-                loadAcceptedPassengers();
-            });
-        } else {
-            loadAcceptedPassengers();
+            // loadAcceptedPassengers();
+            // });
         }
+        // } else {
+        //     loadAcceptedPassengers();
+        // }
     }
 
     function loadAcceptedPassengers() {
