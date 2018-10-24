@@ -1045,6 +1045,8 @@ async function loadPersonalInf() {
 
 
     // document.getElementById('rating').innerHTML = html;
+
+    window.localStorage.setItem("person", JSON.stringify(user));
 }
 
 function loadPendingPersonalInf() {

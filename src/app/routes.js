@@ -239,9 +239,9 @@ module.exports = (app, passport) => {
 
     app.get('/GetJourneysForAll', async(req, res) => {
         try {
-            const journeyAll = await Journey.find({ 'local.schedule': { $gte: req.query.time }, 'local.driver': { $ne: req.query.email }, 'local.requester': { $ne: req.query.email } }).lean();
+            // const journeyAll = await Journey.find({ 'local.schedule': { $gte: req.query.time }, 'local.driver': { $ne: req.query.email }, 'local.requester': { $ne: req.query.email } }).lean();
+            const journeyAll = await Journey.find({ $and: [{ 'local.schedule': { $gte: req.query.time } }, { 'local.driver': { $ne: req.query.email } }, { 'local.requester': { $ne: req.query.email } }] }).lean();
             // const journeyAll = await Journey.find({ 'local.schedule': { $gte: req.query.time } }, { $and: [{ 'local.driver': { $ne: req.query.email } }, { 'local.requester': { $ne: req.query.email } }] }).lean();
-            // , 'local.requester': { $ne: req.query.email } 
             console.log("Journeys All available are ");
             console.log(journeyAll);
 
