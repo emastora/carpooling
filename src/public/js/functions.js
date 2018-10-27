@@ -850,23 +850,25 @@ function updateJourneyInf(oid, acceptedPassengers, pendingPassengers, rejectedPa
     var journ = JSON.parse(window.localStorage.getItem('journeys'));
 
     if (journ) {
-        var vehicle = journ[oid].vehicle;
-        var driver = journ[oid].driver;
-        var mode = journ[oid].mode;
-        var departureAddress = journ[oid].departureAddress;
-        var departureLat = journ[oid].departureLat;
-        var departureLng = journ[oid].departureLng;
-        var destinationAddress = journ[oid].destinationAddress;
-        var destinationLat = journ[oid].destinationLat;
-        var destinationLng = journ[oid].destinationLng;
-        var schedule = journ[oid].schedule;
-        var distance = journ[oid].distance;
-        var journeyDuration = journ[oid].journeyDuration;
-        var waypoints = journ[oid].waypoints;
-        var seatsAvailable = journ[oid].seatsAvailable;
+        var id = journ._id;
+        var oid = journ._id;
+        var vehicle = journ.local.vehicle;
+        var driver = journ.local.driver;
+        var mode = journ.local.mode;
+        var departureAddress = journ.local.departureAddress;
+        var departureLat = journ.local.departureLat;
+        var departureLng = journ.local.departureLng;
+        var destinationAddress = journ.local.destinationAddress;
+        var destinationLat = journ.local.destinationLat;
+        var destinationLng = journ.local.destinationLng;
+        var schedule = journ.local.schedule;
+        var distance = journ.local.distance;
+        var journeyDuration = journ.local.journeyDuration;
+        var waypoints = journ.local.waypoints;
+        var seatsAvailable = journ.local.seatsAvailable;
 
         var journey1 = new journey(
-            oid,
+            id,
             vehicle,
             driver,
             mode,
@@ -900,8 +902,15 @@ function updateJourneyInf(oid, acceptedPassengers, pendingPassengers, rejectedPa
                 }
             });*/
 
+        axios.post('/UpdateJourney', journey1)
+            .then(function(response) {
+                console.log(response.data.message)
+                console.log(response.status),
+                    console.log('journey updated successfully')
+            });
+
         journeys[oid] = journey1;
-        window.localStorage.setItem('journeys', JSON.stringify(journeys));
+        window.localStorage.setItem('journeys', JSON.stringify(journey1));
     }
 }
 
@@ -1049,49 +1058,64 @@ async function loadPersonalInf() {
     window.localStorage.setItem("person", JSON.stringify(user));
 }
 
-function loadPendingPersonalInf() {
+async function loadPendingPersonalInf() {
     //document.getElementById("userVehicle").innerHTML = window.localStorage.getItem("vehicle.brand")+" "+window.localStorage.getItem("vehicle.model");
 
-    if (user) {
-        getUser({ email: user, access_token: localStorage.getItem('token') }, function(u) {
-            var uu = JSON.parse(u);
-            var usr = uu['data'][0];
-
-            document.getElementById('name3').innerHTML = usr['name'];
-            document.getElementById('surname3').innerHTML = usr['surname'];
-            document.getElementById('user_email3').innerHTML = usr['username'];
-            document.getElementById('birthDate3').innerHTML = usr['birthDate'];
-            document.getElementById('occupation3').innerHTML = usr['occupation'];
-            document.getElementById('interests3').value = usr['interests'];
-            document.getElementById('music3').innerHTML = usr['music'];
-            document.getElementById('smoker3').innerHTML = usr['smoker'];
-
-            if (usr['imagePath']) {
-                document.getElementById('user_picture3').src = usr['imagePath'];
-            } else {
-                document.getElementById('user_picture3').src = 'images/user.png';
+    // if (user) {
+    //     getUser({ email: user, access_token: localStorage.getItem('token') }, function(u) {
+    //         var uu = JSON.parse(u);
+    //         var usr = uu['data'][0];
+    var EmailPending = window.localStorage.getItem("userPending");
+    let usr = {}
+    try {
+        console.log({ params: { email: EmailPending } })
+        res = await axios.get('/GetUser', {
+            params: {
+                email: EmailPending
             }
-
-            var html = '';
-            var rate = usr['TrustLevel'] * 5;
-
-            if (rate) {
-                for (var i = 1; i <= 5; i++) {
-                    if (i <= rate) {
-                        html = html + '<ons-icon icon="fa-star" fixed-width="false" class="ons-icon fa-star fa fa-lg"></ons-icon>';
-                    } else {
-                        html =
-                            html + '<ons-icon icon="fa-star-o" fixed-width="false" class="ons-icon fa-star-o fa fa-lg"></ons-icon>';
-                    }
-                }
-                html = html + '&nbsp;' + rate + '/5';
-            } else {
-                html = 'User has no ratings yet';
-            }
-
-            document.getElementById('rating3').innerHTML = html;
-        });
+        })
+        console.log(res);
+        usr = res.data
+        console.log(usr);
+    } catch (e) {
+        console.log(e)
     }
+
+    document.getElementById('name3').innerHTML = user['local']['name'];
+    document.getElementById('surname3').innerHTML = user['local']['surname'];
+    // document.getElementById('user_email3').innerHTML = usr['local']['username'];
+    document.getElementById('birthDate3').innerHTML = user['local']['birthDate'];
+    document.getElementById('occupation3').innerHTML = user['local']['occupation'];
+    document.getElementById('interests3').value = user['local']['interests'];
+    document.getElementById('music3').innerHTML = user['local']['music'];
+    document.getElementById('smoker3').innerHTML = user['local']['smoker'];
+
+    // if (user['local']['imagePath']) {
+    //     document.getElementById('user_picture3').src = user['local']['imagePath'];
+    // } else {
+    document.getElementById('user_picture3').src = 'images/user.png';
+    // }
+
+    var html = '';
+    var rate = user['TrustLevel'] * 5;
+
+    if (rate) {
+        for (var i = 1; i <= 5; i++) {
+            if (i <= rate) {
+                html = html + '<ons-icon icon="fa-star" fixed-width="false" class="ons-icon fa-star fa fa-lg"></ons-icon>';
+            } else {
+                html =
+                    html + '<ons-icon icon="fa-star-o" fixed-width="false" class="ons-icon fa-star-o fa fa-lg"></ons-icon>';
+            }
+        }
+        html = html + '&nbsp;' + rate + '/5';
+    } else {
+        html = 'User has no ratings yet';
+    }
+
+    document.getElementById('rating3').innerHTML = html;
+    //     });
+    // }
 }
 
 async function loadOthersPersonalInf() {
@@ -1110,25 +1134,6 @@ async function loadOthersPersonalInf() {
         // getUser({ email: user, access_token: localStorage.getItem('token') }, function(u) {
         //     var uu = JSON.parse(u);
         //     var usr = uu['data'][0];
-
-        // let driv4 = {}
-        // try {
-        //     console.log({ params: { email: drivEmail2 } })
-        //     res = await axios.get('/GetUser', {
-        //             params: {
-        //                 email: drivEmail2
-        //             }
-        //         })
-        //         // console.log(res);
-        //     driv4 = res.data;
-        //     // uu = res.data;
-        //     // var driv4 = JSON.parse(uu);
-        //     console.log("driv4 is " + driv4.local.name);
-        // } catch (e) {
-        //     console.log(e)
-        // }
-
-
 
         document.getElementById('name').innerHTML = driv4.local.name;
         document.getElementById('surname').innerHTML = driv4.local.surname;
@@ -1312,22 +1317,25 @@ async function loadVehiclesList() {
 
 async function loadJourneysDriver() {
 
-    var EmailSession = window.localStorage.getItem("Email Session");
-    try {
-        res = await axios.get('/GetJourney', {
-            params: {
-                email: EmailSession,
-            }
-        })
-        console.log(res);
-        // var journeysGet = JSON.parse(res.data);
-        var journ = res.data;
-    } catch (e) {
-        console.log(e)
-    }
+    // To be removed(added
+    //     for development)
+    // var EmailSession = window.localStorage.getItem("Email Session");
+    // var Id_hard_coded = '5bd439d4973f695368e5abf2';
+    // try {
+    //     res = await axios.get('/GetJourneyById', {
+    //         params: {
+    //             id: Id_hard_coded
+    //         }
+    //     })
+    //     console.log(res);
+    //     // var journeysGet = JSON.parse(res.data);
+    //     var journ = res.data;
+    // } catch (e) {
+    //     console.log(e)
+    // }
 
-    window.localStorage.setItem('journeys', JSON.stringify(journ));
-    // var journ = JSON.parse(window.localStorage.getItem('journeys'));
+    // window.localStorage.setItem('journeys', JSON.stringify(journ));
+    var journ = JSON.parse(window.localStorage.getItem('journeys'));
 
     if (journ) {
         $('#journeys_list_driver').empty();
@@ -3557,6 +3565,7 @@ async function loadJourneyVal() {
 }
 
 function setUser(usr) {
+    window.localStorage.setItem('userPending', JSON.stringify(usr.local.email));
     user = usr;
 }
 
@@ -3660,40 +3669,47 @@ function sendJourneyRequest() {
     ons.compile(elm[0]);
 
     var journ = journeysMatching;
+    console.log("journey matching is after requests " + journ._id);
 
-    var o = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ]['_id']['$id'];
+    // var o = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ]['_id']['$id'];
     var j = JSON.parse(window.localStorage.getItem('journeysPending'));
 
     if (j) {
         journeysPending = j;
     }
 
-    journeysPending[o] = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ];
+    // journeysPending[o] = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ];
+    journeysPending = journ;
+
     window.localStorage.setItem('journeysPending', JSON.stringify(journeysPending));
 
-    var vehicle = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ].vehicle;
-    var driver = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ].driver;
-    var mode = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ].mode;
-    var departureAddress = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ].departureAddress;
-    var departureLat = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ].departureLat;
-    var departureLng = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ].departureLng;
-    var destinationAddress = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ].destinationAddress;
-    var destinationLat = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ].destinationLat;
-    var destinationLng = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ].destinationLng;
-    var schedule = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ].schedule;
-    var distance = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ].distance;
-    var journeyDuration = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ].journeyDuration;
-    var acceptedPassengers = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ].acceptedPassengers;
-    var pendingPassengers = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ].pendingPassengers;
-    var rejectedPassengers = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ].rejectedPassengers;
-    var waypoints = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ].waypoints;
-    var seatsAvailable = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ].seatsAvailable;
-    var notes = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ].notes;
+    var requester = journ.local.requester;
+    var id = journ._id;
+    var vehicle = journ.local.vehicle;
+    // var driver = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ].driver;
+    var driver = journ.local.driver;
+    var mode = journ.local.mode;
+    var departureAddress = journ.local.departureAddress;
+    var departureLat = journ.local.departureLat;
+    var departureLng = journ.local.departureLng;
+    var destinationAddress = journ.local.destinationAddress;
+    var destinationLat = journ.local.destinationLat;
+    var destinationLng = journ.local.destinationLng;
+    var schedule = journ.local.schedule;
+    var distance = journ.local.distance;
+    var journeyDuration = journ.local.journeyDuration;
+    var acceptedPassengers = journ.local.acceptedPassengers;
+    var pendingPassengers = journ.local.pendingPassengers;
+    var rejectedPassengers = journ.local.rejectedPassengers;
+    var waypoints = journ.local.waypoints;
+    var seatsAvailable = journ.local.seatsAvailable;
+    var notes = journ.local.notes;
 
-    pendingPassengers.push(window.localStorage.getItem('email'));
+    pendingPassengers.push(window.localStorage.getItem('Email Session'));
 
     var journey1 = new journey(
-        o,
+        requester,
+        id,
         vehicle,
         driver,
         mode,
@@ -3714,22 +3730,30 @@ function sendJourneyRequest() {
         notes
     );
 
-    var data = {
-        access_token: window.localStorage.getItem('token'),
-        collection: 'journeys',
-        id: o,
-        object: journey1
-    };
+    // var data = {
+    //     access_token: window.localStorage.getItem('token'),
+    //     collection: 'journeys',
+    //     id: o,
+    //     object: journey1
+    // };
 
     //updateCollection(data);
-    updateCollection(data, function(r) {
-        if (debug) {
-            console.log(r);
-        }
-    });
+    // updateCollection(data, function(r) {
+    //     if (debug) {
+    //         console.log(r);
+    //     }
+    // });
 
-    journeysMatching[selectedMatchingJourneyI][selectedMatchingJourneyJ].pendingPassengers.push(
-        window.localStorage.getItem('email')
+    axios.post('/UpdateJourney', journey1)
+        .then(function(response) {
+            console.log(response.data.message)
+            console.log(response.status),
+                console.log('journey updated successfully')
+        });
+
+    // journeysMatching[selectedMatchingJourneyI][selectedMatchingJourneyJ].pendingPassengers.push(
+    journeysMatching.local.pendingPassengers.push(
+        window.localStorage.getItem('Email Session')
     );
 
     ons.notification.alert({
@@ -3765,39 +3789,45 @@ function acceptPendingPassenger() {
                 case 0:
                     break;
                 case 1:
+                    // var selectedJourney = 0;
                     var journ = JSON.parse(window.localStorage.getItem('journeys'));
+                    // console.log(selectedJourney);
+                    var requester = journ.local.requester;
+                    var id = journ._id;
+                    var oid = journ._id;
+                    var vehicle = journ.local.vehicle;
+                    var driver = journ.local.driver;
+                    var mode = journ.local.mode;
+                    var departureAddress = journ.local.departureAddress;
+                    var departureLat = journ.local.departureLat;
+                    var departureLng = journ.local.departureLng;
+                    var destinationAddress = journ.local.destinationAddress;
+                    var destinationLat = journ.local.destinationLat;
+                    var destinationLng = journ.local.destinationLng;
+                    var schedule = journ.local.schedule;
+                    var distance = journ.local.distance;
+                    var journeyDuration = journ.local.journeyDuration;
+                    var acceptedPassengers = journ.local.acceptedPassengers;
+                    var pendingPassengers = journ.local.pendingPassengers;
+                    var rejectedPassengers = journ.local.rejectedPassengers;
+                    var waypoints = journ.local.waypoints;
+                    var seatsAvailable = journ.local.seatsAvailable;
+                    var notes = journ.local.notes;
 
-                    var vehicle = journ[selectedJourney].vehicle;
-                    var driver = journ[selectedJourney].driver;
-                    var mode = journ[selectedJourney].mode;
-                    var departureAddress = journ[selectedJourney].departureAddress;
-                    var departureLat = journ[selectedJourney].departureLat;
-                    var departureLng = journ[selectedJourney].departureLng;
-                    var destinationAddress = journ[selectedJourney].destinationAddress;
-                    var destinationLat = journ[selectedJourney].destinationLat;
-                    var destinationLng = journ[selectedJourney].destinationLng;
-                    var schedule = journ[selectedJourney].schedule;
-                    var distance = journ[selectedJourney].distance;
-                    var journeyDuration = journ[selectedJourney].journeyDuration;
-                    var acceptedPassengers = journ[selectedJourney].acceptedPassengers;
-                    var pendingPassengers = journ[selectedJourney].pendingPassengers;
-                    var rejectedPassengers = journ[selectedJourney].rejectedPassengers;
-                    var waypoints = journ[selectedJourney].waypoints;
-                    var seatsAvailable = journ[selectedJourney].seatsAvailable;
-                    var notes = journ[selectedJourney].notes;
+                    acceptedPassengers.push(user.local.email);
+                    pendingPassengers.pop(user.local.email);
+                    // pendingPassengers = '';
 
-                    acceptedPassengers.push(user);
-                    pendingPassengers.pop(user);
+                    // if (acceptedPassengers.length >= seatsAvailable) {
+                    //     for (var i in pendingPassengers) {
+                    //         rejectedPassengers.push(pendingPassengers[i]);
+                    //         pendingPassengers.pop(pendingPassengers[i]);
+                    //     }
+                    // }
 
-                    if (acceptedPassengers.length >= seatsAvailable) {
-                        for (var i in pendingPassengers) {
-                            rejectedPassengers.push(pendingPassengers[i]);
-                            pendingPassengers.pop(pendingPassengers[i]);
-                        }
-                    }
-
-                    var journey1 = new journey(
-                        selectedJourney,
+                    var journey2 = new journey(
+                        requester,
+                        id,
                         vehicle,
                         driver,
                         mode,
@@ -3813,27 +3843,36 @@ function acceptPendingPassenger() {
                         acceptedPassengers,
                         pendingPassengers,
                         rejectedPassengers,
-                        waypoints,
+                        // waypoints,
                         seatsAvailable,
                         notes
                     );
 
-                    var data = {
-                        access_token: window.localStorage.getItem('token'),
-                        collection: 'journeys',
-                        id: selectedJourney,
-                        object: journey1
-                    };
+                    // var data = {
+                    //     access_token: window.localStorage.getItem('token'),
+                    //     collection: 'journeys',
+                    //     id: selectedJourney,
+                    //     object: journey1
+                    // };
 
-                    //updateCollection(data);
-                    updateCollection(data, function(r) {
-                        if (debug) {
-                            console.log(r);
-                        }
-                    });
+                    // //updateCollection(data);
+                    // updateCollection(data, function(r) {
+                    //     if (debug) {
+                    //         console.log(r);
+                    //     }
+                    // });
 
-                    journeys[selectedJourney] = journey1;
-                    window.localStorage.setItem('journeys', JSON.stringify(journeys));
+                    axios.post('/UpdateJourney', journey2)
+                        .then(function(response) {
+                            console.log(response.data.message)
+                            console.log(response.status),
+                                console.log('journey updated successfully')
+                        });
+
+
+                    journeys[oid] = journey2;
+                    window.localStorage.setItem('journeys', JSON.stringify(journey2));
+                    window.localStorage.removeItem('userPending');
 
                     ons.notification.alert({
                         message: 'Passenger Accepted!',

@@ -223,6 +223,17 @@ module.exports = (app, passport) => {
         }
     });
 
+    app.get('/GetJourneyById', async(req, res) => {
+        try {
+            const journeId = await Journey.findOne({ _id: req.query.id }).lean()
+            console.log('/GetJourneyById', journeId)
+            res.json(journeId);
+        } catch (e) {
+            console.log(e)
+            res.send(e)
+        }
+    });
+
     var calculateDistance = function(lat1, lon1, lat2, lon2) {
         var R = 6371; // km
         var dLat = (lat2 - lat1) * Math.PI / 180;
@@ -278,6 +289,48 @@ module.exports = (app, passport) => {
             console.log(e)
             res.send(e)
         }
+    });
+
+
+    app.post('/UpdateJourney', (req, res) => {
+
+        Journey.findOne({ _id: req.body.oid }, function(err, journey) {
+            if (err) {
+                console.log(req);
+                console.log(res.status);
+                // return done(err);
+            } else if (journey) {
+                console.log(req.body);
+                journey.update({
+                        'local.requester': req.body.requester,
+                        'local.vehicle': req.body.vehicle,
+                        'local.driver': req.body.driver,
+                        'local.mode': req.body.mode,
+                        'local.departureAddress': req.body.departureAddress,
+                        'local.departureLat': req.body.departureLat,
+                        'local.departureLng': req.body.departureLng,
+                        'local.destinationAddress': req.body.destinationAddress,
+                        'local.destinationLat': req.body.destinationLat,
+                        'local.destinationLng': req.body.destinationLng,
+                        'local.schedule': req.body.schedule,
+                        'local.distance': req.body.distance,
+                        'local.acceptedPassengers': req.body.acceptedPassengers,
+                        'local.pendingPassengers': req.body.pendingPassengers,
+                        'local.rejectedPassengers': req.body.rejectedPassengers,
+                        // journey2.local.waypoints = req.body.waypoints;
+                        'local.seatsAvailable': req.body.seatsAvailable,
+                        'local.notes': req.body.notes
+                    },
+
+                    function(err) {
+                        if (err)
+                            console.log('error')
+                        else
+                            console.log('success')
+                        res.json({ message: 'Journey updated!' })
+                    });
+            }
+        })
     });
 
 

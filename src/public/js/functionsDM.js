@@ -813,100 +813,143 @@ function arraysEqual(arr1, arr2) {
     return true;
 }
 
-function checkJourneyUpdates(oid, callback) {
-    var token = window.localStorage.getItem('token');
-    if (token) {
-        //get the journeys from localStorage
-        var j = JSON.parse(window.localStorage.getItem('journeys'));
-        if (j) {
-            journeys = j;
-        }
+async function checkJourneyUpdates(oid, callback) {
+    // var token = window.localStorage.getItem('token');
+    // if (token) {
+    //get the journeys from localStorage
+    var j = JSON.parse(window.localStorage.getItem('journeys'));
 
-        if (journeys) {
-            if (journeys[oid]) {
-                var data = { access_token: token, collection: 'journeys', id: oid };
-                getCollection(data, function(result) {
-                    var resultObject = { pending: '', accepted: '', rejected: '', notes: '' };
-                    var d1 = JSON.parse(result);
+    // TO BE DELETED
+    j.local.pendingPassengers = [];
+    console.log("Journey local storage pend pass are" + j.local.pendingPassengers);
 
-                    if (d1['data']) {
-                        var d = d1['data'][0];
 
-                        var ch1;
-                        var ch2;
-                        var ch3;
-                        var ch4;
+    if (j) {
+        journeys = j;
+    }
+    let id2 = j._id;
 
-                        //if(d.acceptedPassengers && d.acceptedPassengers){
-                        ch1 = arraysEqual(d.acceptedPassengers, journeys[oid].acceptedPassengers);
-                        //}
-                        //if(d.pendingPassengers && l.pendingPassengers){
-                        ch2 = arraysEqual(d.pendingPassengers, journeys[oid].pendingPassengers);
-                        //}
-                        ch3 = arraysEqual(d.rejectedPassengers, journeys[oid].rejectedPassengers);
-
-                        ch4 = d.notes === journeys[oid].notes;
-
-                        if (ch1 == false) {
-                            resultObject['accepted'] = d.acceptedPassengers;
-                        }
-
-                        if (ch2 == false) {
-                            getUser({ email: d.pendingPassengers, access_token: localStorage.getItem('token') }, function(p) {
-                                var dd = JSON.parse(p);
-                                var dr = dd['data'][0];
-
-                                var not = ons.notification.confirm({
-                                    messageHTML: '<ons-list-item class="person" modifier="inset">' +
-                                        '<ons-row>' +
-                                        '<ons-col width="40px">' +
-                                        '<img src="' +
-                                        dr['imagePath'] +
-                                        '" class="person-image">' +
-                                        '</ons-col>' +
-                                        '<ons-col class="person-name">' +
-                                        dr['name'] +
-                                        ' ' +
-                                        dr['surname'] +
-                                        '<ons-col>' +
-                                        '</ons-row>' +
-                                        '</ons-list-item>',
-                                    // or messageHTML: '<div>Message in HTML</div>',
-                                    title: 'Passenger Join Request!',
-                                    buttonLabels: ['Not now', 'Answer'],
-                                    animation: 'default', // or 'none'
-                                    // modifier: 'optional-modifier'
-                                    callback: function(index) {
-                                        // Alert button is closed!
-                                        switch (index) {
-                                            case 0:
-                                                break;
-                                            case 1:
-                                                myNavigator.pushPage('pending_personal_inf.html', { animation: 'slide' });
-                                                setUser(dr['username']);
-                                                acceptedJourneySelected(oid);
-                                                break;
-                                        }
-                                    }
-                                });
-                            });
-
-                            resultObject['pending'] = d.pendingPassengers;
-                        }
-
-                        if (ch3 == false) {
-                            resultObject['rejected'] = d.rejectedPassengers;
-                        }
-
-                        if (ch4 == false) {
-                            resultObject['notes'] = d.notes;
-                        }
-                    } //if(d1['data']
-                    callback(resultObject);
-                });
+    if (journeys) {
+        if (journeys._id) {
+            // var data = { access_token: token, collection: 'journeys', id: oid };
+            // getCollection(data, function(result) {
+            try {
+                res = await axios.get('/GetJourneyById', {
+                    params: {
+                        id: id2,
+                    }
+                })
+                console.log(res);
+                // var journeysGet = JSON.parse(res.data);
+                var journId = res.data;
+            } catch (e) {
+                console.log(e)
             }
-        } //if(localJourney)
-    } //if(token)
+
+            var resultObject = { pending: '', accepted: '', rejected: '', notes: '' };
+            // var d1 = JSON.parse(result);
+            // var d = journId;
+
+            // if (d1['data']) {
+            //     var d = d1['data'][0];
+
+            var ch1;
+            var ch2;
+            var ch3;
+            var ch4;
+
+            //if(d.acceptedPassengers && d.acceptedPassengers){
+            // ch1 = arraysEqual(d.acceptedPassengers, journeys[oid].acceptedPassengers);
+            ch1 = arraysEqual(journId.local.acceptedPassengers, journeys.local.acceptedPassengers);
+            console.log("ch1 is" + ch1);
+            //}
+            //if(d.pendingPassengers && l.pendingPassengers){
+            ch2 = arraysEqual(journId.local.pendingPassengers, journeys.local.pendingPassengers);
+            console.log("ch2 is" + ch2);
+            // ch2 = false;
+            //}
+            ch3 = arraysEqual(journId.local.rejectedPassengers, journeys.local.rejectedPassengers);
+            console.log("ch3 is" + ch3);
+            ch4 = journId.local.notes === journeys.local.notes;
+            console.log("ch4 is" + ch4);
+
+            if (ch1 == false) {
+                resultObject['accepted'] = journId.local.acceptedPassengers;
+            }
+
+            if (ch2 == false) {
+                // getUser({ email: d.pendingPassengers, access_token: localStorage.getItem('token') }, function(p) {
+                //     var dd = JSON.parse(p);
+                //     var dr = dd['data'][0];
+                var EmailSession2 = journId.local.pendingPassengers[0];
+                console.log(EmailSession2);
+
+                let usr = {}
+                try {
+                    console.log({ params: { email: EmailSession2 } })
+                    res = await axios.get('/GetUser', {
+                            params: {
+                                email: EmailSession2
+                            }
+                        })
+                        // console.log(res);
+                    usr = res.data
+                    console.log("passenger is" + usr.local.name);
+                } catch (e) {
+                    console.log(e)
+                }
+
+                var not = ons.notification.confirm({
+                    messageHTML: '<ons-list-item class="person" modifier="inset">' +
+                        '<ons-row>' +
+                        // '<ons-col width="40px">' +
+                        // '<img src="' +
+                        // dr['imagePath'] +
+                        // '" class="person-image">' +
+                        // '</ons-col>' +
+                        '<ons-col class="person-name">' +
+                        usr['local']['name'] +
+                        ' ' +
+                        usr['local']['surname'] +
+                        '<ons-col>' +
+                        '</ons-row>' +
+                        '</ons-list-item>',
+                    // or messageHTML: '<div>Message in HTML</div>',
+                    title: 'Passenger Join Request!',
+                    buttonLabels: ['Not now', 'Answer'],
+                    animation: 'default', // or 'none'
+                    // modifier: 'optional-modifier'
+                    callback: function(index) {
+                        // Alert button is closed!
+                        switch (index) {
+                            case 0:
+                                break;
+                            case 1:
+                                myNavigator.pushPage('pending_personal_inf.html', { animation: 'slide' });
+                                setUser(usr);
+                                acceptedJourneySelected(id2);
+                                break;
+                        }
+                    }
+                });
+                // });
+
+                resultObject['pending'] = journId.local.pendingPassengers;
+            }
+
+            if (ch3 == false) {
+                resultObject['rejected'] = journId.local.rejectedPassengers;
+            }
+
+            if (ch4 == false) {
+                resultObject['notes'] = journId.local.notes;
+            }
+            // } //if(d1['data']
+            // callback(resultObject);
+            // });
+        }
+    } //if(localJourney)
+    // } //if(token)
 } // This is a JavaScript file
 
 function checkAcceptedJourneyUpdates(oid, callback) {
@@ -1198,7 +1241,9 @@ async function findMatchingJourneyForAll() {
             console.log(e)
         }
 
+
         var data = journeymatching[0];
+        // var data = journeymatching[1];
         // console.log("Data is" + data);
         console.log("Journey matching id " + data._id);
 
@@ -1399,6 +1444,51 @@ function removeOldJourneys() {
 }*/
 
 function startIntervalJourneyUpdates(oid) {
+    var int = setInterval(function() {
+        var j = JSON.parse(window.localStorage.getItem('journeys'));
+
+        // TO BE DELETED
+        j.local.pendingPassengers = [];
+        // console.log("Journey local storage pend pass are" + j.local.pendingPassengers);
+
+        console.log("startIntervalJourneyUpdates j[-id] is " + j['_id']);
+        // console.log("J schedule is " + j.local.schedule);
+        // console.log(j);
+        // console.log(JSON.stringify(j));
+        var aid = j['_id'];
+        if (j) {
+            if (j['_id']) {
+                // var l = j._id;
+                var ac = j.local.acceptedPassengers;
+                var pen = j.local.pendingPassengers;
+                var rej = j.local.rejectedPassengers;
+                var not = j.local.notes;
+
+                checkJourneyUpdates(aid, function(d) {
+                    if (d.accepted) {
+                        ac = d.accepted;
+                    }
+                    if (d.pending) {
+                        pen = d.pending;
+                    }
+                    if (d.rejected) {
+                        rej = d.rejected;
+                    }
+                    if (d.notes) {
+                        not = d.notes;
+                    }
+                    updateJourneyInf(aid, ac, pen, rej, not);
+                    if (debug) {
+                        //console.log("Journey:"+oid+" has been checked for updates");
+                    }
+                });
+            }
+        }
+        //checkIfAccepted();
+    }, checkJourneyChanges);
+}
+
+function startIntervalJourneyUpdates2(oid) {
     var int = setInterval(function() {
         var j = JSON.parse(window.localStorage.getItem('journeys'));
         if (j) {

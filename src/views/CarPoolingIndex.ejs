@@ -20,7 +20,7 @@
 
         ons.ready(function() {
             //******************Check Authentication******************//
-            if (localStorage.length >= 2) { //User is logedin
+            if (localStorage.length >= 1) { //User is logedin
                 // document.getElementById('unauthenticated').className = "hide";
                 // document.getElementById('authenticated').className = "show";
 
@@ -30,7 +30,7 @@
                 removeOldJourneys();
 
                 //******************Start Intervals******************//
-                // startIntervalForFindMatchingJourneys();
+                startIntervalForFindMatchingJourneys();
                 startIntervalsForEachLocalJourney();
                 startIntervalsForEachAcceptedJourney();
 
@@ -87,7 +87,7 @@
 
             if (e.target.id == "personal_inf") {
                 loadPersonalInf();
-                startIntervalForFindMatchingJourneys();
+                // startIntervalForFindMatchingJourneys();
             }
 
             if (e.target.id == "edit_personal") {
@@ -158,9 +158,9 @@
             //     loadOthersPersonalInf();
             // }
 
-            // if (e.target.id == "pending_personal_inf") {
-            //     loadPendingPersonalInf();
-            // }
+            if (e.target.id == "pending_personal_inf") {
+                loadPendingPersonalInf();
+            }
 
             // if (e.target.id == "others_vehicle_inf") {
             //     loadOtherVehicleInf();

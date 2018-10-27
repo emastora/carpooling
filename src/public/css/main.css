@@ -1,15 +1,32 @@
+.index {
+    margin-left: auto;
+    margin-right: auto;
+    background: -webkit-linear-gradient(to right, #004e92, #000428);
+    background: linear-gradient(to right, #004e92, #000428);
+}
+
+.containerindex {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    align-content: center;
+}
+
 .login {
-    background: #56ab2f;
+    /* background: #56ab2f; */
     /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #a8e063, #56ab2f);
+    /* background: -webkit-linear-gradient(to right, #a8e063, #56ab2f); */
+    background: -webkit-linear-gradient(to right, #004e92, #000428);
     /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #a8e063, #56ab2f);
+    /* background: linear-gradient(to right, #a8e063, #56ab2f); */
+    background: linear-gradient(to right, #004e92, #000428);
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     overflow: scroll
 }
 
 .signup {
-    background: #000428;
+    /* background: #000428; */
     /* fallback for old browsers */
     background: -webkit-linear-gradient(to right, #004e92, #000428);
     /* Chrome 10-25, Safari 5.1-6 */

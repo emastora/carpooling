@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <title>Login</title>
     <% include partials/head %>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
 </head>
 
 <body class="login">
@@ -13,9 +15,13 @@
             <div class="card mt-5">
                 <div class="card-body">
                     <!-- messages -->
-                    <h1 class="text-center">
+                    <!-- <img src="./images/carpooling.jpg" class="img-responsive" alt="" /> -->
+                    <!-- <br>
+                    <br>
+                    <br> -->
+                    <h3 class="text-center">
                         <span class="fa fa-sign-in"></span> Login
-                    </h1>
+                    </h3>
                     <% if (message.length > 0) { %>
                         <div class="alert alert-danger">
                             <%= message %>
