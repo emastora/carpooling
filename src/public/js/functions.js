@@ -1121,85 +1121,104 @@ async function loadPendingPersonalInf() {
 async function loadOthersPersonalInf() {
     //document.getElementById("userVehicle").innerHTML = window.localStorage.getItem("vehicle.brand")+" "+window.localStorage.getItem("vehicle.model");
 
-    if (user) {
-        if (user == window.localStorage.getItem('email')) {
-            list_element = '<ons-button modifier="large" id="messageBtn" disabled="true">Send Message</ons-button>';
+    // if (user) {
+    // if (user == window.localStorage.getItem('email')) {
+    list_element = '<ons-button modifier="large" id="messageBtn" disabled="true">Send Message</ons-button>';
 
-            var elm = $(list_element);
-            elm.replaceAll($('#messageBtn')); // Insert to the DOM first
-            ons.compile(elm[0]);
-        }
-        var driv4 = JSON.parse(window.localStorage.getItem('driverInfo'));
-        console.log("driv4 is " + driv4.local.name);
-        // getUser({ email: user, access_token: localStorage.getItem('token') }, function(u) {
-        //     var uu = JSON.parse(u);
-        //     var usr = uu['data'][0];
+    var elm = $(list_element);
+    elm.replaceAll($('#messageBtn')); // Insert to the DOM first
+    ons.compile(elm[0]);
+    // }
+    var driv4 = JSON.parse(window.localStorage.getItem('driverInfo'));
+    console.log("driv4 is " + driv4.local.name);
+    // getUser({ email: user, access_token: localStorage.getItem('token') }, function(u) {
+    //     var uu = JSON.parse(u);
+    //     var usr = uu['data'][0];
 
-        document.getElementById('name').innerHTML = driv4.local.name;
-        document.getElementById('surname').innerHTML = driv4.local.surname;
-        document.getElementById('user_email').innerHTML = driv4.local.email;
-        document.getElementById('birthDate').innerHTML = driv4.local.birthdate;
-        document.getElementById('occupation').innerHTML = driv4.local.occupation;
-        document.getElementById('interests').value = driv4.local.interests;
-        document.getElementById('music').innerHTML = driv4.local.music;
-        document.getElementById('smoker').innerHTML = driv4.local.smoker;
+    document.getElementById('name').innerHTML = driv4.local.name;
+    document.getElementById('surname').innerHTML = driv4.local.surname;
+    document.getElementById('user_email').innerHTML = driv4.local.email;
+    document.getElementById('birthDate').innerHTML = driv4.local.birthdate;
+    document.getElementById('occupation').innerHTML = driv4.local.occupation;
+    document.getElementById('interests').value = driv4.local.interests;
+    document.getElementById('music').innerHTML = driv4.local.music;
+    document.getElementById('smoker').innerHTML = driv4.local.smoker;
 
-        if (driv4['imagePath']) {
-            document.getElementById('user_picture').src = usr['imagePath'];
-        } else {
-            document.getElementById('user_picture').src = 'images/user.png';
-        }
-
-        var html = '';
-        var rate = driv4['TrustLevel'] * 5;
-
-        if (rate) {
-            for (var i = 1; i <= 5; i++) {
-                if (i <= rate) {
-                    html = html + '<ons-icon icon="fa-star" fixed-width="false" class="ons-icon fa-star fa fa-lg"></ons-icon>';
-                } else {
-                    html =
-                        html + '<ons-icon icon="fa-star-o" fixed-width="false" class="ons-icon fa-star-o fa fa-lg"></ons-icon>';
-                }
-            }
-            html = html + '&nbsp;' + rate + '/5';
-        } else {
-            html = 'User has no ratings yet';
-        }
-
-        document.getElementById('rating').innerHTML = html;
-        // });
+    if (driv4['imagePath']) {
+        document.getElementById('user_picture').src = usr['imagePath'];
+    } else {
+        document.getElementById('user_picture').src = 'images/user.png';
     }
+
+    var html = '';
+    var rate = driv4['TrustLevel'] * 5;
+
+    if (rate) {
+        for (var i = 1; i <= 5; i++) {
+            if (i <= rate) {
+                html = html + '<ons-icon icon="fa-star" fixed-width="false" class="ons-icon fa-star fa fa-lg"></ons-icon>';
+            } else {
+                html =
+                    html + '<ons-icon icon="fa-star-o" fixed-width="false" class="ons-icon fa-star-o fa fa-lg"></ons-icon>';
+            }
+        }
+        html = html + '&nbsp;' + rate + '/5';
+    } else {
+        html = 'User has no ratings yet';
+    }
+
+    document.getElementById('rating').innerHTML = html;
+    // });
+    // }
 }
 
-function loadOtherVehicleInf() {
+async function loadOtherVehicleInf() {
     //document.getElementById("userVehicle").innerHTML = window.localStorage.getItem("vehicle.brand")+" "+window.localStorage.getItem("vehicle.model");
 
-    if (uVehicle) {
-        var data = { access_token: localStorage.getItem('token'), collection: 'vehicles', id: uVehicle };
+    // if (uVehicle) {
+    //     var data = { access_token: localStorage.getItem('token'), collection: 'vehicles', id: uVehicle };
 
-        getCollection(data, function(v) {
-            var vv = JSON.parse(v);
-            var vehicle = vv['data'][0];
+    //     getCollection(data, function(v) {
+    //         var vv = JSON.parse(v);
+    //         var vehicle = vv['data'][0];
+    var drivEmail2 = JSON.parse(window.localStorage.getItem('driverInfo'));
+    let drivEmail3 = drivEmail2.local.email;
+    if (drivEmail3) {
 
-            document.getElementById('vehicle_email').innerHTML = vehicle['owner'];
-            document.getElementById('brand').innerHTML = vehicle['brand'];
-            document.getElementById('model').innerHTML = vehicle['model'];
-            document.getElementById('seats').innerHTML = vehicle['seats'];
-            document.getElementById('color').innerHTML = vehicle['color'];
-            document.getElementById('licencePlate').innerHTML = vehicle['licencePlate'];
-            document.getElementById('year').innerHTML = vehicle['year'];
-            document.getElementById('cc').innerHTML = vehicle['cc'];
-            document.getElementById('aircondition').innerHTML = vehicle['aircondition'];
-            document.getElementById('petsAllowed').innerHTML = vehicle['petsAllowed'];
+        let vehicle = {}
+        try {
+            console.log({ params: { email: drivEmail3 } })
+            res = await axios.get('/GetVehicle', {
+                    params: {
+                        email: drivEmail3
+                    }
+                })
+                // console.log(res);
+            vehicle = res.data;
+            console.log("car is " + vehicle['local']['brand']);
 
-            if (vehicle['imagePath']) {
-                document.getElementById('vehicle_picture').src = vehicle['imagePath'];
-            } else {
-                document.getElementById('vehicle_picture').src = 'images/vehicle.png';
-            }
-        });
+        } catch (e) {
+            console.log(e)
+        }
+
+        document.getElementById('vehicle_email').innerHTML = vehicle['local']['owner'];
+        document.getElementById('brand').innerHTML = vehicle['local']['brand'];
+        document.getElementById('model').innerHTML = vehicle['local']['model'];
+        document.getElementById('seats').innerHTML = vehicle['local']['seats'];
+        document.getElementById('color').innerHTML = vehicle['local']['color'];
+        document.getElementById('licencePlate').innerHTML = vehicle['local']['licencePlate'];
+        document.getElementById('year').innerHTML = vehicle['local']['year'];
+        document.getElementById('cc').innerHTML = vehicle['local']['cc'];
+        document.getElementById('aircondition').innerHTML = vehicle['local']['aircondition'];
+        document.getElementById('petsAllowed').innerHTML = vehicle['local']['petsAllowed'];
+
+        // if (vehicle['imagePath']) {
+        //     document.getElementById('vehicle_picture').src = vehicle['imagePath'];
+        // } else {
+        document.getElementById('vehicle_picture').src = 'images/vehicle.png';
     }
+    // });
+    // }
 }
 
 function loadPersonalInfVal() {
@@ -1317,8 +1336,8 @@ async function loadVehiclesList() {
 
 async function loadJourneysDriver() {
 
-    // To be removed(added
-    //     for development)
+    // // To be removed(added
+    // //     for development)
     // var EmailSession = window.localStorage.getItem("Email Session");
     // var Id_hard_coded = '5bd439d4973f695368e5abf2';
     // try {
@@ -1675,7 +1694,7 @@ async function loadJourneysPassenger() {
 
 function loadJourneysMatching() {
     var journ = journeysMatching;
-    console.log("Journ is: " + journ);
+    // console.log("Journ is: " + journ);
     console.log("Journ matching id is " + journ._id);
 
     window.localStorage.setItem('journeysMatching', JSON.stringify(journ));
@@ -2156,7 +2175,7 @@ async function loadMatchingJourneyVal() {
     var timestamp2 = journ.local.schedule;
     var dist2 = journ.local.distance;
     var dur2 = journ.local.journeyDuration;
-    var veh2 = journ.local.vehicle;
+    // var veh2 = journ.local.vehicle;
     var date2 = new Date(timestamp2 * 1000);
     var seconds_left2 = timestamp2 - Math.floor(Date.now() / 1000);
     var hours_left2 = parseInt(seconds_left2 / 3600, 10);
@@ -2298,7 +2317,7 @@ async function loadMatchingJourneyVal() {
             // dd = res.data;
             // var driv3 = JSON.parse(dd);
             // console.log(driv3);
-            console.log("driv3 is " + driv3.local.name);
+            // console.log("driv3 is " + driv3.local.name);
             console.log("driv3 is " + driv3['local']['name']);
             window.localStorage.setItem("driverInfo", JSON.stringify(driv3));
 
@@ -2345,100 +2364,114 @@ async function loadMatchingJourneyVal() {
     }
 
     async function loadOtherVehicle() {
-        if (veh2) {
-            // var data = { access_token: localStorage.getItem('token'), collection: 'vehicles', id: veh2 };
+        // if (veh2) {
+        // var data = { access_token: localStorage.getItem('token'), collection: 'vehicles', id: veh2 };
 
-            // getCollection(data, function(v) {
-            //     var vv = JSON.parse(v);
-            //     var vehicle2 = vv['data'][0];
+        // getCollection(data, function(v) {
+        //     var vv = JSON.parse(v);
+        //     var vehicle2 = vv['data'][0];
 
-            let car = {}
-            try {
-                console.log({ params: { email: drivEmail2 } })
-                res = await axios.get('/GetVehicle', {
-                        params: {
-                            email: drivEmail2
-                        }
-                    })
-                    // console.log(res);
-                car = res.data
-                console.log("car is" + car);
-            } catch (e) {
-                console.log(e)
-            }
-
-            var list_element =
-                '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;other_vehicle_inf.html&#39;, { animation : &#39;slide&#39; } ); setVehicle(' +
-                "'" +
-                veh2 +
-                "'" +
-                ')">' +
-                '<ons-row>' +
-                // '<ons-col width="40px">' +
-                // '<img src="' +
-                // vehicle2['imagePath'] +
-                // '" class="person-image">' +
-                // '</ons-col>' +
-                '<ons-col class="person-name">' +
-                car['local.brand'] +
-                // car['brand'] +
-                // car.local.brand +
-                ' ' +
-                car['local.model'] +
-                // car['model'] +
-                // car.local.model +
-                '<ons-col>' +
-                '</ons-row>' +
-                '</ons-list-item>';
-            //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
-            var elm = $(list_element);
-            elm.appendTo($('#journeys_list_vehicle_m')); // Insert to the DOM first
-            ons.compile(elm[0]); // The argument must be a HTMLElement object
-
-            // loadAcceptedPassengers();
-            // });
+        let car = {}
+        try {
+            console.log({ params: { email: drivEmail2 } })
+            res = await axios.get('/GetVehicle', {
+                    params: {
+                        email: drivEmail2
+                    }
+                })
+                // console.log(res);
+            car = res.data
+            console.log("car is " + car['local']['brand']);
+            // console.log("car is" + car);
+        } catch (e) {
+            console.log(e)
         }
+
+        var list_element =
+            '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;other_vehicle_inf.html&#39;, { animation : &#39;slide&#39; } ); setVehicle(' +
+            "'" +
+            car +
+            "'" +
+            ')">' +
+            '<ons-row>' +
+            // '<ons-col width="40px">' +
+            // '<img src="' +
+            // vehicle2['imagePath'] +
+            // '" class="person-image">' +
+            // '</ons-col>' +
+            '<ons-col class="person-name">' +
+            car['local']['brand'] +
+            // car['brand'] +
+            // car.local.brand +
+            ' ' +
+            car['local']['model'] +
+            // car['model'] +
+            // car.local.model +
+            '<ons-col>' +
+            '</ons-row>' +
+            '</ons-list-item>';
+        //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
+        var elm = $(list_element);
+        elm.appendTo($('#journeys_list_vehicle_m')); // Insert to the DOM first
+        ons.compile(elm[0]); // The argument must be a HTMLElement object
+
+        loadAcceptedPassengers();
+
         // } else {
         //     loadAcceptedPassengers();
         // }
     }
 
-    function loadAcceptedPassengers() {
+    async function loadAcceptedPassengers() {
         if (acceptedPass2) {
-            getUser({ email: acceptedPass2, access_token: localStorage.getItem('token') }, function(p) {
-                var pp = JSON.parse(p);
-                var pass = pp['data'];
-
-                for (var i in pass) {
-                    if (pass.hasOwnProperty(i)) {
-                        if (pass[i]) {
-                            var list_element =
-                                '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;other_personal_inf.html&#39;, { animation : &#39;slide&#39; } ); setUser(' +
-                                "'" +
-                                pass[i].username +
-                                "'" +
-                                ')">' +
-                                '<ons-row>' +
-                                '<ons-col width="40px">' +
-                                '<img src="' +
-                                pass[i]['imagePath'] +
-                                '" class="person-image">' +
-                                '</ons-col>' +
-                                '<ons-col class="person-name">' +
-                                pass[i]['name'] +
-                                ' ' +
-                                pass[i]['surname'] +
-                                '<ons-col>' +
-                                '</ons-row>' +
-                                '</ons-list-item>';
-                            //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
-                            var elm = $(list_element);
-                            elm.appendTo($('#journeys_list_accepted_m')); // Insert to the DOM first
-                            ons.compile(elm[0]); // The argument must be a HTMLElement object
-                        }
+            // getUser({ email: acceptedPass2, access_token: localStorage.getItem('token') }, function(p) {
+            //     var pp = JSON.parse(p);
+            //     var pass = pp['data'];
+            let acceptuser = {}
+            try {
+                console.log({ params: { email: acceptedPass2 } })
+                res = await axios.get('/GetUser', {
+                    params: {
+                        email: acceptedPass2
                     }
+                })
+                console.log(res);
+                acceptuser = res.data
+                console.log(acceptuser);
+            } catch (e) {
+                console.log(e)
+            }
+
+            for (var i in acceptuser) {
+                if (acceptuser.hasOwnProperty(i)) {
+                    // if (pass[i]) {
+                    var list_element =
+                        '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;other_personal_inf.html&#39;, { animation : &#39;slide&#39; } ); setUser(' +
+                        "'" +
+                        acceptuser[i].local.email +
+                        "'" +
+                        ')">' +
+                        '<ons-row>' +
+                        // '<ons-col width="40px">' +
+                        // '<img src="' +
+                        // pass[i]['imagePath'] +
+                        // '" class="person-image">' +
+                        // '</ons-col>' +
+                        '<ons-col class="person-name">' +
+                        acceptuser['local']['name'] +
+                        ' ' +
+                        acceptuser['local']['surname'] +
+                        '<ons-col>' +
+                        '</ons-row>' +
+                        '</ons-list-item>';
+                    //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
+                    var elm = $(list_element);
+                    elm.appendTo($('#journeys_list_accepted_m')); // Insert to the DOM first
+                    ons.compile(elm[0]); // The argument must be a HTMLElement object
                 }
-            });
+                // }
+            }
+            // });
         }
     }
 }
@@ -3673,10 +3706,31 @@ function sendJourneyRequest() {
 
     // var o = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ]['_id']['$id'];
     var j = JSON.parse(window.localStorage.getItem('journeysPending'));
-
-    if (j) {
-        journeysPending = j;
-    }
+    // if (j) {
+    //     if (j.local.pendingPassengers == journeysMatching.local.pendingPassengers) {
+    //         ons.notification.alert({
+    //             message: 'Request has been sent already! Please wait for the driver to accept you.',
+    //             // or messageHTML: '<div>Message in HTML</div>',
+    //             title: 'Success',
+    //             buttonLabel: 'OK',
+    //             animation: 'default', // or 'none'
+    //             // modifier: 'optional-modifier'
+    //             callback: function() {
+    //                     // var pages = myNavigator.getPages();
+    //                     // if (pages[pages.length - 2].name == 'journey.html') {
+    //                     //     myNavigator.popPage('journey_matching.html', { onTransitionEnd: reloadMatchingJourneyVal() });
+    //                     // } else {
+    //                     list_element =
+    //                     '<ons-button modifier="large--cta" id = "joinButton" disabled="true">Request Sent. Response pending <i class="fa fa-spinner fa-spin"></i></ons-button>';
+    //                     var elm = $(list_element);
+    //                     elm.replaceAll($('#joinButton')); // Insert to the DOM first
+    //                     ons.compile(elm[0]);    
+    //                     // myNavigator.popPage('journey_matching.html', { onTransitionEnd: loadJourneysMatching() });
+    //                 }
+    //                 // }
+    //         });
+    //     }
+    // }
 
     // journeysPending[o] = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ];
     journeysPending = journ;
@@ -3764,6 +3818,7 @@ function sendJourneyRequest() {
         animation: 'default', // or 'none'
         // modifier: 'optional-modifier'
         callback: function() {
+            //     // console.log("request saved!")
             var pages = myNavigator.getPages();
 
             if (pages[pages.length - 2].name == 'journey.html') {
