@@ -1242,7 +1242,7 @@ async function findMatchingJourneyForAll() {
         }
 
 
-        var data = journeymatching[1];
+        var data = journeymatching[0];
         // var data = journeymatching[1];
         // console.log("Data is" + data);
         console.log("Journey matching id " + data._id);
@@ -1484,7 +1484,7 @@ function startIntervalJourneyUpdates(oid) {
                 });
             }
         }
-        // checkIfAccepted();
+        checkIfAccepted();
     }, checkJourneyChanges);
 }
 
@@ -1579,6 +1579,12 @@ function startIntervalsForEachAcceptedJourney() {
             startIntervalAcceptedJourneyUpdates(i);
         }
     }
+}
+
+function startIntervalsForRating() {
+
+    // To be filled out
+
 }
 
 function startIntervalForMessages() {

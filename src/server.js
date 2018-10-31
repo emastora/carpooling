@@ -13,6 +13,7 @@ const axios = require('axios');
 require('./app/models/user');
 require('./app/models/vehicle');
 require('./app/models/journey');
+require('./app/models/rating');
 
 const { url } = require('./config/database.js');
 

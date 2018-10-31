@@ -252,6 +252,22 @@ message.prototype.setRead = function(read) {
     this.read = read;
 };
 
+// Rating constructor
+function rating(oid, from, to, rating) {
+    this.oid = oid;
+    this.from = from;
+    this.to = to;
+    this.rating = rating;
+}
+
+rating.prototype.getOid = function() {
+    return this.oid;
+};
+
+rating.prototype.setOid = function(oid) {
+    this.oid = oid;
+};
+
 var locationObject = {
     userLatitude: '',
     userLongitude: '',

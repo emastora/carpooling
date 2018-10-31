@@ -1336,8 +1336,8 @@ async function loadVehiclesList() {
 
 async function loadJourneysDriver() {
 
-    // // To be removed(added
-    // //     for development)
+    // To be removed(added
+    //     for development)
     // var EmailSession = window.localStorage.getItem("Email Session");
     // var Id_hard_coded = '5bd439d4973f695368e5abf2';
     // try {
@@ -1935,7 +1935,290 @@ function loadJourneysMatching2() {
     }
 }
 
-function loadAcceptedJourneyVal() {
+async function loadAcceptedJourneyVal() {
+    var journ = JSON.parse(window.localStorage.getItem('journeysAccepted'));
+
+    var dep2 = journ.local.departureAddress;
+    var dest2 = journ.local.destinationAddress;
+    var depLat2 = journ.local.departureLat;
+    var depLng2 = journ.local.departureLng;
+    var destLat2 = journ.local.destinationLat;
+    var destLng2 = journ.local.destinationLng;
+    var timestamp2 = journ.local.schedule;
+    var dist2 = journ.local.distance;
+    var dur2 = journ.local.journeyDuration;
+    var veh2 = journ.local.vehicle;
+    var date2 = new Date(timestamp2 * 1000);
+    var seconds_left2 = timestamp2 - Math.floor(Date.now() / 1000);
+    var hours_left2 = parseInt(seconds_left2 / 3600, 10);
+    var time_left2 = '';
+    var drivEmail2 = journ.local.driver;
+    var acceptedPass2 = journ.local.acceptedPassengers;
+    var notes2 = journ.local.notes;
+
+    var seatsAv2 = null;
+    var drivHTML2 = '';
+    var passHTML2 = '';
+    var acceptedPassNo2 = journ.local.acceptedPassengers.length;
+    var pendingPassNo2 = journ.local.pendingPassengers.length;
+    var driv2;
+
+    if (journ.local.mode == 'driver') {
+        seatsAv2 = journ.local.seatsAvailable;
+    } else {
+        seatsAv2 = 4;
+    }
+
+    if (hours_left2 < 1) {
+        time_left2 = parseInt(seconds_left2 / 60, 10) + 'min';
+    } else if (hours_left2 <= 24) {
+        time_left2 = hours_left2 + 'h';
+    } else {
+        time_left2 = parseInt(hours_left2 / 24, 10) + 'd ' + (hours_left2 % 24) + 'h';
+    }
+
+    if (dur2 < 3600) {
+        dur2 = parseInt(dur2 / 60, 10) + 'min';
+    } else {
+        dur2 = parseInt(dur2 / 3600, 10) + 'h ' + parseInt(dur2 % 3600, 10) + 'm';
+    }
+
+    if (drivEmail2) {
+        driv2 = 1;
+        drivHTML2 = '<i class="fa fa-check"></i>';
+    } else {
+        driv2 = 0;
+        drivHTML2 = '<i class="fa fa-refresh fa-spin"></i>';
+    }
+
+    if (acceptedPassNo2 >= seatsAv2) {
+        passHTML2 = '<i class="fa fa-check"></i>';
+    } else {
+        passHTML2 = '<i class="fa fa-refresh fa-spin"></i>';
+    }
+
+    matching_journey_map = new L.Map('matching_journey_map', {
+        minZoom: 5,
+        maxZoom: 18,
+        unloadInvisibleTiles: true,
+        updateWhenIdle: true,
+        reuseTiles: true,
+        zoomControl: false
+    });
+    var currTileLayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '',
+        attributionControl: false
+    });
+
+    matching_journey_map.addLayer(currTileLayer);
+    matching_journey_map.attributionControl.setPrefix('');
+    //journey_map.setView([51.505, -0.09], 13);
+
+    L.AwesomeMarkers.Icon.prototype.options.prefix = 'fa';
+
+    var markerAtr = L.AwesomeMarkers.icon({
+        icon: 'home',
+        markerColor: 'blue'
+    });
+
+    var destMarkerAtr = L.AwesomeMarkers.icon({
+        icon: 'crosshairs',
+        markerColor: 'red'
+    });
+
+    matching_journey_control = L.Routing.control({
+        plan: L.Routing.plan([L.latLng(depLat2, depLng2), L.latLng(destLat2, destLng2)], {
+            createMarker: function(i, wp) {
+                if (i == 0) {
+                    return L.marker(wp.latLng, { icon: markerAtr });
+                } else {
+                    return L.marker(wp.latLng, { icon: destMarkerAtr });
+                }
+            }
+        }),
+        routeWhileDragging: false,
+        fitSelectedRoutes: true
+    }).addTo(matching_journey_map);
+
+    document.getElementById('departureAddress').innerHTML = dep2;
+    document.getElementById('destinationAddress').innerHTML = dest2;
+    document.getElementById('date').innerHTML = date2.getMonth() + 1 + '/' + date2.getDate() + '/' + date2.getFullYear();
+    document.getElementById('time').innerHTML = date2.getHours() + ':' + date2.getMinutes();
+    document.getElementById('timeLeft').innerHTML = time_left2;
+    document.getElementById('distance').innerHTML = 'Distance: ' + (dist2 / 1000).toFixed(1) + 'km';
+    document.getElementById('journeyDuration').innerHTML = 'Duration: ' + dur2;
+    document.getElementById('passengersNo').innerHTML = acceptedPassNo2 + '/' + seatsAv2 + '&nbsp;' + passHTML2;
+    document.getElementById('driverNo').innerHTML = driv2 + '/1&nbsp;' + drivHTML2;
+    document.getElementById('notes').value = notes2;
+
+    if (drivEmail2) {
+        // getUser({ email: drivEmail2, access_token: localStorage.getItem('token') }, function(d) {
+        //     var dd = JSON.parse(d);
+        //     var driv2 = dd['data'][0];
+
+        let user = {}
+        try {
+            console.log({ params: { email: drivEmail2 } })
+            res = await axios.get('/GetUser', {
+                params: {
+                    email: EmailSession
+                }
+            })
+            console.log(res);
+            user = res.data
+            console.log(user);
+        } catch (e) {
+            console.log(e)
+        }
+
+        var list_element =
+            '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;other_personal_inf.html&#39;, { animation : &#39;slide&#39; } ); setUser(' +
+            "'" +
+            drivEmail2 +
+            "'" +
+            ')">' +
+            '<ons-row>' +
+            // '<ons-col width="40px">' +
+            // '<img src="' +
+            // driv2['imagePath'] +
+            // '" class="person-image">' +
+            // '</ons-col>' +
+            '<ons-col class="person-name">' +
+            user['local']['name'] +
+            ' ' +
+            user['local']['surname'] +
+            '<ons-col>' +
+            '</ons-row>' +
+            '</ons-list-item>';
+        //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
+        var elm = $(list_element);
+        elm.appendTo($('#journeys_list_driver')); // Insert to the DOM first
+        ons.compile(elm[0]); // The argument must be a HTMLElement object
+
+        loadOtherVehicle();
+        // });
+    } else {
+        loadOtherVehicle();
+    }
+
+    async function loadOtherVehicle() {
+        // if (veh2) {
+        // var data = { access_token: localStorage.getItem('token'), collection: 'vehicles', id: veh2 };
+
+        // getCollection(data, function(v) {
+        //     var vv = JSON.parse(v);
+        //     var vehicle2 = vv['data'][0];
+
+        let car = {}
+        try {
+            console.log({ params: { email: drivEmail2 } })
+            res = await axios.get('/GetVehicle', {
+                    params: {
+                        email: drivEmail2
+                    }
+                })
+                // console.log(res);
+            car = res.data
+            console.log("car is " + car['local']['brand']);
+            // console.log("car is" + car);
+        } catch (e) {
+            console.log(e)
+        }
+
+        var list_element =
+            '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;other_vehicle_inf.html&#39;, { animation : &#39;slide&#39; } ); setVehicle(' +
+            "'" +
+            car +
+            "'" +
+            ')">' +
+            '<ons-row>' +
+            // '<ons-col width="40px">' +
+            // '<img src="' +
+            // vehicle2['imagePath'] +
+            // '" class="person-image">' +
+            // '</ons-col>' +
+            '<ons-col class="person-name">' +
+            car['local']['brand'] +
+            // car['brand'] +
+            // car.local.brand +
+            ' ' +
+            car['local']['model'] +
+            // car['model'] +
+            // car.local.model +
+            '<ons-col>' +
+            '</ons-row>' +
+            '</ons-list-item>';
+        //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
+        var elm = $(list_element);
+        elm.appendTo($('#journeys_list_vehicle')); // Insert to the DOM first
+        ons.compile(elm[0]); // The argument must be a HTMLElement object
+
+        loadAcceptedPassengers();
+        // });
+        // } else {
+        loadAcceptedPassengers();
+    }
+}
+
+// function loadAcceptedPassengers() {
+// getUser({ email: acceptedPass2, access_token: localStorage.getItem('token') }, function(p) {
+//     var pp = JSON.parse(p);
+//     var pass = pp['data'];
+
+async function loadAcceptedPassengers() {
+    if (acceptedPass2) {
+        // getUser({ email: acceptedPass2, access_token: localStorage.getItem('token') }, function(p) {
+        //     var pp = JSON.parse(p);
+        //     var pass = pp['data'];
+        let acceptuser = {}
+        try {
+            console.log({ params: { email: acceptedPass2 } })
+            res = await axios.get('/GetUser', {
+                params: {
+                    email: acceptedPass2
+                }
+            })
+            console.log(res);
+            acceptuser = res.data
+            console.log(acceptuser);
+        } catch (e) {
+            console.log(e)
+        }
+
+        for (var i in acceptuser) {
+            if (acceptuser.hasOwnProperty(i)) {
+                // if (pass[i]) {
+                var list_element =
+                    '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;other_personal_inf.html&#39;, { animation : &#39;slide&#39; } ); setUser(' +
+                    "'" +
+                    acceptuser[i].local.email +
+                    "'" +
+                    ')">' +
+                    '<ons-row>' +
+                    // '<ons-col width="40px">' +
+                    // '<img src="' +
+                    // pass[i]['imagePath'] +
+                    // '" class="person-image">' +
+                    // '</ons-col>' +
+                    '<ons-col class="person-name">' +
+                    acceptuser['local']['name'] +
+                    ' ' +
+                    acceptuser['local']['surname'] +
+                    '<ons-col>' +
+                    '</ons-row>' +
+                    '</ons-list-item>';
+                //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
+                var elm = $(list_element);
+                elm.appendTo($('#journeys_list_accepted')); // Insert to the DOM first
+                ons.compile(elm[0]); // The argument must be a HTMLElement object
+            }
+        }
+    }
+    // });
+    // }
+}
+
+function loadAcceptedJourneyVal2() {
     var journ = JSON.parse(window.localStorage.getItem('journeysAccepted'));
 
     var dep2 = journ[selectedJourney].departureAddress;
@@ -2162,6 +2445,7 @@ function loadAcceptedJourneyVal() {
         });
     }
 }
+
 
 async function loadMatchingJourneyVal() {
     var journ = journeysMatching;
@@ -2728,7 +3012,213 @@ function loadMatchingJourneyVal2() {
     }
 }
 
-function checkIfAccepted(obj, key, i) {
+async function checkIfAccepted() {
+    var a = JSON.parse(window.localStorage.getItem('journeysAccepted'));
+
+    if (a) {
+        journeysAccepted = a;
+    }
+
+    // if (!journeysAccepted[key]) {
+    //     var driv = obj.driver;
+
+    var b = JSON.parse(window.localStorage.getItem('journeysMatching'));
+
+    if (b) {
+        let id2 = b._id;
+        // var data = { access_token: token, collection: 'journeys', id: oid };
+        // getCollection(data, function(result) {
+        try {
+            res = await axios.get('/GetJourneyById', {
+                params: {
+                    id: id2,
+                }
+            })
+            console.log(res);
+            // var journeysGet = JSON.parse(res.data);
+            var journId = res.data;
+        } catch (e) {
+            console.log(e)
+        }
+
+    }
+
+    var EmailSession = window.localStorage.getItem('Email Session');
+
+    // console.log("prin to accepted")
+    console.log("journId.local.acceptedPassengers " + journId.local.acceptedPassengers);
+    console.log(EmailSession);
+
+    if (journId.local.acceptedPassengers[0] = EmailSession) {
+
+        // getUser({ email: driv, access_token: localStorage.getItem('token') }, function(d) {
+        //     var dd = JSON.parse(d);
+        //     var dr = dd['data'][0];
+        console.log("MPIkA sto accepted")
+
+        var EmailSession2 = b.local.driver;
+
+        let user = {}
+        try {
+            console.log({ params: { email: EmailSession2 } })
+            res = await axios.get('/GetUser', {
+                params: {
+                    email: EmailSession2
+                }
+            })
+            console.log(res);
+            user = res.data
+            console.log(user);
+        } catch (e) {
+            console.log(e)
+        }
+        console.log('b.local.address' + b.local.departureAddress)
+
+        var requester = user.local.driver;
+        var id = b._id;
+        var vehicle = b.local.vehicle;
+        var driver = user.local.driver;
+        var mode = 'passenger';
+        var departureAddress = b.local.departureAddress;
+        var departureLat = b.local.departureLat;
+        var departureLng = b.local.departureLng;
+        var destinationAddress = b.local.destinationAddress;
+        var destinationLat = b.local.destinationLat;
+        var destinationLng = b.local.destinationLng;
+        var schedule = b.local.schedule;
+        var distance = b.local.distance;
+        var journeyDuration = b.local.journeyDuration;
+        var acceptedPassengers = b.local.acceptedPassengers;
+        var pendingPassengers = b.local.pendingPassengers;
+        var rejectedPassengers = b.local.rejectedPassengers;
+        // var waypoints = b.localwaypoints;
+        var seatsAvailable = b.local.seatsAvailable;
+        var notes = b.local.notes;
+
+        var journey1 = new journey(
+            requester,
+            id,
+            vehicle,
+            driver,
+            mode,
+            departureAddress,
+            departureLat,
+            departureLng,
+            destinationAddress,
+            destinationLat,
+            destinationLng,
+            schedule,
+            distance,
+            journeyDuration,
+            acceptedPassengers,
+            pendingPassengers,
+            rejectedPassengers,
+            // waypoints,
+            seatsAvailable,
+            notes
+        );
+
+        /*var data={"access_token":window.localStorage.getItem("token"),
+                          "collection":"journeys",
+                          "id":i,
+                          "object":journey1
+                      };
+
+              //updateCollection(data);
+              updateCollection(data,function(r){
+                  if(debug){
+                      console.log(r);
+                  }
+              });*/
+        //journeys[i]=null;
+        // var p = JSON.parse(window.localStorage.getItem('journeysPending'));
+
+        // if (p) {
+        //     journeysPending = p;
+        // }
+        // delete journeysPending[id];
+        window.localStorage.removeItem('journeysPending')
+            // if (debug) {
+        console.log('pending journey:' + id + ' has been deleted');
+        // }
+        // window.localStorage.setItem('journeysPending', JSON.stringify(journeysPending));
+
+        journeysAccepted[id] = journey1;
+        // journeys[oid] = journey1;
+        window.localStorage.setItem('journeysAccepted', JSON.stringify(journeysAccepted));
+
+        // delete journeysMatching[i];
+        // if (debug) {
+        //     console.log('matching journey:' + i + ' has been deleted');
+        // }
+
+        //================================================================================//
+        //journeys[o]=journey1;
+
+        // var j = JSON.parse(window.localStorage.getItem('journeys'));
+
+        // if (j) {
+        //     journeys = j;
+        // }
+
+        // if (journeys[i].mode == 'driver') {
+        //     var data = {
+        //         access_token: localStorage.getItem('token'),
+        //         id: i,
+        //         collection: 'journeys'
+        //     };
+        //     deleteCollection(data, function(d) {
+        //         console.log(d);
+        //     });
+        // }
+
+        // delete journeys[i];
+        // if (debug) {
+        //     console.log('journey:' + i + ' has been deleted');
+        // }
+        // window.localStorage.setItem('journeys', JSON.stringify(journeys));
+
+        // startIntervalAcceptedJourneyUpdates(key);
+        //================================================================================//
+
+        ons.notification.confirm({
+            messageHTML: '<ons-list-item class="person" modifier="inset">' +
+                '<ons-row>' +
+                // '<ons-col width="40px">' +
+                // '<img src="' +
+                // dr['imagePath'] +
+                // '" class="person-image">' +
+                // '</ons-col>' +
+                '<ons-col class="person-name">' +
+                user['local']['name'] +
+                ' ' +
+                user['local']['surname'] +
+                '<ons-col>' +
+                '</ons-row>' +
+                '</ons-list-item>',
+            // or messageHTML: '<div>Message in HTML</div>',
+            title: 'Driver Accepted You!',
+            buttonLabels: ['Not now', 'View Journey'],
+            animation: 'default', // or 'none'
+            // modifier: 'optional-modifier'
+            callback: function(index) {
+                // Alert button is closed!
+                switch (index) {
+                    case 0:
+                        break;
+                    case 1:
+                        myNavigator.pushPage('journey_accepted.html', { animation: 'slide' });
+                        acceptedJourneySelected(id);
+                        break;
+                }
+            }
+        });
+        // });
+    }
+    // }
+}
+
+function checkIfAccepted2(obj, key, i) {
     var a = JSON.parse(window.localStorage.getItem('journeysAccepted'));
 
     if (a) {

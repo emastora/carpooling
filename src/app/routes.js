@@ -2,6 +2,7 @@ const Mongoose = require('mongoose');
 const User = Mongoose.model('User');
 const Car = Mongoose.model('Car');
 const Journey = Mongoose.model('Journey');
+const Rating = Mongoose.model('Rating');
 
 module.exports = (app, passport) => {
 
