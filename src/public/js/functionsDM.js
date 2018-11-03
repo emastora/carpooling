@@ -1301,6 +1301,135 @@ async function findMatchingJourneyForAll() {
     }
 }
 
+
+function RateJourney() {
+
+    console.log("Mpika rating");
+    var EmailSession = window.localStorage.getItem('Email Session');
+
+    var a = JSON.parse(window.localStorage.getItem('journeysAccepted'));
+    var b = JSON.parse(window.localStorage.getItem('journeys'));
+
+    if (a && a.local.acceptedPassengers == EmailSession) {
+        ons.notification.confirm({
+            messageHTML: '<input type="number" id="rating" value="' +
+                '" min="1" max="5"',
+            title: 'Please rate the driver for your journey',
+            buttonLabels: ['Cancel', 'Save'],
+            animation: 'default',
+            primaryButtonIndex: 1,
+            cancelable: true,
+
+            callback: function(index) {
+                switch (index) {
+                    case 0:
+                        break;
+                    case 1:
+                        var rating = parseFloat(document.getElementById('rating').value)
+                        var to = a.local.driver;
+                        var from = EmailSession;
+
+                        var rating1 = new rating(
+                            '',
+                            from,
+                            to,
+                            rating
+                        )
+
+                        var oid = guid();
+                        console.log(oid);
+                        //set it to the object
+                        rating1.setOid(oid);
+
+                        axios.post('/CreateRating', journey1)
+                            .then(function(response) {
+                                console.log(response.data.message)
+                                console.log(response.status),
+                                    console.log('Rating saved successfully')
+                            });
+
+                        // window.localStorage.removeItem('journeysAccepted');
+                        // b.local.acceptedPassengers.pop();
+
+                        ons.notification.alert({
+                            message: 'Rating Saved!',
+                            // or messageHTML: '<div>Message in HTML</div>',
+                            title: 'Success',
+                            buttonLabel: 'OK',
+                            animation: 'default', // or 'none'
+                            // modifier: 'optional-modifier'
+                            callback: function() {
+                                // Alert button is closed!
+                            }
+                        });
+
+                        break;
+                }
+            }
+        });
+    }
+
+    if (b && b.local.acceptedPassengers.length > 0) {
+        ons.notification.confirm({
+            messageHTML: '<input type="number" id="rating" value="' +
+                '" min="1" max="5"',
+            title: 'Please rate the passenger for your journey',
+            buttonLabels: ['Cancel', 'Save'],
+            animation: 'default',
+            primaryButtonIndex: 1,
+            cancelable: true,
+
+            callback: function(index) {
+                switch (index) {
+                    case 0:
+                        break;
+                    case 1:
+                        var rating = parseFloat(document.getElementById('rating').value)
+                        var to = b.local.acceptedPassengers[0];
+                        var from = EmailSession;
+
+                        var rating1 = new rating(
+                            '',
+                            from,
+                            to,
+                            rating
+                        )
+
+                        var oid = guid();
+                        console.log(oid);
+                        //set it to the object
+                        rating1.setOid(oid);
+
+                        axios.post('/CreateRating', journey1)
+                            .then(function(response) {
+                                console.log(response.data.message)
+                                console.log(response.status),
+                                    console.log('Rating saved successfully')
+                            });
+
+                        window.localStorage.removeItem('journeysAccepted');
+
+                        ons.notification.alert({
+                            message: 'Rating Saved!',
+                            // or messageHTML: '<div>Message in HTML</div>',
+                            title: 'Success',
+                            buttonLabel: 'OK',
+                            animation: 'default', // or 'none'
+                            // modifier: 'optional-modifier'
+                            callback: function() {
+                                // Alert button is closed!
+                            }
+                        });
+
+                        break;
+                }
+            }
+        });
+    }
+
+}
+
+// }
 // OLD FUNCTION
 
 // function findMatchingJourneyForAll() {
@@ -1582,8 +1711,9 @@ function startIntervalsForEachAcceptedJourney() {
 }
 
 function startIntervalsForRating() {
-
-    // To be filled out
+    setInterval(function() {
+        RateJourney();
+    }, ratingInterval);
 
 }
 

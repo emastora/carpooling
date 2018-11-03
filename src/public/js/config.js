@@ -319,6 +319,7 @@ var checkJourneyJoinsInterval = 60000;
 var checkJourneyChanges = 20000;
 var checkIfAcceptedInterval = 20000;
 var checkIfRejectedInterval = 20000;
+var ratingInterval = 20000;
 var checkForMessages = 20000;
 var rejected;
 var unreadMessages = 0;

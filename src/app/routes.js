@@ -235,6 +235,17 @@ module.exports = (app, passport) => {
         }
     });
 
+    app.post('/DeleteJourney', async(req, res) => {
+        try {
+            const journeIdDelete = await Journey.deleteOne({ _id: req.query.id }).lean()
+            console.log('/DeleteJourney', journeIdDelete)
+                // res.json(journeId);
+        } catch (e) {
+            console.log(e)
+            res.send(e)
+        }
+    });
+
     var calculateDistance = function(lat1, lon1, lat2, lon2) {
         var R = 6371; // km
         var dLat = (lat2 - lat1) * Math.PI / 180;
@@ -332,6 +343,34 @@ module.exports = (app, passport) => {
                     });
             }
         })
+    });
+
+    app.post('/CreateRating', (req, res) => {
+
+        var rating2 = new Rating();
+        console.log(req.body);
+        rating2.local.oid = req.body.oid;
+        rating2.local.from = req.body.from;
+        rating2.local.to = req.body.to;
+        rating2.local.rating = req.body.rating;
+        rating2.save(function(err) {
+            if (err) {
+                throw err;
+            }
+            res.json({ message: 'Rating created!' });
+        });
+
+    });
+
+    app.get('/GetRating', async(req, res) => {
+        try {
+            const rating = await User.find({ 'local.to': req.query.email }).lean()
+            console.log('/GetRating', rating)
+            res.json(rating);
+        } catch (e) {
+            console.log(e)
+            res.send(e)
+        }
     });
 
 

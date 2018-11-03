@@ -850,6 +850,7 @@ function updateJourneyInf(oid, acceptedPassengers, pendingPassengers, rejectedPa
     var journ = JSON.parse(window.localStorage.getItem('journeys'));
 
     if (journ) {
+        var requester = journ.local.requester;
         var id = journ._id;
         var oid = journ._id;
         var vehicle = journ.local.vehicle;
@@ -868,6 +869,7 @@ function updateJourneyInf(oid, acceptedPassengers, pendingPassengers, rejectedPa
         var seatsAvailable = journ.local.seatsAvailable;
 
         var journey1 = new journey(
+            requester,
             id,
             vehicle,
             driver,
@@ -1336,8 +1338,8 @@ async function loadVehiclesList() {
 
 async function loadJourneysDriver() {
 
-    // To be removed(added
-    //     for development)
+    // // To be removed(added
+    // //     for development)
     // var EmailSession = window.localStorage.getItem("Email Session");
     // var Id_hard_coded = '5bd439d4973f695368e5abf2';
     // try {
@@ -3118,6 +3120,20 @@ async function checkIfAccepted() {
             notes
         );
 
+        axios.post('/UpdateJourney', journey1)
+            .then(function(response) {
+                console.log(response.data.message)
+                console.log(response.status),
+                    console.log('journey updated successfully')
+            });
+
+        // journeys[oid] = journey1;
+        // window.localStorage.setItem('journeysAccepted', JSON.stringify(journey1));
+
+        journeysAccepted[id] = journey1;
+        // journeys[oid] = journey1;
+        window.localStorage.setItem('journeysAccepted', JSON.stringify(journey1));
+
         /*var data={"access_token":window.localStorage.getItem("token"),
                           "collection":"journeys",
                           "id":i,
@@ -3140,12 +3156,12 @@ async function checkIfAccepted() {
         window.localStorage.removeItem('journeysPending')
             // if (debug) {
         console.log('pending journey:' + id + ' has been deleted');
+
+        window.localStorage.removeItem('journeysMathcing')
+            // if (debug) {
+        console.log('Matching journey:' + id + ' has been deleted');
         // }
         // window.localStorage.setItem('journeysPending', JSON.stringify(journeysPending));
-
-        journeysAccepted[id] = journey1;
-        // journeys[oid] = journey1;
-        window.localStorage.setItem('journeysAccepted', JSON.stringify(journeysAccepted));
 
         // delete journeysMatching[i];
         // if (debug) {
@@ -3213,6 +3229,8 @@ async function checkIfAccepted() {
                 }
             }
         });
+
+        startIntervalsForRating();
         // });
     }
     // }
@@ -4359,8 +4377,12 @@ function acceptPendingPassenger() {
                     var seatsAvailable = journ.local.seatsAvailable;
                     var notes = journ.local.notes;
 
+                    console.log(user.local.email)
                     acceptedPassengers.push(user.local.email);
+                    console.log(acceptedPassengers);
                     pendingPassengers.pop(user.local.email);
+                    console.log(acceptedPassengers);
+
                     // pendingPassengers = '';
 
                     // if (acceptedPassengers.length >= seatsAvailable) {
@@ -4414,8 +4436,9 @@ function acceptPendingPassenger() {
                                 console.log('journey updated successfully')
                         });
 
-
+                    console.log(journeys);
                     journeys[oid] = journey2;
+                    console.log(journeys[oid]);
                     window.localStorage.setItem('journeys', JSON.stringify(journey2));
                     window.localStorage.removeItem('userPending');
 
