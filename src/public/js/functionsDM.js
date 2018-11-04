@@ -813,7 +813,8 @@ function arraysEqual(arr1, arr2) {
     return true;
 }
 
-async function checkJourneyUpdates(oid, callback) {
+// async function checkJourneyUpdates(oid, callback) {
+async function checkJourneyUpdates() {
     // var token = window.localStorage.getItem('token');
     // if (token) {
     //get the journeys from localStorage
@@ -1216,7 +1217,7 @@ async function findMatchingJourneyForAll() {
         // }
 
         var clientTime = Math.floor(Date.now() / 1000);
-        console.log("Radius for matching journey is" + radius);
+        // console.log("Radius for matching journey is" + radius);
         var journeymatching = [];
 
         try {
@@ -1235,7 +1236,7 @@ async function findMatchingJourneyForAll() {
             console.log(res2);
             for (i in res2.data) {
                 journeymatching.push(res2.data[i]);
-                console.log("journeymatching is" + journeymatching[i]._id);
+                console.log("journeysmatching are " + journeymatching[i]._id);
             }
         } catch (e) {
             console.log(e)
@@ -1245,7 +1246,7 @@ async function findMatchingJourneyForAll() {
         var data = journeymatching[0];
         // var data = journeymatching[1];
         // console.log("Data is" + data);
-        console.log("Journey matching id " + data._id);
+        console.log("Journey matching id is [0] " + data._id);
 
         if (data) {
             var j = data;
@@ -1312,7 +1313,7 @@ function RateJourney() {
 
     if (a && a.local.acceptedPassengers == EmailSession) {
         ons.notification.confirm({
-            messageHTML: '<input type="number" id="rating" value="' +
+            messageHTML: '<input type="number" id="rating" required>' +
                 '" min="1" max="5"',
             title: 'Please rate the driver for your journey',
             buttonLabels: ['Cancel', 'Save'],
@@ -1329,7 +1330,7 @@ function RateJourney() {
                         var to = a.local.driver;
                         var from = EmailSession;
 
-                        var rating1 = new rating(
+                        var rating1 = new ratingK(
                             '',
                             from,
                             to,
@@ -1341,7 +1342,7 @@ function RateJourney() {
                         //set it to the object
                         rating1.setOid(oid);
 
-                        axios.post('/CreateRating', journey1)
+                        axios.post('/CreateRating', rating1)
                             .then(function(response) {
                                 console.log(response.data.message)
                                 console.log(response.status),
@@ -1371,7 +1372,7 @@ function RateJourney() {
 
     if (b && b.local.acceptedPassengers.length > 0) {
         ons.notification.confirm({
-            messageHTML: '<input type="number" id="rating" value="' +
+            messageHTML: '<input type="number" id="rating" required>' +
                 '" min="1" max="5"',
             title: 'Please rate the passenger for your journey',
             buttonLabels: ['Cancel', 'Save'],
@@ -1388,7 +1389,7 @@ function RateJourney() {
                         var to = b.local.acceptedPassengers[0];
                         var from = EmailSession;
 
-                        var rating1 = new rating(
+                        var rating1 = new ratingK(
                             '',
                             from,
                             to,
@@ -1400,14 +1401,14 @@ function RateJourney() {
                         //set it to the object
                         rating1.setOid(oid);
 
-                        axios.post('/CreateRating', journey1)
+                        axios.post('/CreateRating', rating1)
                             .then(function(response) {
                                 console.log(response.data.message)
                                 console.log(response.status),
                                     console.log('Rating saved successfully')
                             });
 
-                        window.localStorage.removeItem('journeysAccepted');
+                        // window.localStorage.removeItem('journeysAccepted');
 
                         ons.notification.alert({
                             message: 'Rating Saved!',
@@ -1578,12 +1579,8 @@ function startIntervalJourneyUpdates(oid) {
 
         // TO BE DELETED
         j.local.pendingPassengers = [];
-        // console.log("Journey local storage pend pass are" + j.local.pendingPassengers);
 
         console.log("startIntervalJourneyUpdates j[-id] is " + j['_id']);
-        // console.log("J schedule is " + j.local.schedule);
-        // console.log(j);
-        // console.log(JSON.stringify(j));
         var aid = j['_id'];
         if (j) {
             if (j['_id']) {
@@ -1593,24 +1590,25 @@ function startIntervalJourneyUpdates(oid) {
                 var rej = j.local.rejectedPassengers;
                 var not = j.local.notes;
 
-                checkJourneyUpdates(aid, function(d) {
-                    if (d.accepted) {
-                        ac = d.accepted;
-                    }
-                    if (d.pending) {
-                        pen = d.pending;
-                    }
-                    if (d.rejected) {
-                        rej = d.rejected;
-                    }
-                    if (d.notes) {
-                        not = d.notes;
-                    }
-                    updateJourneyInf(aid, ac, pen, rej, not);
-                    if (debug) {
-                        //console.log("Journey:"+oid+" has been checked for updates");
-                    }
-                });
+                // checkJourneyUpdates(aid, function(d) {
+                checkJourneyUpdates();
+                // if (d.accepted) {
+                //     ac = d.accepted;
+                // }
+                // if (d.pending) {
+                //     pen = d.pending;
+                // }
+                // if (d.rejected) {
+                //     rej = d.rejected;
+                // }
+                // if (d.notes) {
+                //     not = d.notes;
+                // }
+                updateJourneyInf(aid, ac, pen, rej, not);
+                // if (debug) {
+                //console.log("Journey:"+oid+" has been checked for updates");
+                // }
+                // });
             }
         }
         checkIfAccepted();

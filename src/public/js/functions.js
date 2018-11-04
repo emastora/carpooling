@@ -845,7 +845,7 @@ function saveJourneyInf() {
 }
 
 
-function updateJourneyInf(oid, acceptedPassengers, pendingPassengers, rejectedPassengers, notes) {
+async function updateJourneyInf(oid, acceptedPassengers, pendingPassengers, rejectedPassengers, notes) {
     //get the journeys from localStorage
     var journ = JSON.parse(window.localStorage.getItem('journeys'));
 
@@ -912,7 +912,22 @@ function updateJourneyInf(oid, acceptedPassengers, pendingPassengers, rejectedPa
             });
 
         journeys[oid] = journey1;
-        window.localStorage.setItem('journeys', JSON.stringify(journey1));
+
+        let id2 = id;
+        try {
+            res = await axios.get('/GetJourneyById', {
+                params: {
+                    id: id2,
+                }
+            })
+            console.log(res);
+            var journId = res.data;
+        } catch (e) {
+            console.log(e)
+        }
+
+
+        window.localStorage.setItem('journeys', JSON.stringify(journId));
     }
 }
 
@@ -1354,9 +1369,21 @@ async function loadJourneysDriver() {
     // } catch (e) {
     //     console.log(e)
     // }
-
-    // window.localStorage.setItem('journeys', JSON.stringify(journ));
-    var journ = JSON.parse(window.localStorage.getItem('journeys'));
+    var EmailSession = window.localStorage.getItem("Email Session");
+    try {
+        res = await axios.get('/GetJourney', {
+            params: {
+                email: EmailSession,
+            }
+        })
+        console.log(res);
+        // var journeysGet = JSON.parse(res.data);
+        var journ = res.data;
+    } catch (e) {
+        console.log(e)
+    }
+    // var journ = JSON.parse(window.localStorage.getItem('journeys'));
+    window.localStorage.setItem('journeys', JSON.stringify(journ));
 
     if (journ) {
         $('#journeys_list_driver').empty();
@@ -1697,7 +1724,7 @@ async function loadJourneysPassenger() {
 function loadJourneysMatching() {
     var journ = journeysMatching;
     // console.log("Journ is: " + journ);
-    console.log("Journ matching id is " + journ._id);
+    // console.log("Journ matching id is " + journ._id);
 
     window.localStorage.setItem('journeysMatching', JSON.stringify(journ));
 
@@ -2063,7 +2090,7 @@ async function loadAcceptedJourneyVal() {
             console.log({ params: { email: drivEmail2 } })
             res = await axios.get('/GetUser', {
                 params: {
-                    email: EmailSession
+                    email: drivEmail2
                 }
             })
             console.log(res);
@@ -2168,54 +2195,56 @@ async function loadAcceptedJourneyVal() {
 //     var pass = pp['data'];
 
 async function loadAcceptedPassengers() {
-    if (acceptedPass2) {
-        // getUser({ email: acceptedPass2, access_token: localStorage.getItem('token') }, function(p) {
-        //     var pp = JSON.parse(p);
-        //     var pass = pp['data'];
-        let acceptuser = {}
-        try {
-            console.log({ params: { email: acceptedPass2 } })
-            res = await axios.get('/GetUser', {
-                params: {
-                    email: acceptedPass2
-                }
-            })
-            console.log(res);
-            acceptuser = res.data
-            console.log(acceptuser);
-        } catch (e) {
-            console.log(e)
-        }
 
-        for (var i in acceptuser) {
-            if (acceptuser.hasOwnProperty(i)) {
-                // if (pass[i]) {
-                var list_element =
-                    '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;other_personal_inf.html&#39;, { animation : &#39;slide&#39; } ); setUser(' +
-                    "'" +
-                    acceptuser[i].local.email +
-                    "'" +
-                    ')">' +
-                    '<ons-row>' +
-                    // '<ons-col width="40px">' +
-                    // '<img src="' +
-                    // pass[i]['imagePath'] +
-                    // '" class="person-image">' +
-                    // '</ons-col>' +
-                    '<ons-col class="person-name">' +
-                    acceptuser['local']['name'] +
-                    ' ' +
-                    acceptuser['local']['surname'] +
-                    '<ons-col>' +
-                    '</ons-row>' +
-                    '</ons-list-item>';
-                //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
-                var elm = $(list_element);
-                elm.appendTo($('#journeys_list_accepted')); // Insert to the DOM first
-                ons.compile(elm[0]); // The argument must be a HTMLElement object
+    var EmailSession = window.localStorage.getItem("Email Session");
+    // if (acceptedPass2) {
+    // getUser({ email: acceptedPass2, access_token: localStorage.getItem('token') }, function(p) {
+    //     var pp = JSON.parse(p);
+    //     var pass = pp['data'];
+    let acceptuser = {}
+    try {
+        console.log({ params: { email: EmailSession } })
+        res = await axios.get('/GetUser', {
+            params: {
+                email: EmailSession
             }
-        }
+        })
+        console.log(res);
+        acceptuser = res.data
+        console.log(acceptuser);
+    } catch (e) {
+        console.log(e)
     }
+
+    // for (var i in acceptuser) {
+    // if (acceptuser.hasOwnProperty(i)) {
+    // if (pass[i]) {
+    var list_element =
+        '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;other_personal_inf.html&#39;, { animation : &#39;slide&#39; } ); setUser(' +
+        "'" +
+        acceptuser['local']['email'] +
+        "'" +
+        ')">' +
+        '<ons-row>' +
+        // '<ons-col width="40px">' +
+        // '<img src="' +
+        // pass[i]['imagePath'] +
+        // '" class="person-image">' +
+        // '</ons-col>' +
+        '<ons-col class="person-name">' +
+        acceptuser['local']['name'] +
+        ' ' +
+        acceptuser['local']['surname'] +
+        '<ons-col>' +
+        '</ons-row>' +
+        '</ons-list-item>';
+    //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
+    var elm = $(list_element);
+    elm.appendTo($('#journeys_list_accepted')); // Insert to the DOM first
+    ons.compile(elm[0]); // The argument must be a HTMLElement object
+    // }
+    // }
+    // }
     // });
     // }
 }
@@ -2732,22 +2761,23 @@ async function loadMatchingJourneyVal() {
                 if (acceptuser.hasOwnProperty(i)) {
                     // if (pass[i]) {
                     var list_element =
-                        '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;other_personal_inf.html&#39;, { animation : &#39;slide&#39; } ); setUser(' +
-                        "'" +
-                        acceptuser[i].local.email +
-                        "'" +
-                        ')">' +
-                        '<ons-row>' +
-                        // '<ons-col width="40px">' +
-                        // '<img src="' +
-                        // pass[i]['imagePath'] +
-                        // '" class="person-image">' +
-                        // '</ons-col>' +
-                        '<ons-col class="person-name">' +
-                        acceptuser['local']['name'] +
+                        '<ons-list-item>'
+                        // '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;other_personal_inf.html&#39;, { animation : &#39;slide&#39; } ); setUser(' +
+                        // "'" +
+                        // acceptuser[i].local.email +
+                        // "'" +
+                        // ')">' +
+                    '<ons-row>' +
+                    // '<ons-col width="40px">' +
+                    // '<img src="' +
+                    // pass[i]['imagePath'] +
+                    // '" class="person-image">' +
+                    // '</ons-col>' +
+                    '<ons-col class="person-name">' +
+                    acceptuser['local']['name'] +
                         ' ' +
                         acceptuser['local']['surname'] +
-                        '<ons-col>' +
+                        '</ons-col>' +
                         '</ons-row>' +
                         '</ons-list-item>';
                     //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
@@ -3015,21 +3045,21 @@ function loadMatchingJourneyVal2() {
 }
 
 async function checkIfAccepted() {
-    var a = JSON.parse(window.localStorage.getItem('journeysAccepted'));
 
-    if (a) {
-        journeysAccepted = a;
-    }
-
+    // var a = JSON.parse(window.localStorage.getItem('journeysAccepted'));
+    // if (a) {
+    //     journeysAccepted = a;
+    // }
     // if (!journeysAccepted[key]) {
     //     var driv = obj.driver;
 
+
+    // var data = { access_token: token, collection: 'journeys', id: oid };
+    // getCollection(data, function(result) {
     var b = JSON.parse(window.localStorage.getItem('journeysMatching'));
 
     if (b) {
         let id2 = b._id;
-        // var data = { access_token: token, collection: 'journeys', id: oid };
-        // getCollection(data, function(result) {
         try {
             res = await axios.get('/GetJourneyById', {
                 params: {
@@ -3048,14 +3078,15 @@ async function checkIfAccepted() {
     var EmailSession = window.localStorage.getItem('Email Session');
 
     // console.log("prin to accepted")
-    console.log("journId.local.acceptedPassengers " + journId.local.acceptedPassengers);
-    console.log(EmailSession);
+    // console.log("journId.local.acceptedPassengers " + journId.local.acceptedPassengers);
+    // console.log(EmailSession);
 
-    if (journId.local.acceptedPassengers[0] = EmailSession) {
+    // getUser({ email: driv, access_token: localStorage.getItem('token') }, function(d) {
+    //     var dd = JSON.parse(d);
+    //     var dr = dd['data'][0];
 
-        // getUser({ email: driv, access_token: localStorage.getItem('token') }, function(d) {
-        //     var dd = JSON.parse(d);
-        //     var dr = dd['data'][0];
+    if (journId.local.acceptedPassengers[0] == EmailSession) {
+
         console.log("MPIkA sto accepted")
 
         var EmailSession2 = b.local.driver;
@@ -3074,65 +3105,72 @@ async function checkIfAccepted() {
         } catch (e) {
             console.log(e)
         }
-        console.log('b.local.address' + b.local.departureAddress)
+        // console.log('b.local.address' + b.local.departureAddress)
 
-        var requester = user.local.driver;
-        var id = b._id;
-        var vehicle = b.local.vehicle;
-        var driver = user.local.driver;
-        var mode = 'passenger';
-        var departureAddress = b.local.departureAddress;
-        var departureLat = b.local.departureLat;
-        var departureLng = b.local.departureLng;
-        var destinationAddress = b.local.destinationAddress;
-        var destinationLat = b.local.destinationLat;
-        var destinationLng = b.local.destinationLng;
-        var schedule = b.local.schedule;
-        var distance = b.local.distance;
-        var journeyDuration = b.local.journeyDuration;
-        var acceptedPassengers = b.local.acceptedPassengers;
-        var pendingPassengers = b.local.pendingPassengers;
-        var rejectedPassengers = b.local.rejectedPassengers;
-        // var waypoints = b.localwaypoints;
-        var seatsAvailable = b.local.seatsAvailable;
-        var notes = b.local.notes;
+        // var requester = user.local.email;
+        // var id = b._id;
+        // var vehicle = b.local.vehicle;
+        // var driver = user.local.email;
+        // var mode = b.local.mode;
+        // var departureAddress = b.local.departureAddress;
+        // var departureLat = b.local.departureLat;
+        // var departureLng = b.local.departureLng;
+        // var destinationAddress = b.local.destinationAddress;
+        // var destinationLat = b.local.destinationLat;
+        // var destinationLng = b.local.destinationLng;
+        // var schedule = b.local.schedule;
+        // var distance = b.local.distance;
+        // var journeyDuration = b.local.journeyDuration;
+        // var acceptedPassengers = b.local.acceptedPassengers;
+        // var pendingPassengers = b.local.pendingPassengers;
+        // var rejectedPassengers = b.local.rejectedPassengers;
+        // // var waypoints = b.localwaypoints;
+        // var seatsAvailable = b.local.seatsAvailable;
+        // var notes = b.local.notes;
 
-        var journey1 = new journey(
-            requester,
-            id,
-            vehicle,
-            driver,
-            mode,
-            departureAddress,
-            departureLat,
-            departureLng,
-            destinationAddress,
-            destinationLat,
-            destinationLng,
-            schedule,
-            distance,
-            journeyDuration,
-            acceptedPassengers,
-            pendingPassengers,
-            rejectedPassengers,
-            // waypoints,
-            seatsAvailable,
-            notes
-        );
+        // var journey1 = new journey(
+        //     requester,
+        //     id,
+        //     vehicle,
+        //     driver,
+        //     mode,
+        //     departureAddress,
+        //     departureLat,
+        //     departureLng,
+        //     destinationAddress,
+        //     destinationLat,
+        //     destinationLng,
+        //     schedule,
+        //     distance,
+        //     journeyDuration,
+        //     acceptedPassengers,
+        //     pendingPassengers,
+        //     rejectedPassengers,
+        //     // waypoints,
+        //     seatsAvailable,
+        //     notes
+        // );
 
-        axios.post('/UpdateJourney', journey1)
-            .then(function(response) {
-                console.log(response.data.message)
-                console.log(response.status),
-                    console.log('journey updated successfully')
-            });
+        // axios.post('/UpdateJourney', journey1)
+        //     .then(function(response) {
+        //         console.log(response.data.message)
+        //         console.log(response.status),
+        //             console.log('journey updated successfully')
+        //     });
 
         // journeys[oid] = journey1;
         // window.localStorage.setItem('journeysAccepted', JSON.stringify(journey1));
 
-        journeysAccepted[id] = journey1;
+        // journeysAccepted[id2] = journId;
         // journeys[oid] = journey1;
-        window.localStorage.setItem('journeysAccepted', JSON.stringify(journey1));
+        window.localStorage.setItem('journeysAccepted', JSON.stringify(journId));
+        7
+        window.localStorage.removeItem('journeysPending')
+        console.log('pending journey:' + b._id + ' has been deleted');
+
+        window.localStorage.removeItem('journeysMathcing')
+            // if (debug) {
+        console.log('Matching journey:' + b._id + ' has been deleted');
 
         /*var data={"access_token":window.localStorage.getItem("token"),
                           "collection":"journeys",
@@ -3153,13 +3191,6 @@ async function checkIfAccepted() {
         //     journeysPending = p;
         // }
         // delete journeysPending[id];
-        window.localStorage.removeItem('journeysPending')
-            // if (debug) {
-        console.log('pending journey:' + id + ' has been deleted');
-
-        window.localStorage.removeItem('journeysMathcing')
-            // if (debug) {
-        console.log('Matching journey:' + id + ' has been deleted');
         // }
         // window.localStorage.setItem('journeysPending', JSON.stringify(journeysPending));
 
@@ -3224,7 +3255,7 @@ async function checkIfAccepted() {
                         break;
                     case 1:
                         myNavigator.pushPage('journey_accepted.html', { animation: 'slide' });
-                        acceptedJourneySelected(id);
+                        // acceptedJourneySelected(b_id);
                         break;
                 }
             }
@@ -3731,118 +3762,121 @@ async function loadJourneyVal() {
         elm.appendTo($('#journeys_list_matching')); // Insert to the DOM first
         ons.compile(elm[0]);
 
-        for (var i in journ) {
-            if (i == selectedJourney) {
-                if (journ.hasOwnProperty(i)) {
-                    if (journ[i]) {
-                        for (var j in journ[i]) {
-                            if (journ[i].hasOwnProperty(j)) {
-                                if (journ[i][j]) {
-                                    if (journ[i][j].acceptedPassengers.length < journ[i][j].seatsAvailable) {
-                                        var dep2 = journ[i][j].departureAddress;
-                                        var dest2 = journ[i][j].destinationAddress;
-                                        var timestamp2 = journ[i][j].schedule;
-                                        var date2 = new Date(timestamp2 * 1000);
-                                        var seconds_left2 = timestamp2 - Math.floor(Date.now() / 1000);
-                                        var hours_left2 = parseInt(seconds_left2 / 3600, 10);
-                                        var time_left2 = '';
-                                        var drivHTML2 = '';
-                                        var passHTML2 = '';
-                                        var seatsAv2 = journ[i][j].seatsAvailable;
-                                        var acceptedPassNo2 = journ[i][j].acceptedPassengers.length;
-                                        var pendingPassNo2 = journ[i][j].pendingPassengers.length;
-                                        var driv2;
-                                        var notifHTML = '';
+        // for (var i in journ) {
+        // if (i == selectedJourney) {
+        // if (journ.hasOwnProperty(i)) {
+        // if (journ[i]) {
+        // for (var j in journ[i]) {
+        // if (journ[i].hasOwnProperty(j)) {
+        // if (journ[i][j]) {
+        // if (journ[i][j].acceptedPassengers.length < journ[i][j].seatsAvailable) {
+        if (journ.local.acceptedPassengers.length <= journ.local.seatsAvailable) {
+            // var dep2 = journ[i][j].departureAddress;
+            var dep2 = journ.local.departureAddress;
+            var dest2 = journ.local.destinationAddress;
+            var timestamp2 = journ.local.schedule;
+            var date2 = new Date(timestamp2 * 1000);
+            var seconds_left2 = timestamp2 - Math.floor(Date.now() / 1000);
+            var hours_left2 = parseInt(seconds_left2 / 3600, 10);
+            var time_left2 = '';
+            var drivHTML2 = '';
+            var passHTML2 = '';
+            var seatsAv2 = journ.local.seatsAvailable;
+            var acceptedPassNo2 = journ.local.acceptedPassengers.length;
+            var pendingPassNo2 = journ.local.pendingPassengers.length;
+            var driv2;
+            var notifHTML = '';
 
-                                        var o = journ[i][j]['_id']['$id'];
-                                        var p = JSON.parse(window.localStorage.getItem('journeysPending'));
+            // var o = journ[i][j]['_id']['$id'];
+            // var p = JSON.parse(window.localStorage.getItem('journeysPending'));
 
-                                        if (p) {
-                                            journeysPending = p;
-                                            if (journeysPending[o]) {
-                                                notifHTML =
-                                                    '<span class="list-item-note"><span class="notification">pending <i class="fa fa-spinner fa-spin"></i></span></span>';
-                                            }
-                                        }
+            // if (p) {
+            //     journeysPending = p;
+            //     if (journeysPending[o]) {
+            //         notifHTML =
+            //             '<span class="list-item-note"><span class="notification">pending <i class="fa fa-spinner fa-spin"></i></span></span>';
+            //     }
+            // }
 
-                                        if (journ[i][j].driver) {
-                                            driv2 = 1;
-                                            drivHTML2 = '<i class="fa fa-check"></i>';
-                                        } else {
-                                            driv2 = 0;
-                                            drivHTML2 = '<i class="fa fa-refresh fa-spin"></i>';
-                                        }
-
-                                        if (acceptedPassNo2 >= seatsAv2) {
-                                            passHTML2 = '<i class="fa fa-check"></i>';
-                                        } else {
-                                            passHTML2 = '<i class="fa fa-refresh fa-spin"></i>';
-                                        }
-
-                                        if (hours_left2 < 1) {
-                                            time_left2 = parseInt(seconds_left2 / 60, 10) + 'min';
-                                        } else if (hours_left2 <= 24) {
-                                            time_left2 = hours_left2 + 'h';
-                                        } else {
-                                            time_left2 = parseInt(hours_left2 / 24, 10) + 'd ' + (hours_left2 % 24) + 'h';
-                                        }
-
-                                        var list_element2 =
-                                            '<ons-list-item modifier="chevron" class="journey" onClick="myNavigator.pushPage(&#39;journey_matching.html&#39;, { animation : &#39;slide&#39; } );matchingJourneySelected(' +
-                                            "'" +
-                                            i +
-                                            "'" +
-                                            ',' +
-                                            "'" +
-                                            j +
-                                            "'" +
-                                            ');">' +
-                                            '<ons-row>' +
-                                            '<ons-col width="80px" class="journey-left"><div class="journey-date">' +
-                                            (date2.getMonth() + 1) +
-                                            '/' +
-                                            date2.getDate() +
-                                            '/' +
-                                            date2.getFullYear() +
-                                            '</div><div class="journey-date"><ons-icon icon="fa-clock-o"></ons-icon>' +
-                                            date2.getHours() +
-                                            ':' +
-                                            date2.getMinutes() +
-                                            '</div>' +
-                                            '<div class="journey-time_left">' +
-                                            time_left2 +
-                                            '</div><div class="journey-seats"><i class="fa fa-users"></i>&nbsp;' +
-                                            acceptedPassNo2 +
-                                            '/' +
-                                            seatsAv2 +
-                                            '&nbsp;' +
-                                            passHTML2 +
-                                            '</div><div class="journey-seats"><i class="fa fa-car"></i>&nbsp;' +
-                                            driv2 +
-                                            '/1&nbsp;' +
-                                            drivHTML2 +
-                                            '</div></ons-col>' +
-                                            '<ons-col width="6px" class="journey-center" ng-style="{backgroundColor: &#39;#ff0000&#39;}"></ons-col>' +
-                                            '<ons-col class="journey-right"><div class="journey-name">Journey' +
-                                            notifHTML +
-                                            '</div><div class="journey-info"><div><ons-icon icon="fa-home"></ons-icon>&nbsp' +
-                                            dep2 +
-                                            '</div><div><ons-icon icon="fa-crosshairs"></ons-icon>&nbsp' +
-                                            dest2 +
-                                            '</div></div></ons-col>' +
-                                            '</ons-row>' +
-                                            '</ons-list-item>';
-                                        var elm = $(list_element2);
-                                        elm.appendTo($('#journeys_list_matching')); // Insert to the DOM first
-                                        ons.compile(elm[0]); // The argument must be a HTMLElement object
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+            // if (journ[i][j].driver) {
+            if (journ.local.driver) {
+                driv2 = 1;
+                drivHTML2 = '<i class="fa fa-check"></i>';
+            } else {
+                driv2 = 0;
+                drivHTML2 = '<i class="fa fa-refresh fa-spin"></i>';
             }
+
+            if (acceptedPassNo2 >= seatsAv2) {
+                passHTML2 = '<i class="fa fa-check"></i>';
+            } else {
+                passHTML2 = '<i class="fa fa-refresh fa-spin"></i>';
+            }
+
+            if (hours_left2 < 1) {
+                time_left2 = parseInt(seconds_left2 / 60, 10) + 'min';
+            } else if (hours_left2 <= 24) {
+                time_left2 = hours_left2 + 'h';
+            } else {
+                time_left2 = parseInt(hours_left2 / 24, 10) + 'd ' + (hours_left2 % 24) + 'h';
+            }
+
+            var list_element2 =
+                '<ons-list-item modifier="chevron" class="journey" onClick="myNavigator.pushPage(&#39;journey_matching.html&#39;, { animation : &#39;slide&#39; } );matchingJourneySelected(' +
+                // "'" +
+                // i +
+                // "'" +
+                // ',' +
+                // "'" +
+                // j +
+                // "'" +
+                // ');">' +
+                '<ons-row>' +
+                '<ons-col width="80px" class="journey-left"><div class="journey-date">' +
+                (date2.getMonth() + 1) +
+                '/' +
+                date2.getDate() +
+                '/' +
+                date2.getFullYear() +
+                '</div><div class="journey-date"><ons-icon icon="fa-clock-o"></ons-icon>' +
+                date2.getHours() +
+                ':' +
+                date2.getMinutes() +
+                '</div>' +
+                '<div class="journey-time_left">' +
+                time_left2 +
+                '</div><div class="journey-seats"><i class="fa fa-users"></i>&nbsp;' +
+                acceptedPassNo2 +
+                '/' +
+                seatsAv2 +
+                '&nbsp;' +
+                passHTML2 +
+                '</div><div class="journey-seats"><i class="fa fa-car"></i>&nbsp;' +
+                driv2 +
+                '/1&nbsp;' +
+                drivHTML2 +
+                '</div></ons-col>' +
+                '<ons-col width="6px" class="journey-center" ng-style="{backgroundColor: &#39;#ff0000&#39;}"></ons-col>' +
+                '<ons-col class="journey-right"><div class="journey-name">Journey' +
+                notifHTML +
+                '</div><div class="journey-info"><div><ons-icon icon="fa-home"></ons-icon>&nbsp' +
+                dep2 +
+                '</div><div><ons-icon icon="fa-crosshairs"></ons-icon>&nbsp' +
+                dest2 +
+                '</div></div></ons-col>' +
+                '</ons-row>' +
+                '</ons-list-item>';
+            var elm = $(list_element2);
+            elm.appendTo($('#journeys_list_matching')); // Insert to the DOM first
+            ons.compile(elm[0]); // The argument must be a HTMLElement object
         }
+        // }
+        // }
+        // }
+        // }
+        // }
+        // }
+        // }
     }
 
     document.getElementById('departureAddress').innerHTML = dep;
@@ -3883,8 +3917,8 @@ async function loadJourneyVal() {
         // var dd = JSON.parse(d);
         // var driv = dd['data'][0];
         // var driv = user.local.driver;
-        console.log(driv.local.name);
-        console.log(drivEmail);
+        // console.log(driv.local.name);
+        // console.log(drivEmail);
 
 
         var list_element =
@@ -3900,9 +3934,9 @@ async function loadJourneyVal() {
             //     '"class="person-image">' +
             //     '</ons-col>'  +
             '<ons-col class="person-name">' +
-            driv['local.name'] +
+            driv['local']['name'] +
             ' ' +
-            driv['local.surname'] +
+            driv['local']['surname'] +
             '<ons-col>' +
             '</ons-row>' +
             '</ons-list-item>';
@@ -3939,170 +3973,241 @@ async function loadJourneyVal() {
         elm.appendTo($('#journeys_list_vehicle')); // Insert to the DOM first
         ons.compile(elm[0]);
 
-        if (veh) {
-            // var data = { access_token: localStorage.getItem('token'), collection: 'vehicles', id: veh };
+        // if (1) {
+        // var data = { access_token: localStorage.getItem('token'), collection: 'vehicles', id: veh };
 
-            // getCollection(data, function(v) {
-            //     var vv = JSON.parse(v);
-            //     var vehicle = vv['data'][0];
+        // getCollection(data, function(v) {
+        //     var vv = JSON.parse(v);
+        //     var vehicle = vv['data'][0];
 
-            let vehicle = {}
-            try {
-                console.log({ params: { email: EmailSession } })
-                res = await axios.get('/GetVehicle', {
-                        params: {
-                            email: EmailSession
-                        }
-                    })
-                    // console.log(res);
-                vehicle = res.data
-                    // console.log(user);
-            } catch (e) {
-                console.log(e)
-            }
-            // var vehicle = vv['data'][0];
-
-            var list_element =
-                '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;other_vehicle_inf.html&#39;, { animation : &#39;slide&#39; } ); setVehicle(' +
-                "'" +
-                veh +
-                "'" +
-                ')">' +
-                '<ons-row>' +
-                '<ons-col width="40px">' +
-                '<img src="' +
-                vehicle['imagePath'] +
-                '" class="person-image">' +
-                '</ons-col>' +
-                '<ons-col class="person-name">' +
-                vehicle['brand'] +
-                ' ' +
-                vehicle['model'] +
-                '<ons-col>' +
-                '</ons-row>' +
-                '</ons-list-item>';
-            //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
-            var elm = $(list_element);
-            elm.appendTo($('#journeys_list_vehicle')); // Insert to the DOM first
-            ons.compile(elm[0]); // The argument must be a HTMLElement object
-
-            loadAcceptedPassengers();
-            // });
-        } else {
-            var list_element =
-                '<ons-list-item class="person" modifier="chevron">' +
-                '<ons-row>' +
-                '<ons-col width="40px">' +
-                '<img src="images/vehicle.png" class="person-image">' +
-                '</ons-col>' +
-                '<ons-col class="person-name">Pending' +
-                '<ons-col>' +
-                '</ons-row>' +
-                '</ons-list-item>';
-            //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
-            var elm = $(list_element);
-            elm.appendTo($('#journeys_list_vehicle')); // Insert to the DOM first
-            ons.compile(elm[0]); // The argument must be a HTMLElement object
-
-            loadAcceptedPassengers();
+        let vehicle = {}
+        try {
+            console.log({ params: { email: EmailSession } })
+            res = await axios.get('/GetVehicle', {
+                    params: {
+                        email: EmailSession
+                    }
+                })
+                // console.log(res);
+            vehicle = res.data
+                // console.log(user);
+        } catch (e) {
+            console.log(e)
         }
+        // var vehicle = vv['data'][0];
+
+        var list_element =
+            '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;other_vehicle_inf.html&#39;, { animation : &#39;slide&#39; } ); setVehicle(' +
+            "'" +
+            vehicle +
+            "'" +
+            ')">' +
+            '<ons-row>' +
+            // '<ons-col width="40px">' +
+            // '<img src="' +
+            // vehicle['imagePath'] +
+            // '" class="person-image">' +
+            // '</ons-col>' +
+            '<ons-col class="person-name">' +
+            vehicle['local']['brand'] +
+            ' ' +
+            vehicle['local']['model'] +
+            '<ons-col>' +
+            '</ons-row>' +
+            '</ons-list-item>';
+        //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
+        var elm = $(list_element);
+        elm.appendTo($('#journeys_list_vehicle')); // Insert to the DOM first
+        ons.compile(elm[0]); // The argument must be a HTMLElement object
+
+        loadAcceptedPassengers();
+        // });
+        // } else {
+        //     var list_element =
+        //         '<ons-list-item class="person" modifier="chevron">' +
+        //         '<ons-row>' +
+        //         '<ons-col width="40px">' +
+        //         '<img src="images/vehicle.png" class="person-image">' +
+        //         '</ons-col>' +
+        //         '<ons-col class="person-name">Pending' +
+        //         '<ons-col>' +
+        //         '</ons-row>' +
+        //         '</ons-list-item>';
+        //     //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
+        //     var elm = $(list_element);
+        //     elm.appendTo($('#journeys_list_vehicle')); // Insert to the DOM first
+        //     ons.compile(elm[0]); // The argument must be a HTMLElement object
+
+        //     loadAcceptedPassengers();
+        // }
     }
 
-    function loadAcceptedPassengers() {
-        if (acceptedPass) {
+    async function loadAcceptedPassengers() {
+
+        var EmailSession = window.localStorage.getItem("Email Session");
+        let journ_load = {}
+        try {
+            console.log({ params: { email: EmailSession } })
+            res = await axios.get('/GetJourney', {
+                params: {
+                    email: EmailSession
+                }
+            })
+            console.log(res);
+            journ_load = res.data
+            console.log(journ_load);
+        } catch (e) {
+            console.log(e)
+        }
+
+        if (journ_load.local.acceptedPassengers) {
             $('#journeys_list_accepted').empty();
             var list_element2 = '<ons-list-header class="person-list-header">Accepted Passengers</ons-list-header>';
             var elm = $(list_element2);
             elm.appendTo($('#journeys_list_accepted')); // Insert to the DOM first
             ons.compile(elm[0]);
 
-            getUser({ email: acceptedPass, access_token: localStorage.getItem('token') }, function(p) {
-                var pp = JSON.parse(p);
-                var pass = pp['data'];
+            // getUser({ email: acceptedPass, access_token: localStorage.getItem('token') }, function(p) {
+            //     var pp = JSON.parse(p);
+            //     var pass = pp['data'];
+            var EmailAccepted = journ_load.local.acceptedPassengers;
 
-                for (var i in pass) {
-                    if (pass.hasOwnProperty(i)) {
-                        if (pass[i]) {
-                            var list_element =
-                                '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;other_personal_inf.html&#39;, { animation : &#39;slide&#39; } ); setUser(' +
-                                "'" +
-                                pass[i].username +
-                                "'" +
-                                ')">' +
-                                '<ons-row>' +
-                                '<ons-col width="40px">' +
-                                '<img src="' +
-                                pass[i]['imagePath'] +
-                                '" class="person-image">' +
-                                '</ons-col>' +
-                                '<ons-col class="person-name">' +
-                                pass[i]['name'] +
-                                ' ' +
-                                pass[i]['surname'] +
-                                '<ons-col>' +
-                                '</ons-row>' +
-                                '</ons-list-item>';
-                            //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
-                            var elm = $(list_element);
-                            elm.appendTo($('#journeys_list_accepted')); // Insert to the DOM first
-                            ons.compile(elm[0]); // The argument must be a HTMLElement object
-                        }
+            let usr = {}
+            try {
+                console.log({ params: { email: EmailAccepted } })
+                res = await axios.get('/GetUser', {
+                    params: {
+                        email: EmailAccepted
                     }
-                }
-
-                if (acceptedPassNo < seatsAv) {
-                    loadPendingPassengers();
-                }
-            });
-        } else {
-            if (acceptedPassNo < seatsAv) {
-                loadPendingPassengers();
+                })
+                console.log(res);
+                usr = res.data
+                console.log(usr);
+            } catch (e) {
+                console.log(e)
             }
+
+
+            // for (var i in pass) {
+            // if (pass.hasOwnProperty(i)) {
+            // if (pass[i]) {
+            if (EmailAccepted) {
+                var list_element =
+                    '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;other_personal_inf.html&#39;, { animation : &#39;slide&#39; } ); setUser(' +
+                    // "'" +
+                    // usr['local']['username'] +
+                    // "'" +
+                    // ')">' +
+                    '<ons-row>' +
+                    // '<ons-col width="40px">' +
+                    // '<img src="' +
+                    // pass[i]['imagePath'] +
+                    // '" class="person-image">' +
+                    // '</ons-col>' +
+                    '<ons-col class="person-name">' +
+                    usr['local']['name'] +
+                    ' ' +
+                    usr['local']['surname'] +
+                    '<ons-col>' +
+                    '</ons-row>' +
+                    '</ons-list-item>';
+                //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
+                var elm = $(list_element);
+                elm.appendTo($('#journeys_list_accepted')); // Insert to the DOM first
+                ons.compile(elm[0]); // The argument must be a HTMLElement object
+
+            }
+        } else {
+            loadPendingPassengers();
         }
     }
 
-    function loadPendingPassengers() {
-        $('#journeys_list_pending').empty();
-        var list_element2 = '<ons-list-header class="person-list-header">Pending Passengers</ons-list-header>';
-        var elm = $(list_element2);
-        elm.appendTo($('#journeys_list_pending')); // Insert to the DOM first
-        ons.compile(elm[0]);
+    // if (acceptedPassNo < seatsAv) {
+    //     loadPendingPassengers();
+    // }
+    // });
+    //  else (acceptedPassNo < seatsAv) {
 
-        getUser({ email: pendingPass, access_token: localStorage.getItem('token') }, function(p) {
-            var pp = JSON.parse(p);
-            var pass = pp['data'];
+    // }
+}
 
-            for (var i in pass) {
-                if (pass.hasOwnProperty(i)) {
-                    if (pass[i]) {
-                        var list_element =
-                            '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;pending_personal_inf.html&#39;, { animation : &#39;slide&#39; } ); setUser(' +
-                            "'" +
-                            pass[i].username +
-                            "'" +
-                            ')">' +
-                            '<ons-row>' +
-                            '<ons-col width="40px">' +
-                            '<img src="' +
-                            pass[i]['imagePath'] +
-                            '" class="person-image">' +
-                            '</ons-col>' +
-                            '<ons-col class="person-name">' +
-                            pass[i]['name'] +
-                            ' ' +
-                            pass[i]['surname'] +
-                            '<ons-col>' +
-                            '</ons-row>' +
-                            '</ons-list-item>';
-                        //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
-                        var elm = $(list_element);
-                        elm.appendTo($('#journeys_list_pending')); // Insert to the DOM first
-                        ons.compile(elm[0]); // The argument must be a HTMLElement object
-                    }
-                }
+async function loadPendingPassengers() {
+    $('#journeys_list_pending').empty();
+    var list_element2 = '<ons-list-header class="person-list-header">Pending Passengers</ons-list-header>';
+    var elm = $(list_element2);
+    elm.appendTo($('#journeys_list_pending')); // Insert to the DOM first
+    ons.compile(elm[0]);
+
+    // getUser({ email: pendingPass, access_token: localStorage.getItem('token') }, function(p) {
+    //     var pp = JSON.parse(p);
+    //     var pass = pp['data'];
+
+    var EmailSession = window.localStorage.getItem("Email Session");
+    let journ_load = {}
+    try {
+        console.log({ params: { email: EmailSession } })
+        res = await axios.get('/GetJourney', {
+            params: {
+                email: EmailSession
             }
-        });
+        })
+        console.log(res);
+        journ_load = res.data
+        console.log(journ_load);
+    } catch (e) {
+        console.log(e)
     }
+
+    // for (var i in pass) {
+    // if (pass.hasOwnProperty(i)) {
+    // if (pass[i]) {
+    if (journ_load.local.pendingPassengers) {
+
+        var EmailPending = journ_load.local.pendingPassengers;
+
+        let usr = {}
+        try {
+            console.log({ params: { email: EmailPending } })
+            res = await axios.get('/GetUser', {
+                params: {
+                    email: EmailPending
+                }
+            })
+            console.log(res);
+            usr = res.data
+            console.log(usr);
+        } catch (e) {
+            console.log(e)
+        }
+        var list_element =
+            '<ons-list-item class="person" modifier="chevron" onClick="myNavigator.pushPage(&#39;pending_personal_inf.html&#39;, { animation : &#39;slide&#39; } ); setUser(' +
+            // "'" +
+            // pass[i].username +
+            // "'" +
+            // ')">' +
+            '<ons-row>' +
+            // '<ons-col width="40px">' +
+            // '<img src="' +
+            // pass[i]['imagePath'] +
+            // '" class="person-image">' +
+            // '</ons-col>' +
+            '<ons-col class="person-name">' +
+            usr['local']['name'] +
+            ' ' +
+            // pass[i]['surname'] +
+            usr['local']['surname']
+        '<ons-col>' +
+        '</ons-row>' +
+        '</ons-list-item>';
+        //document.getElementById("journeys_list_accepted").insertAdjacentHTML('beforeend',list_element);
+        var elm = $(list_element);
+        elm.appendTo($('#journeys_list_pending')); // Insert to the DOM first
+        ons.compile(elm[0]); // The argument must be a HTMLElement object
+    }
+    // }
+    // }
+    // });
+    // }
 }
 
 function setUser(usr) {
@@ -4213,7 +4318,7 @@ function sendJourneyRequest() {
     console.log("journey matching is after requests " + journ._id);
 
     // var o = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ]['_id']['$id'];
-    var j = JSON.parse(window.localStorage.getItem('journeysPending'));
+    // var j = JSON.parse(window.localStorage.getItem('journeysPending'));
     // if (j) {
     //     if (j.local.pendingPassengers == journeysMatching.local.pendingPassengers) {
     //         ons.notification.alert({
@@ -4241,9 +4346,9 @@ function sendJourneyRequest() {
     // }
 
     // journeysPending[o] = journ[selectedMatchingJourneyI][selectedMatchingJourneyJ];
-    journeysPending = journ;
+    // journeysPending = journ;
 
-    window.localStorage.setItem('journeysPending', JSON.stringify(journeysPending));
+    window.localStorage.setItem('journeysPending', JSON.stringify(journ));
 
     var requester = journ.local.requester;
     var id = journ._id;
@@ -4314,9 +4419,9 @@ function sendJourneyRequest() {
         });
 
     // journeysMatching[selectedMatchingJourneyI][selectedMatchingJourneyJ].pendingPassengers.push(
-    journeysMatching.local.pendingPassengers.push(
-        window.localStorage.getItem('Email Session')
-    );
+    // journeysMatching.local.pendingPassengers.push(
+    //     window.localStorage.getItem('Email Session')
+    // );
 
     ons.notification.alert({
         message: 'Request Submited! Please wait for the driver to accept you.',
@@ -4338,7 +4443,7 @@ function sendJourneyRequest() {
     });
 }
 
-function acceptPendingPassenger() {
+async function acceptPendingPassenger() {
     ons.notification.confirm({
         messageHTML: 'Are you sure you want to accept this passenger?',
         title: 'Accept Pending Passenger',
@@ -4347,7 +4452,7 @@ function acceptPendingPassenger() {
         primaryButtonIndex: 1,
         cancelable: true,
 
-        callback: function(index) {
+        callback: async function(index) {
             switch (index) {
                 case 0:
                     break;
@@ -4377,11 +4482,9 @@ function acceptPendingPassenger() {
                     var seatsAvailable = journ.local.seatsAvailable;
                     var notes = journ.local.notes;
 
-                    console.log(user.local.email)
                     acceptedPassengers.push(user.local.email);
-                    console.log(acceptedPassengers);
                     pendingPassengers.pop(user.local.email);
-                    console.log(acceptedPassengers);
+
 
                     // pendingPassengers = '';
 
@@ -4436,10 +4539,25 @@ function acceptPendingPassenger() {
                                 console.log('journey updated successfully')
                         });
 
-                    console.log(journeys);
+
                     journeys[oid] = journey2;
-                    console.log(journeys[oid]);
-                    window.localStorage.setItem('journeys', JSON.stringify(journey2));
+
+                    let id2 = id;
+                    try {
+                        res = await axios.get('/GetJourneyById', {
+                            params: {
+                                id: id2,
+                            }
+                        })
+                        console.log(res);
+                        var journId = res.data;
+                    } catch (e) {
+                        console.log(e)
+                    }
+
+                    // }
+
+                    window.localStorage.setItem('journeys', JSON.stringify(journId));
                     window.localStorage.removeItem('userPending');
 
                     ons.notification.alert({

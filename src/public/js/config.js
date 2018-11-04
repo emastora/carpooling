@@ -253,18 +253,18 @@ message.prototype.setRead = function(read) {
 };
 
 // Rating constructor
-function rating(oid, from, to, rating) {
+function ratingK(oid, from, to, rating) {
     this.oid = oid;
     this.from = from;
     this.to = to;
     this.rating = rating;
 }
 
-rating.prototype.getOid = function() {
+ratingK.prototype.getOid = function() {
     return this.oid;
 };
 
-rating.prototype.setOid = function(oid) {
+ratingK.prototype.setOid = function(oid) {
     this.oid = oid;
 };
 

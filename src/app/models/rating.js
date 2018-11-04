@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const ratingSchema = new mongoose.Schema({
     local: {
-        oid: Number,
+        oid: String,
         from: String,
         to: String,
         rating: Number,
