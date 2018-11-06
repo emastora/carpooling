@@ -1313,7 +1313,7 @@ function RateJourney() {
 
     if (a && a.local.acceptedPassengers == EmailSession) {
         ons.notification.confirm({
-            messageHTML: '<input type="number" id="rating" required>' +
+            messageHTML: '<input type="number" id="rating1" required>' +
                 '" min="1" max="5"',
             title: 'Please rate the driver for your journey',
             buttonLabels: ['Cancel', 'Save'],
@@ -1326,7 +1326,7 @@ function RateJourney() {
                     case 0:
                         break;
                     case 1:
-                        var rating = parseFloat(document.getElementById('rating').value)
+                        var rating = parseFloat(document.getElementById('rating1').value)
                         var to = a.local.driver;
                         var from = EmailSession;
 
@@ -1349,7 +1349,10 @@ function RateJourney() {
                                     console.log('Rating saved successfully')
                             });
 
-                        // window.localStorage.removeItem('journeysAccepted');
+                        window.localStorage.removeItem('journeysAccepted');
+                        window.localStorage.removeItem('journeysMatching');
+                        window.localStorage.removeItem('journeys');
+
                         // b.local.acceptedPassengers.pop();
 
                         ons.notification.alert({
@@ -1372,7 +1375,7 @@ function RateJourney() {
 
     if (b && b.local.acceptedPassengers.length > 0) {
         ons.notification.confirm({
-            messageHTML: '<input type="number" id="rating" required>' +
+            messageHTML: '<input type="number" id="rating2" required>' +
                 '" min="1" max="5"',
             title: 'Please rate the passenger for your journey',
             buttonLabels: ['Cancel', 'Save'],
@@ -1385,7 +1388,7 @@ function RateJourney() {
                     case 0:
                         break;
                     case 1:
-                        var rating = parseFloat(document.getElementById('rating').value)
+                        var rating = parseFloat(document.getElementById('rating2').value)
                         var to = b.local.acceptedPassengers[0];
                         var from = EmailSession;
 
@@ -1408,7 +1411,7 @@ function RateJourney() {
                                     console.log('Rating saved successfully')
                             });
 
-                        // window.localStorage.removeItem('journeysAccepted');
+                        window.localStorage.removeItem('journeys');
 
                         ons.notification.alert({
                             message: 'Rating Saved!',

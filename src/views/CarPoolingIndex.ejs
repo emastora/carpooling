@@ -18,6 +18,7 @@
     <script>
         ons.bootstrap();
 
+
         ons.ready(function() {
             //******************Check Authentication******************//
             if (localStorage.length >= 1) { //User is logedin
@@ -33,7 +34,7 @@
                 startIntervalForFindMatchingJourneys();
                 startIntervalsForEachLocalJourney();
                 startIntervalsForEachAcceptedJourney();
-                // startIntervalsForRating();
+                startIntervalsForRating();
 
                 startIntervalForMessages();
                 startIntervalForGetSentMessages();

@@ -1729,6 +1729,7 @@ function loadJourneysMatching() {
     window.localStorage.setItem('journeysMatching', JSON.stringify(journ));
 
     if (journ) {
+        console.log("mpika journey matching")
         $('#journeys_list_matching').empty();
         // for (var i in journ) {
         // if (journ.hasOwnProperty(i)) {
@@ -3261,7 +3262,7 @@ async function checkIfAccepted() {
             }
         });
 
-        startIntervalsForRating();
+        // startIntervalsForRating();
         // });
     }
     // }

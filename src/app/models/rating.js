@@ -5,7 +5,7 @@ const ratingSchema = new mongoose.Schema({
         oid: String,
         from: String,
         to: String,
-        rating: Number,
+        rating: Number
     }
 }, { versionKey: false });
 
