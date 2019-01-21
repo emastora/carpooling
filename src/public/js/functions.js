@@ -4980,6 +4980,7 @@ function onLocationError(error) {
 
     if (error.code == 2) {
         message = 'Location settings disabled.';
+        console.log(error)
     }
     if (error.code == 3) {
         message = 'Location settings do not respond.';

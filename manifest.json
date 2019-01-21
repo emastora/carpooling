@@ -1,0 +1,22 @@
+{
+    "name": "CarPooling App",
+    "short_name": "CPA",
+    "author": "Manos",
+    "theme_color": "#ff0000",
+    "background_color": "#f6ffff",
+    "default_locale": "en",
+    "display": "fullscreen",
+    "Scope": "/",
+    "icons": [{
+            "src": "src/public/images/user.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "src/public/images/user.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "splash_pages": null
+}
