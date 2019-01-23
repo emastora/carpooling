@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 
 const path = require('path');
+const fs = require('fs');
+const https = require('https')
 const mongoose = require('mongoose');
 const passport = require('passport');
 const flash = require('connect-flash');
@@ -16,6 +18,11 @@ require('./app/models/journey');
 require('./app/models/rating');
 
 const { url } = require('./config/database.js');
+
+const certOptions = {
+    key: fs.readFileSync('src/server.key'),
+    cert: fs.readFileSync('src/server.crt')
+}
 
 mongoose.connect(url);
 
@@ -50,6 +57,11 @@ require('./app/routes.js')(app, passport);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // start the server
-app.listen(app.get('port'), () => {
+// app.listen(app.get('port'), () => {
+//     console.log('server on port ', app.get('port'));
+// });
+
+https.createServer(certOptions, app).listen(app.get('port'), () => {
     console.log('server on port ', app.get('port'));
+
 });

@@ -2035,7 +2035,7 @@ async function loadAcceptedJourneyVal() {
         reuseTiles: true,
         zoomControl: false
     });
-    var currTileLayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    var currTileLayer = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '',
         attributionControl: false
     });
@@ -2320,7 +2320,7 @@ function loadAcceptedJourneyVal2() {
         reuseTiles: true,
         zoomControl: false
     });
-    var currTileLayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    var currTileLayer = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '',
         attributionControl: false
     });
@@ -2570,7 +2570,7 @@ async function loadMatchingJourneyVal() {
         reuseTiles: true,
         zoomControl: false
     });
-    var currTileLayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    var currTileLayer = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '',
         attributionControl: false
     });
@@ -2885,7 +2885,7 @@ function loadMatchingJourneyVal2() {
         reuseTiles: true,
         zoomControl: false
     });
-    var currTileLayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    var currTileLayer = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '',
         attributionControl: false
     });
@@ -3719,7 +3719,7 @@ async function loadJourneyVal() {
         reuseTiles: true,
         zoomControl: false
     });
-    var currTileLayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    var currTileLayer = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '',
         attributionControl: false
     });
@@ -4844,7 +4844,7 @@ function loadMap() {
         reuseTiles: true,
         zoomControl: false
     });
-    var currTileLayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    var currTileLayer = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '',
         attributionControl: false
     });
