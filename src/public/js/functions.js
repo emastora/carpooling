@@ -4799,6 +4799,54 @@ function getVehicle(data, callback) {
     };
 }
 
+async function loadRatings() {
+
+    var EmailSession = window.localStorage.getItem("Email Session");
+    try {
+        res = await axios.get('/GetRating', {
+            params: {
+                email: EmailSession,
+            }
+        })
+        console.log(res);
+        // var journeysGet = JSON.parse(res.data);
+        var rating = res.data;
+    } catch (e) {
+        console.log(e)
+    }
+    // var journ = JSON.parse(window.localStorage.getItem('journeys'));
+    // window.localStorage.setItem('journeys', JSON.stringify(rating));
+
+    if (rating) {
+        console.log("Rating is" + rating.local.from)
+        $('#ratings_list').empty();
+        for (var i in rating) {
+            console.log("Rating is" + rating.local.from)
+                // if (journ.hasOwnProperty(i)) {
+            if (rating[i]) {
+                // console.log("Rating is" + rating[i].local.from)
+                // if (journ[i].mode == 'driver') {
+                var from = rating.local.from;
+                var to = rating.local.to;
+                var rate = rating.local.rating;
+                var pic = "images/user.png";
+                var list_element = '<ons-list-item modifier="chevron" class="ratings_list" onClick="myNavigator.pushPage(&#39;ratings_driver.html&#39;, { animation : &#39;slide&#39; }>' +
+                    '<ons-row>' +
+                    '<ons-col width="95px"><img src="' + pic + '" class="thumbnail"></ons-col>' +
+                    '<ons-col><div class="from">' + from + '&nbsp;' + '</div><div class="rate">' + rate + '</div></ons-col>' +
+                    '<ons-col width="40px"></ons-col>' +
+                    '</ons-row>' +
+                    '</ons-list-item>';
+                var elm = $(list_element);
+                elm.appendTo($('#ratings_list')); // Insert to the DOM first
+                ons.compile(elm[0]); // The argument must be a HTMLElement object
+            }
+            // }
+            // }
+        }
+    }
+}
+
 function onSuccessVehicle(imageURI) {
     imageBase64 = imageBase64 = 'data:image/jpeg;base64,' + imageURI;
     document.getElementById('vehicle_picture').src = imageBase64;

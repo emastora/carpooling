@@ -364,7 +364,7 @@ module.exports = (app, passport) => {
 
     app.get('/GetRating', async(req, res) => {
         try {
-            const rating = await User.find({ 'local.to': req.query.email }).lean()
+            const rating = await Rating.findOne({ 'local.to': req.query.email }).lean()
             console.log('/GetRating', rating)
             res.json(rating);
         } catch (e) {

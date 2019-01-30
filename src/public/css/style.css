@@ -43,7 +43,7 @@
     border-radius: 50%;
     -webkit-border-radius: 50%;
     background-color: #E6E6E6;
-    border 1px solid white;
+    border: 1px solid white;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 0px 0px;
     -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 0px 0px;
 }
@@ -54,7 +54,7 @@
     border-radius: 50%;
     -webkit-border-radius: 50%;
     background-color: #E6E6E6;
-    border 1px solid white;
+    border: 1px solid white;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 0px 0px;
     -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 0px 0px;
     margin: 5px;
@@ -215,6 +215,11 @@
     padding: 15px 0px 15px 15px;
 }
 
+.ratings_list {
+    line-height: 1;
+    padding: 15px 0px 15px 15px;
+}
+
 .thumbnail {
     width: 80px;
     height: 80px;
@@ -229,7 +234,20 @@
     margin-bottom: 6px;
 }
 
+.from {
+    font-weight: 500;
+    line-height: 16px;
+    font-size: 15px;
+    margin-bottom: 6px;
+}
+
 .lisence_plate {
+    font-size: 14px;
+    opacity: 0.4;
+    margin-bottom: 6px;
+}
+
+.rate {
     font-size: 14px;
     opacity: 0.4;
     margin-bottom: 6px;
