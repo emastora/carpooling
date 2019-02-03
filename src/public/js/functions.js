@@ -2480,7 +2480,9 @@ function loadAcceptedJourneyVal2() {
 
 
 async function loadMatchingJourneyVal() {
+
     var journ = journeysMatching;
+    var EmailSession = window.localStorage.getItem("Email Session");
 
     var dep2 = journ.local.departureAddress;
     var dest2 = journ.local.destinationAddress;
@@ -2519,13 +2521,14 @@ async function loadMatchingJourneyVal() {
     //         elm.replaceAll($('#joinButton')); // Insert to the DOM first
     //         ons.compile(elm[0]);
     //     } else {
-    list_element =
-        '<ons-button modifier="large--cta" onClick="sendJourneyRequest()" id = "joinButton">Request Join</ons-button>';
+    if (EmailSession != drivEmail2) {
+        list_element =
+            '<ons-button modifier="large--cta" onClick="sendJourneyRequest()" id = "joinButton">Request Join</ons-button>';
 
-    var elm = $(list_element);
-    elm.replaceAll($('#joinButton')); // Insert to the DOM first
-    ons.compile(elm[0]);
-    //     }
+        var elm = $(list_element);
+        elm.replaceAll($('#joinButton')); // Insert to the DOM first
+        ons.compile(elm[0]);
+    }
     // }
 
     if (journ.local.mode == 'driver') {
@@ -3165,7 +3168,7 @@ async function checkIfAccepted() {
         // journeysAccepted[id2] = journId;
         // journeys[oid] = journey1;
         window.localStorage.setItem('journeysAccepted', JSON.stringify(journId));
-        7
+
         window.localStorage.removeItem('journeysPending')
         console.log('pending journey:' + b._id + ' has been deleted');
 
@@ -3257,6 +3260,7 @@ async function checkIfAccepted() {
                     case 1:
                         myNavigator.pushPage('journey_accepted.html', { animation: 'slide' });
                         // acceptedJourneySelected(b_id);
+                        // window.localStorage.removeItem('journeysAccepted');
                         break;
                 }
             }

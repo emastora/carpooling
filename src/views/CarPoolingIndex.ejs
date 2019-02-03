@@ -5,10 +5,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <script src="components/loader.js"></script>
-    <script src="components/monaca-jquery/jquery.js" type="text/javascript"></script>
+    <script src="components/monaca-jquery/jquery.js" type="text/javascript" async></script>
     <!-- <script src="components/loader.js"></script> -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js" async></script>
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="description" content="">
@@ -16,6 +16,7 @@
 
     <!-- Service Worker -->
     <script charset="utf-8" src="js/app.js"></script>
+    <!-- <script charset="utf-8" src="buildTool/js/app.js"></script> -->
 
     <% include partials/head %>
         <!-- <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script> -->
@@ -52,7 +53,7 @@
                     // googleLogin();
                     // getToken();
                     // loadVehicles();
-                    removeOldJourneys();
+                    // removeOldJourneys();
 
                     //******************Start Intervals******************//
                     startIntervalForFindMatchingJourneys();
@@ -78,6 +79,14 @@
 </head>
 
 <body>
+
+    <!-- When javascript is not working (Progressive web app) -->
+    <app-root></app-root>
+    <noscript>
+    <a href="https://en.wikipedia.org/wiki/Carpool">Please visit this side for further info!</a>
+    </noscript>
+
+
     <ons-sliding-menu var="app.slidingMenu" menu-page="menu.ejs" main-page="map.ejs" side="left" type="overlay" max-slide-distance="250px">
     </ons-sliding-menu>
 
@@ -212,9 +221,19 @@
     <script src="js/functions.js"></script>
     <script src="js/config.js"></script>
 
+    <!-- <script src="buildTool/js/FBlogin.js"></script>
+    <script src="buildTool/js/functionsDM.js"></script>
+    <script src="buildTool/js/functions.js"></script>
+    <script src="buildTool/js/config.js"></script> -->-->
 
-    <link rel="stylesheet" href="components/loader.css">
-    <link rel="stylesheet" href="css/style.css">
+
+    <!-- <link rel="stylesheet" href="components/loader.css"> -->
+    <link rel="preload" href="components/loader.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="components/loader.css"></noscript>
+
+    <!-- <link rel="stylesheet" href="css/style.css"> -->
+    <link rel="stylesheet" href="buildTool/css/style.css">
+
 
     <!-- Leaflet -->
     <!-- <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
@@ -235,8 +254,14 @@
     <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script> -->
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" /> -->
+    <link rel="preload" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"></noscript>
+
+    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" /> -->
+    <link rel="preload" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css"></noscript>
+
     <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 
@@ -245,18 +270,26 @@
     <link rel="stylesheet" href="routing_machine/leaflet-routing-machine.css" /> -->
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css"> -->
+    <link rel="preload" href="font-awesome/css/font-awesome.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="font-awesome/css/font-awesome.min.css"></noscript>
 
     <!-- Awesome Markers -->
-    <link rel="stylesheet" href="awesome_markers/leaflet.awesome-markers.css">
+    <!-- <link rel="stylesheet" href="awesome_markers/leaflet.awesome-markers.css"> -->
+    <link rel="preload" href="awesome_markers/leaflet.awesome-markers.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="awesome_markers/leaflet.awesome-markers.css"></noscript>
     <script src="awesome_markers/leaflet.awesome-markers.js"></script>
 
     <!-- Core functions, taken from other sources -->
-    <script src="js/core.js"></script>
+    <!-- <script src="js/core.js"></script> -->
+    <script src="buildTool/js/core.js"></script>
+
 
     <!-- Login scripts -->
-    <script src="js/googleLogin.js"></script>
+    <!-- <script src="js/googleLogin.js"></script> -->
     <script src="js/openfb.js"></script>
+    <script src="buildTool/js/googleLogin.js"></script>
+    <!-- <script src="buildTool/js/openfb.js"></script> -->
 </body>
 
 </html>

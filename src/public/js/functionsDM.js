@@ -1279,8 +1279,7 @@ async function findMatchingJourneyForAll() {
             if (Object.size(j) > Object.size(journeysMatching)) {
                 ons.notification.alert({
                     // message: 'Matches found: ' + (Object.size(j) - Object.size(journeysMatching)),
-                    message: 'A Mathcing Journey has been found for you! ',
-                    // or messageHTML: '<div>Message in HTML</div>',
+                    message: 'A Mathcing Journey has been found!',
                     title: 'New Matches',
                     buttonLabel: 'OK',
                     animation: 'default', // or 'none'

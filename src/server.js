@@ -12,6 +12,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const axios = require('axios');
+const shrinkRay = require('shrink-ray-current');
 require('./app/models/user');
 require('./app/models/vehicle');
 require('./app/models/journey');
@@ -34,6 +35,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // middlewares
+app.use(shrinkRay());
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(bodyParser.json());
